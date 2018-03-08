@@ -14,5 +14,6 @@ var initCommand = cli.Command{
 
 func initAction(c *cli.Context) error {
 	fmt.Println("boom, you've initialized a new compliance repository")
+	// create directory structure
 	return nil
 }

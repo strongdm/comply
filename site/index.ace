@@ -1,0 +1,43 @@
+= doctype html
+html lang=en
+  head
+    meta charset=utf-8
+    title Comply
+    link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css"
+    meta name="viewport" content="width=device-width, initial-scale=1"
+  body
+    section.hero.is-primary
+      .hero-body
+        .container
+          h1.title {{.Title}}
+          p.subtitle An Excellent Thing
+    .section
+      nav.level
+        .level-item.has-text-centered
+          div
+            p.heading Tweets
+            p.title 5,812
+        .level-item.has-text-centered
+          div
+            p.heading Tweets
+            p.title 5,812
+        .level-item.has-text-centered
+          div
+            p.heading Tweets
+            p.title 5,812
+        .level-item.has-text-centered
+          div
+            p.heading Tweets
+            p.title 5,812
+    .section
+      .columns
+        .column One
+        .column Two
+        .column Three
+        .column
+          a.button.is-info click
+    footer.footer
+      .container
+        .content.has-text-centered
+          p..
+             footer goes here

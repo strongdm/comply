@@ -26,6 +26,7 @@ func newApp() *cli.App {
 
 	app.Commands = []cli.Command{
 		initCommand,
+		buildCommand,
 	}
 
 	return app
