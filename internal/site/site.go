@@ -101,16 +101,11 @@ func Build(input, output string, live bool) error {
 
 	for {
 		for _, fileInfo := range files {
-			fmt.Println(fileInfo.Name())
 			if !strings.HasSuffix(fileInfo.Name(), ".ace") {
 				continue
 			}
 
 			basename := strings.Replace(fileInfo.Name(), ".ace", "", -1)
-			// templateBytes, err := ioutil.ReadFile(fileInfo.Name())
-			// if err != nil {
-			// 	panic(err)
-			// }
 
 			w, err := os.Create(filepath.Join(output, fmt.Sprintf("%s.html", basename)))
 			if err != nil {
@@ -118,11 +113,18 @@ func Build(input, output string, live bool) error {
 			}
 
 			values := make(map[string]interface{})
+
 			values["Title"] = "Acme Compliance Program"
+			values["Procedures"] = []string{
+				"Jump",
+				"Sit",
+				"Squat",
+			}
 
 			tpl, err := ace.Load("", filepath.Join("site", basename), aceOpts)
 			if err != nil {
-				panic(err)
+				w.Write([]byte("<htmL><body>template error</body></html>"))
+				fmt.Println(err)
 			}
 
 			err = tpl.Execute(w, values)
