@@ -6,8 +6,9 @@ import (
 )
 
 var buildCommand = cli.Command{
-	Name:  "build",
-	Usage: "generate a static website summarizing the compliance program",
+	Name:      "build",
+	ShortName: "b",
+	Usage:     "generate a static website summarizing the compliance program",
 	Flags: []cli.Flag{
 		cli.BoolFlag{
 			Name:  "live, l",

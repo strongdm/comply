@@ -6,9 +6,10 @@ import (
 )
 
 var serveCommand = cli.Command{
-	Name:   "serve",
-	Usage:  "live updating version of the build command",
-	Action: serveAction,
+	Name:      "serve",
+	ShortName: "s",
+	Usage:     "live updating version of the build command",
+	Action:    serveAction,
 }
 
 func serveAction(c *cli.Context) error {
