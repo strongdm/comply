@@ -18,14 +18,7 @@ var buildCommand = cli.Command{
 }
 
 func buildAction(c *cli.Context) error {
-	live := false
-	input := ""
-	if c.Bool("live") {
-		live = true
-		input = "site"
-	}
-	// create directory structure
-	err := site.Build(input, "output", live)
+	err := site.Build("output", false)
 	if err != nil {
 		panic(err)
 	}
