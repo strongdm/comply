@@ -105,4 +105,4 @@ html lang=en
           p {{.Title}} Confidential 2018
   = javascript
     // commented for development
-    // show('overview')
+    show('overview')
