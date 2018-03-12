@@ -44,7 +44,7 @@ func Tickets(rawTickets []string) []*Ticket {
 		if err != nil {
 			panic("Malformed ticket JSON")
 		}
-		tickets = append(tickets)
+		tickets = append(tickets, t)
 	}
 	return tickets
 }
