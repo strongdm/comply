@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"sync"
@@ -33,4 +34,17 @@ func DB() *scribble.Driver {
 		dbSingleton = db
 	})
 	return dbSingleton
+}
+
+func Tickets(rawTickets []string) []*Ticket {
+	var tickets []*Ticket
+	for _, rt := range rawTickets {
+		t := &Ticket{}
+		err := json.Unmarshal([]byte(rt), t)
+		if err != nil {
+			panic("Malformed ticket JSON")
+		}
+		tickets = append(tickets)
+	}
+	return tickets
 }

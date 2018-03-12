@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -18,7 +19,7 @@ func SetProjectRoot(dir string) {
 // YAML is the parsed contents of ProjectRoot()/config.yml
 func YAML() map[interface{}]interface{} {
 	m := make(map[interface{}]interface{})
-	cfgBytes, err := ioutil.ReadFile(filepath.Join(ProjectRoot(), "config.yml"))
+	cfgBytes, err := ioutil.ReadFile(filepath.Join(ProjectRoot(), "comply.yml"))
 	if err != nil {
 		panic("unable to load config.yml: " + err.Error())
 	}
@@ -35,8 +36,10 @@ func ProjectRoot() string {
 		}
 		projectRoot = dir
 	}
-	if _, err := os.Stat(filepath.Join(projectRoot, "config.yml")); os.IsNotExist(err) {
-		panic("comply must be run from the root directory of an initialized comply project")
+
+	fullPath := filepath.Join(projectRoot, "comply.yml")
+	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+		panic(fmt.Sprintf("%s not found: comply must be run from the root directory of an initialized comply project", fullPath))
 	}
 	return projectRoot
 }
