@@ -1,8 +1,0 @@
-programName: "Acme Compliance"
-regimes:
-   - "SOC2"
-   - "ISO 27001"
-tickets:
-  jira:
-    username: foo
-    password: bar

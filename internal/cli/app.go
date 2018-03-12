@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/strongdm/comply/internal/plugin/github"
 	"github.com/urfave/cli"
 )
 
@@ -28,7 +29,11 @@ func newApp() *cli.App {
 		initCommand,
 		buildCommand,
 		serveCommand,
+		syncCommand,
 	}
+
+	// Plugins
+	github.Register()
 
 	return app
 }

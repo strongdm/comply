@@ -1,0 +1,9 @@
+programName: "Acme Compliance"
+regimes:
+   - "SOC2"
+   - "ISO 27001"
+tickets:
+  github:
+    token: 6b3c7c99571e7baa4a7d3d0d9cbbe30afef3a04c
+    username: strongdm
+    repo: comply
