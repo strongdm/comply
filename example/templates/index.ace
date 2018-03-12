@@ -57,17 +57,17 @@ html lang=en
             div
               p.heading Evidence Requests
               p.title
-                a 142
+                a {{.Total}}
           .level-item.has-text-centered
             div
               p.heading Open Requests
               p.title
-                a 21
+                a {{.Open}}
           .level-item.has-text-centered
             div
               p.heading Oldest Request
               p.title
-                a 22 days
+                a {{.OldestDays}}
         progress.progress.is-large max=142 value=121
     #policies.section.top-nav.container
       h2.subtitle.is-2 Policies

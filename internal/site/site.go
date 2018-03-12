@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -17,6 +18,7 @@ import (
 	"github.com/gohugoio/hugo/watcher"
 	"github.com/gorilla/websocket"
 	"github.com/skratchdot/open-golang/open"
+	"github.com/strongdm/comply/internal/model"
 	"github.com/yosssi/ace"
 )
 
@@ -104,6 +106,10 @@ func Build(output string, live bool) error {
 		b.Add("./templates/")
 		b.Add("./policies/")
 		b.Add("./procedures/")
+
+		b.Add("./.comply/")
+		b.Add("./.comply/cache")
+		b.Add("./.comply/cache/tickets")
 
 		go func() {
 			for {
@@ -221,11 +227,11 @@ func Build(output string, live bool) error {
 					continue
 				}
 
-				// only files that have been touched
-				if !isNewer(fileInfo) {
-					continue
-				}
-				recordModified(fileInfo)
+				// // only files that have been touched
+				// if !isNewer(fileInfo) {
+				// 	continue
+				// }
+				// recordModified(fileInfo)
 
 				basename := strings.Replace(fileInfo.Name(), ".ace", "", -1)
 				w, err := os.Create(filepath.Join(output, fmt.Sprintf("%s.html", basename)))
@@ -240,6 +246,26 @@ func Build(output string, live bool) error {
 					"Jump",
 					"Sit",
 					"Squat",
+				}
+
+				rt, err := model.DB().ReadAll("tickets")
+				if err == nil {
+					ts := model.Tickets(rt)
+					var total, open, oldestDays int
+					for _, t := range ts {
+						total++
+						if t.State == model.Open {
+							if t.CreatedAt != nil {
+								oldestDays = int(time.Since(*t.CreatedAt).Hours() / float64(24))
+							}
+							open++
+						}
+
+					}
+
+					values["OldestDays"] = strconv.Itoa(oldestDays)
+					values["Total"] = strconv.Itoa(total)
+					values["Open"] = strconv.Itoa(open)
 				}
 
 				tpl, err := ace.Load("", filepath.Join("templates", basename), aceOpts)
