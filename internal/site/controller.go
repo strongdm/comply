@@ -37,9 +37,8 @@ func loadValues() map[string]interface{} {
 		values["Open"] = strconv.Itoa(open)
 	}
 
-	policies := model.ReadPolicies()
-
-	values["Policies"] = policies
+	values["Policies"] = model.ReadPolicies()
+	values["Procedures"] = model.ReadProcedures()
 
 	return values
 }

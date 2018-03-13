@@ -91,7 +91,9 @@ html lang=en
           tr
             td {{.Name}}
             td {{.Acronym}}
-            td link
+            td
+              a href={{.OutputFilename}} target=_blank
+                {{.OutputFilename}}
           {{end}}
     #procedures.section.top-nav.container
       h2.subtitle.is-2 Procedures
@@ -99,14 +101,14 @@ html lang=en
         thead
           tr
             th Procedure
-            th Definition
+            th Code
             th Schedule
         tbody
           {{range .Procedures }}
           tr
-            td {{.}}
-            td link
-            td none
+            td {{.Name}}
+            td {{.Code}}
+            td {{.Cron}}
           {{end}}
     #evidence.section.top-nav
       p.has-text-centered Evidence goes here

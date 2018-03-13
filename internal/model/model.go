@@ -27,13 +27,21 @@ type Ticket struct {
 }
 
 type Policy struct {
-	Name    string `yaml:"name"`
-	Acronym string `yaml:"acronym"`
-	Body    string
+	Name           string `yaml:"name"`
+	Acronym        string `yaml:"acronym"`
+	FullPath       string
+	OutputFilename string
+	ModifiedAt     time.Time
+	Body           string
 }
 
 type Procedure struct {
-	Name string
+	Name       string `yaml:"name"`
+	Code       string `yaml:"code"`
+	Cron       string `yaml:"cron"`
+	FullPath   string
+	ModifiedAt time.Time
+	Body       string
 }
 
 type Audit struct {

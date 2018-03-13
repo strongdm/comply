@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/skratchdot/open-golang/open"
@@ -43,41 +44,29 @@ func broadcast() {
 }
 
 var lastModifiedMu sync.Mutex
-var lastModified []os.FileInfo
+var lastModified = make(map[string]time.Time)
 
-func recordModified(fi os.FileInfo) {
+func recordModified(path string, t time.Time) {
 	lastModifiedMu.Lock()
 	defer lastModifiedMu.Unlock()
 
-	replace := false
-	replaceIdx := -1
-	for i, f := range lastModified {
-		if os.SameFile(f, fi) && f.ModTime().Before(fi.ModTime()) {
-			replaceIdx = i
-			replace = true
-		}
-	}
-	if replace {
-		lastModified[replaceIdx] = fi
-	} else {
-		lastModified = append(lastModified, fi)
+	previous, ok := lastModified[path]
+	if !ok || t.After(previous) {
+		lastModified[path] = t
 	}
 }
 
-func isNewer(fi os.FileInfo) bool {
+func isNewer(path string, t time.Time) bool {
 	lastModifiedMu.Lock()
 	defer lastModifiedMu.Unlock()
 
-	for _, f := range lastModified {
-		if os.SameFile(f, fi) {
-			if f.ModTime().Before(fi.ModTime()) {
-				return true
-			} else {
-				return false
-			}
-		}
+	previous, ok := lastModified[path]
+	if !ok {
+		return true
 	}
-	return true
+
+	// is tested after previous? Then isNewer is true.
+	return t.After(previous)
 }
 
 func Build(output string, live bool) error {
@@ -92,9 +81,9 @@ func Build(output string, live bool) error {
 
 	var wg sync.WaitGroup
 
-	// // PDF
-	// wg.Add(1)
-	// go pdf(output, live, &wg)
+	// PDF
+	wg.Add(1)
+	go pdf(output, live, &wg)
 
 	// HTML
 	wg.Add(1)

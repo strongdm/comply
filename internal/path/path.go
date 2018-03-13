@@ -1,7 +1,6 @@
 package path
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -13,25 +12,31 @@ type File struct {
 	Info     os.FileInfo
 }
 
-// Policies lists all files in the policies directory
+// Policies lists all policy files
 func Policies() []File {
+	return filesForDir("policies")
+}
+
+// Procedures lists all procedure files
+func Procedures() []File {
+	return filesForDir("procedures")
+}
+
+func filesForDir(name string) []File {
 	var filtered []File
-	files, err := ioutil.ReadDir(filepath.Join(".", "policies"))
+	files, err := ioutil.ReadDir(filepath.Join(".", name))
 	if err != nil {
 		panic(err)
 	}
 	for _, f := range files {
-		fmt.Println("CONSIDERING ", f)
-		if !strings.HasSuffix(f.Name(), ".md") || strings.HasPrefix("README", strings.ToUpper(f.Name())) {
+		if !strings.HasSuffix(f.Name(), ".md") || strings.HasPrefix(strings.ToUpper(f.Name()), "README") {
 			continue
 		}
-		abs, err := filepath.Abs(filepath.Join(".", "policies", f.Name()))
+		abs, err := filepath.Abs(filepath.Join(".", name, f.Name()))
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("appending")
 		filtered = append(filtered, File{abs, f})
 	}
-	fmt.Println("returning from policies")
 	return filtered
 }

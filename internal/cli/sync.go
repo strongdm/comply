@@ -1,9 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
-	"github.com/davecgh/go-spew/spew"
 	"github.com/strongdm/comply/internal/model"
 	"github.com/urfave/cli"
 )
@@ -24,12 +21,5 @@ func syncAction(c *cli.Context) error {
 	for _, t := range tickets {
 		model.DB().Write("tickets", t.ID, t)
 	}
-
-	policies := model.ReadPolicies()
-	fmt.Println("LEN ", len(policies))
-	for _, p := range policies {
-		spew.Dump(p)
-	}
-
 	return nil
 }
