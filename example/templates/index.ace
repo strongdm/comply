@@ -46,29 +46,38 @@ html lang=en
                 a onclick="javascript:show('procedures')" Procedures
               li.top-nav.evidence
                 a onclick="javascript:show('evidence')" Evidence Vault
-    #overview.section.top-nav.container
-      .content
-        blockquote
-          h3 This site consolidates all documents and evidence related to the {{.Title}}
+    #overview.section.top-nav.container.content
+      blockquote
+        h3 This site consolidates all documents and evidence related to the {{.Title}}
       hr
-      p.subtitle.is-3.has-text-centered 2018 Audit Status
-        nav.level
-          .level-item.has-text-centered
-            div
-              p.heading Evidence Requests
-              p.title
-                a {{.Total}}
-          .level-item.has-text-centered
-            div
-              p.heading Open Requests
-              p.title
-                a {{.Open}}
-          .level-item.has-text-centered
-            div
-              p.heading Oldest Request
-              p.title
-                a {{.OldestDays}}
-        progress.progress.is-large max=142 value=121
+      .columns.is-vcentered
+        .column.is-one-third
+          div
+            p.subtitle.is-3.has-text-centered Process Tracking
+        .column.has-text-centered
+          div
+            p.heading Active Tickets
+            p.title
+              a {{.Open}}
+        .column.has-text-centered
+          div
+            p.heading Oldest Ticket
+            p.title
+              a {{.OldestDays}} days
+      .columns.is-vcentered
+        .column.is-one-third
+          div
+            p.subtitle.is-3.has-text-centered Audit Tracking
+        .column.has-text-centered
+          div
+            p.heading Open Requests
+            p.title
+              a {{.Open}}
+        .column.has-text-centered
+          div
+            p.heading Total Requests
+            p.title
+              a {{.Total}}
     #policies.section.top-nav.container
       h2.subtitle.is-2 Policies
       table.table
