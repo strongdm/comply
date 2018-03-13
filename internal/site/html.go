@@ -5,12 +5,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync"
-	"time"
 
-	"github.com/strongdm/comply/internal/model"
 	"github.com/yosssi/ace"
 )
 
@@ -31,42 +28,13 @@ func html(output string, live bool, wg *sync.WaitGroup) {
 				panic(err)
 			}
 
-			values := make(map[string]interface{})
-
-			values["Title"] = "Acme Compliance Program"
-			values["Procedures"] = []string{
-				"Jump",
-				"Sit",
-				"Squat",
-			}
-
-			rt, err := model.DB().ReadAll("tickets")
-			if err == nil {
-				ts := model.Tickets(rt)
-				var total, open, oldestDays int
-				for _, t := range ts {
-					total++
-					if t.State == model.Open {
-						if t.CreatedAt != nil {
-							oldestDays = int(time.Since(*t.CreatedAt).Hours() / float64(24))
-						}
-						open++
-					}
-
-				}
-
-				values["OldestDays"] = strconv.Itoa(oldestDays)
-				values["Total"] = strconv.Itoa(total)
-				values["Open"] = strconv.Itoa(open)
-			}
-
 			tpl, err := ace.Load("", filepath.Join("templates", basename), aceOpts)
 			if err != nil {
 				w.Write([]byte("<htmL><body>template error</body></html>"))
 				fmt.Println(err)
 			}
 
-			err = tpl.Execute(w, values)
+			err = tpl.Execute(w, loadValues())
 			if err != nil {
 				w.Write([]byte("<htmL><body>template error</body></html>"))
 				fmt.Println(err)

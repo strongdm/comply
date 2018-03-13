@@ -91,8 +91,10 @@ func Build(output string, live bool) error {
 	}
 
 	var wg sync.WaitGroup
-	wg.Add(1)
-	go pdf(output, live, &wg)
+
+	// // PDF
+	// wg.Add(1)
+	// go pdf(output, live, &wg)
 
 	// HTML
 	wg.Add(1)

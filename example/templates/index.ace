@@ -83,12 +83,14 @@ html lang=en
       table.table
         thead
           tr
-            th Procedure
-            th Definition
+            th Policy Name
+            th Acronym
+            th PDF
         tbody
-          {{range .Procedures }}
+          {{range .Policies }}
           tr
-            td {{.}}
+            td {{.Name}}
+            td {{.Acronym}}
             td link
           {{end}}
     #procedures.section.top-nav.container

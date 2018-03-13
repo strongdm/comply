@@ -1,13 +1,5 @@
-% Acme Policy Training Policy
-% Justin McCarthy, Chief Technology Officer
-% October 2017
-
----
-header-includes: yes
-head-content: "Acme Policy Training Policy"
-foot-content: "Acme confidential 2017"
-include-before: |
-    A policy governing how policies are distributed and trained among Acme employees and contractors.
+name: "Policy Training Policy"
+acronym: "PTP"
 ---
 
 |Version|Date|Comment|

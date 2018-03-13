@@ -27,13 +27,12 @@ type Ticket struct {
 }
 
 type Policy struct {
-	ID      string
-	Name    string
-	Acronym string
+	Name    string `yaml:"name"`
+	Acronym string `yaml:"acronym"`
+	Body    string
 }
 
 type Procedure struct {
-	ID   string
 	Name string
 }
 

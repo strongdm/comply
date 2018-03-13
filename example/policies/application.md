@@ -1,26 +1,6 @@
-% Acme Application Security Policy
-% Justin McCarthy, Chief Technology Officer
-% October 2017
-
+name: "Acme Application Security Policy"
+acronym: "ASP"
 ---
-header-includes: yes
-head-content: "Acme Application Security Policy"
-foot-content: "Acme confidential 2017"
-include-before: |
-    A policy governing the use of applications deemed crticial to Acme Information Security.
----
-
-|Version|Date|Comment|
-|-----+-------+------|
-| 1     |   24 October 2017 | Initial Version |
-Table: Document history
-
-|Compliance Regime|Responsive To|
-|-----+-------------|
-| SOC 2 |  CCX.X, CCX.Y |
-Table: Compliance mapping
-
-\newpage
 
 # Overview
 

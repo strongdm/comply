@@ -1,13 +1,5 @@
-% Acme Information Security Policy
-% Justin McCarthy, Chief Technology Officer
-% October 2017
-
----
-header-includes: yes
-head-content: "Acme Information Security Policy"
-foot-content: "Acme confidential 2017"
-include-before: |
-    A composite policy referencing a collection of other Acme policies.
+name: "Acme Information Security Policy"
+acronym: "ISP"
 ---
 
 |Version|Date|Comment|
