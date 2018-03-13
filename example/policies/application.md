@@ -4,8 +4,6 @@ acronym: "ASP"
 
 # Overview
 
-The audience of this document is anyone working at Acme.
-
 The Application Security Policy governs the use of applications deemed critical to Acme Information Security.
 
 # Critical Applications

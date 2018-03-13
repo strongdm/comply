@@ -47,7 +47,8 @@ html lang=en
               li.top-nav.evidence
                 a onclick="javascript:show('evidence')" Evidence Vault
     #overview.section.top-nav.container.content
-      h1.has-text-centered The {{.Title}} is the best program
+      blockquote
+        h3 This site consolidates all documents and evidence related to the {{.Title}}
       hr
       .columns.is-vcentered
         .column.is-one-third
