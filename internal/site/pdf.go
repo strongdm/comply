@@ -38,7 +38,6 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 
 	for {
 		var pwg sync.WaitGroup
-
 		for _, policy := range model.ReadPolicies() {
 			// only files that have been touched
 			if !isNewer(policy.FullPath, policy.ModifiedAt) {
@@ -47,15 +46,16 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 			recordModified(policy.FullPath, policy.ModifiedAt)
 
 			pwg.Add(1)
-			go func() {
+			go func(p model.Policy) {
+				outputFilename := p.OutputFilename
 				// save preprocessed markdown
-				preprocessPandoc(policy, filepath.Join(".", "output", policy.OutputFilename+".md"))
+				preprocessPandoc(p, filepath.Join(".", "output", outputFilename+".md"))
 
 				resp, err := cli.ContainerCreate(ctx, &container.Config{
 					Image: "jagregory/pandoc",
 					Cmd: []string{"--smart", "--toc", "-N", "--template=/source/templates/default.latex", "-o",
-						fmt.Sprintf("/source/output/%s", policy.OutputFilename),
-						fmt.Sprintf("/source/output/%s.md", policy.OutputFilename),
+						fmt.Sprintf("/source/output/%s", outputFilename),
+						fmt.Sprintf("/source/output/%s.md", outputFilename),
 					},
 				}, hc, nil, "")
 				if err != nil {
@@ -74,9 +74,9 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 				}
 
 				// remove preprocessed markdown
-				// os.Remove(filepath.Join(".", "output", policy.OutputFilename+".md"))
+				os.Remove(filepath.Join(".", "output", outputFilename+".md"))
 				pwg.Done()
-			}()
+			}(policy)
 		}
 
 		pwg.Wait()

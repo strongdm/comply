@@ -58,7 +58,7 @@ html lang=en
           div
             p.heading Active Tickets
             p.title
-              a {{.Open}}
+              a {{.OpenProcess}}
         .column.has-text-centered
           div
             p.heading Oldest Ticket
@@ -66,21 +66,24 @@ html lang=en
               a {{.OldestDays}} days
       .columns.is-vcentered
         .column.is-one-third
-          div
-            p.subtitle.is-3.has-text-centered Audit Tracking
+          div.has-text-centered
+            p.subtitle.is-3 Audit Tracking
         .column.has-text-centered
           div
             p.heading Open Requests
             p.title
-              a {{.Open}}
+              a {{.OpenAudit}}
         .column.has-text-centered
           div
             p.heading Total Requests
             p.title
-              a {{.Total}}
+              a {{.TotalAudit}}
+      .columns.is-vcentered
+        .column.is-one-third
+        .column.is-two-thirds.has-text-centered
+          progress.progress.is-primary value={{.ClosedAudit}} max={{.TotalAudit}}
     #policies.section.top-nav.container
-      h2.subtitle.is-2 Policies
-      table.table
+      table.table.is-size-3
         thead
           tr
             th Policy Name
@@ -96,11 +99,10 @@ html lang=en
                 {{.OutputFilename}}
           {{end}}
     #procedures.section.top-nav.container
-      h2.subtitle.is-2 Procedures
-      table.table
+      table.table.is-size-3
         thead
           tr
-            th Procedure
+            th. Procedure
             th Code
             th Schedule
         tbody

@@ -70,7 +70,12 @@ func isNewer(path string, t time.Time) bool {
 }
 
 func Build(output string, live bool) error {
-	err := os.MkdirAll(output, os.FileMode(0755))
+	err := os.RemoveAll(output)
+	if err != nil {
+		panic(err)
+	}
+
+	err = os.MkdirAll(output, os.FileMode(0755))
 	if err != nil {
 		panic(err)
 	}

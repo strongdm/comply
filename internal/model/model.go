@@ -17,13 +17,31 @@ const (
 )
 
 type Ticket struct {
-	ID        string
-	Name      string
-	State     TicketState
-	Body      string
-	ClosedAt  *time.Time
-	CreatedAt *time.Time
-	UpdatedAt *time.Time
+	ID         string
+	Name       string
+	State      TicketState
+	Body       string
+	Attributes map[string]interface{}
+	ClosedAt   *time.Time
+	CreatedAt  *time.Time
+	UpdatedAt  *time.Time
+}
+
+func (t *Ticket) SetBool(name string) {
+	t.Attributes[name] = true
+}
+func (t *Ticket) Bool(name string) bool {
+	bi, ok := t.Attributes[name]
+	if !ok {
+		return false
+	}
+
+	b, ok := bi.(bool)
+	if !ok {
+		return false
+	}
+
+	return b
 }
 
 type Policy struct {

@@ -132,12 +132,18 @@ func toTickets(issues []github.Issue) []*model.Ticket {
 }
 
 func toTicket(i github.Issue) *model.Ticket {
-	t := &model.Ticket{}
+	t := &model.Ticket{Attributes: make(map[string]interface{})}
 	t.ID = strconv.Itoa(*i.Number)
 	t.Name = ss(i.Title)
 	t.Body = ss(i.Body)
 	t.CreatedAt = i.CreatedAt
 	t.State = toState(ss(i.State))
+
+	for _, l := range i.Labels {
+		if l.Name != nil {
+			t.SetBool(*l.Name)
+		}
+	}
 	return t
 }
 
