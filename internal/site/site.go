@@ -1,24 +1,12 @@
 package site
 
 import (
-	"context"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
-	"path/filepath"
-	"strconv"
-	"strings"
 	"sync"
-	"time"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
-	"github.com/gohugoio/hugo/watcher"
 	"github.com/gorilla/websocket"
 	"github.com/skratchdot/open-golang/open"
-	"github.com/strongdm/comply/internal/model"
 	"github.com/yosssi/ace"
 )
 
@@ -99,207 +87,16 @@ func Build(output string, live bool) error {
 	}
 
 	if live {
-		b, err := watcher.New(300 * time.Millisecond)
-		if err != nil {
-			panic(err)
-		}
-		b.Add("./templates/")
-		b.Add("./policies/")
-		b.Add("./procedures/")
-
-		b.Add("./.comply/")
-		b.Add("./.comply/cache")
-		b.Add("./.comply/cache/tickets")
-
-		go func() {
-			for {
-				select {
-				case e := <-b.Errors:
-					panic(e)
-				case <-b.Events:
-					broadcast()
-				}
-			}
-		}()
-
-		serveWs := func(w http.ResponseWriter, r *http.Request) {
-			ws, err := upgrader.Upgrade(w, r, nil)
-			if err != nil {
-				return
-			}
-			<-subscribe()
-			time.Sleep(500 * time.Millisecond)
-			ws.Close()
-		}
-
-		http.HandleFunc("/ws", serveWs)
-		go http.ListenAndServe("127.0.0.1:5122", nil)
+		watch()
 	}
 
 	var wg sync.WaitGroup
-
-	// PDF
 	wg.Add(1)
-	go func() {
-		for {
-			files, err := ioutil.ReadDir("./policies")
-			if err != nil {
-				panic(err)
-			}
-
-			for _, fileInfo := range files {
-				// only non-README markdown files
-				if !strings.HasSuffix(fileInfo.Name(), ".md") || strings.HasPrefix("README", strings.ToUpper(fileInfo.Name())) {
-					continue
-				}
-
-				// only files that have been touched
-				if !isNewer(fileInfo) {
-					continue
-				}
-				recordModified(fileInfo)
-
-				basename := strings.Replace(fileInfo.Name(), ".md", "", -1)
-
-				ctx := context.Background()
-				cli, err := client.NewEnvClient()
-				if err != nil {
-					panic(err)
-				}
-
-				_, err = cli.ImagePull(ctx, "jagregory/pandoc", types.ImagePullOptions{})
-				if err != nil {
-					panic(err)
-				}
-
-				pwd, err := os.Getwd()
-				if err != nil {
-					panic(err)
-				}
-
-				hc := &container.HostConfig{
-					Binds: []string{pwd + ":/source"},
-				}
-
-				resp, err := cli.ContainerCreate(ctx, &container.Config{
-					Image: "jagregory/pandoc",
-					Cmd: []string{"--smart", "--toc", "-N", "--template=/source/templates/default.latex", "-o",
-						fmt.Sprintf("/source/output/%s.pdf", basename),
-						fmt.Sprintf("/source/policies/%s.md", basename),
-					},
-				}, hc, nil, "")
-				if err != nil {
-					panic(err)
-				}
-
-				if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-					panic(err)
-				}
-
-				cli.ContainerWait(ctx, resp.ID)
-
-				_, err = cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
-				if err != nil {
-					panic(err)
-				}
-
-				// io.Copy(os.Stdout, out)
-			}
-
-			if !live {
-				wg.Done()
-				return
-			}
-			<-subscribe()
-		}
-	}()
+	go pdf(output, live, &wg)
 
 	// HTML
 	wg.Add(1)
-	go func() {
-		for {
-			files, err := ioutil.ReadDir("./templates")
-			if err != nil {
-				panic(err)
-			}
-			for _, fileInfo := range files {
-				if !strings.HasSuffix(fileInfo.Name(), ".ace") {
-					continue
-				}
-
-				// // only files that have been touched
-				// if !isNewer(fileInfo) {
-				// 	continue
-				// }
-				// recordModified(fileInfo)
-
-				basename := strings.Replace(fileInfo.Name(), ".ace", "", -1)
-				w, err := os.Create(filepath.Join(output, fmt.Sprintf("%s.html", basename)))
-				if err != nil {
-					panic(err)
-				}
-
-				values := make(map[string]interface{})
-
-				values["Title"] = "Acme Compliance Program"
-				values["Procedures"] = []string{
-					"Jump",
-					"Sit",
-					"Squat",
-				}
-
-				rt, err := model.DB().ReadAll("tickets")
-				if err == nil {
-					ts := model.Tickets(rt)
-					var total, open, oldestDays int
-					for _, t := range ts {
-						total++
-						if t.State == model.Open {
-							if t.CreatedAt != nil {
-								oldestDays = int(time.Since(*t.CreatedAt).Hours() / float64(24))
-							}
-							open++
-						}
-
-					}
-
-					values["OldestDays"] = strconv.Itoa(oldestDays)
-					values["Total"] = strconv.Itoa(total)
-					values["Open"] = strconv.Itoa(open)
-				}
-
-				tpl, err := ace.Load("", filepath.Join("templates", basename), aceOpts)
-				if err != nil {
-					w.Write([]byte("<htmL><body>template error</body></html>"))
-					fmt.Println(err)
-				}
-
-				err = tpl.Execute(w, values)
-				if err != nil {
-					w.Write([]byte("<htmL><body>template error</body></html>"))
-					fmt.Println(err)
-				}
-
-				if live {
-					w.Write([]byte(`<script>
-			(function(){
-				var ws = new WebSocket("ws://localhost:5122/ws")
-				ws.onclose = function(e) {
-					// reload!
-					window.location=window.location
-				}
-			})()
-			</script>`))
-				}
-				w.Close()
-			}
-			if !live {
-				wg.Done()
-				return
-			}
-			<-subscribe()
-		}
-	}()
+	go html(output, live, &wg)
 
 	if live {
 		open.Run("output/index.html")
@@ -308,10 +105,3 @@ func Build(output string, live bool) error {
 	wg.Wait()
 	return nil
 }
-
-// var rootPathMu sync.Mutex
-// var rootPath os.FileInfo
-
-// func findRoot() {
-
-// }
