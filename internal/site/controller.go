@@ -23,8 +23,38 @@ func loadValues() map[string]interface{} {
 	data, err := model.ReadData()
 	if err == nil {
 		var total, open, oldestDays, openProcess, openAudit, totalAudit, satisfiedControls, totalControls int
+
+		// TODO: where does this go?
+		satisfied := make(map[string]bool)
+		for _, n := range data.Narratives {
+			for _, controlKeys := range n.Satisfies {
+				for _, key := range controlKeys {
+					satisfied[key] = true
+				}
+			}
+		}
+		for _, n := range data.Policies {
+			for _, controlKeys := range n.Satisfies {
+				for _, key := range controlKeys {
+					satisfied[key] = true
+				}
+			}
+		}
+		for _, n := range data.Procedures {
+			for _, controlKeys := range n.Satisfies {
+				for _, key := range controlKeys {
+					satisfied[key] = true
+				}
+			}
+		}
+
 		for _, std := range data.Standards {
 			totalControls += len(std.Controls)
+			for controlKey := range std.Controls {
+				if _, ok := satisfied[controlKey]; ok {
+					satisfiedControls++
+				}
+			}
 		}
 
 		for _, t := range data.Tickets {
