@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"math/rand"
 	"os"
 	"sort"
 
@@ -32,12 +31,20 @@ func todoAction(c *cli.Context) error {
 		satisfied  string
 	}
 
+	satisfied := make(map[string]bool)
+	for _, n := range d.Narratives {
+		for _, controlKeys := range n.Satisfies {
+			for _, key := range controlKeys {
+				satisfied[key] = true
+			}
+		}
+	}
+
 	var rows []row
 	for _, std := range d.Standards {
 		for id, _ := range std.Controls {
-
 			sat := "NO"
-			if satisfied(d, id) {
+			if _, ok := satisfied[id]; ok {
 				sat = color.GreenString("YES")
 			}
 
@@ -60,8 +67,4 @@ func todoAction(c *cli.Context) error {
 	w.Render()
 
 	return nil
-}
-
-func satisfied(d *model.Data, controlKey string) bool {
-	return rand.Intn(2) == 0
 }
