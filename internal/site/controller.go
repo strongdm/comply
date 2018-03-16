@@ -17,9 +17,16 @@ func loadValues() map[string]interface{} {
 		"Squat",
 	}
 
+	stats := make(map[string]string)
+	values["Stats"] = stats
+
 	data, err := model.ReadData()
 	if err == nil {
-		var total, open, oldestDays, openProcess, openAudit, totalAudit int
+		var total, open, oldestDays, openProcess, openAudit, totalAudit, satisfiedControls, totalControls int
+		for _, std := range data.Standards {
+			totalControls += len(std.Controls)
+		}
+
 		for _, t := range data.Tickets {
 			total++
 
@@ -41,17 +48,19 @@ func loadValues() map[string]interface{} {
 			}
 		}
 
-		values["OldestDays"] = strconv.Itoa(oldestDays)
-		values["Total"] = strconv.Itoa(total)
-		values["Open"] = strconv.Itoa(open)
-		values["TotalAudit"] = strconv.Itoa(totalAudit)
-		values["OpenAudit"] = strconv.Itoa(openAudit)
-		values["OpenProcess"] = strconv.Itoa(openProcess)
-		values["ClosedAudit"] = strconv.Itoa(totalAudit - openAudit)
+		stats["SatisfiedControls"] = strconv.Itoa(satisfiedControls)
+		stats["TotalControls"] = strconv.Itoa(totalControls)
+		stats["OldestDays"] = strconv.Itoa(oldestDays)
+		stats["Total"] = strconv.Itoa(total)
+		stats["Open"] = strconv.Itoa(open)
+		stats["TotalAudit"] = strconv.Itoa(totalAudit)
+		stats["OpenAudit"] = strconv.Itoa(openAudit)
+		stats["OpenProcess"] = strconv.Itoa(openProcess)
+		stats["ClosedAudit"] = strconv.Itoa(totalAudit - openAudit)
 	}
 
-	values["Policies"] = model.ReadPolicies()
-	values["Procedures"] = model.ReadProcedures()
-
+	values["Narratives"] = data.Narratives
+	values["Policies"] = data.Policies
+	values["Procedures"] = data.Procedures
 	return values
 }

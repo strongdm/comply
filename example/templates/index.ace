@@ -40,6 +40,8 @@ html lang=en
             ul
               li.top-nav.overview
                 a onclick="javascript:show('overview')" Overview
+              li.top-nav.narratives
+                a onclick="javascript:show('narratives')" Narratives
               li.top-nav.policies
                 a onclick="javascript:show('policies')" Policies
               li.top-nav.procedures
@@ -53,17 +55,31 @@ html lang=en
       .columns.is-vcentered
         .column.is-one-third
           div
+            p.subtitle.is-3.has-text-centered Control Tracking
+        .column.has-text-centered
+          div
+            p.heading Satisfied Controls
+            p.title
+              a {{.Stats.SatisfiedControls}}
+        .column.has-text-centered
+          div
+            p.heading Total Controls
+            p.title
+              a {{.Stats.TotalControls}}
+      .columns.is-vcentered
+        .column.is-one-third
+          div
             p.subtitle.is-3.has-text-centered Process Tracking
         .column.has-text-centered
           div
             p.heading Active Tickets
             p.title
-              a {{.OpenProcess}}
+              a {{.Stats.OpenProcess}}
         .column.has-text-centered
           div
             p.heading Oldest Ticket
             p.title
-              a {{.OldestDays}} days
+              a {{.Stats.OldestDays}} days
       .columns.is-vcentered
         .column.is-one-third
           div.has-text-centered
@@ -72,16 +88,30 @@ html lang=en
           div
             p.heading Open Requests
             p.title
-              a {{.OpenAudit}}
+              a {{.Stats.OpenAudit}}
         .column.has-text-centered
           div
             p.heading Total Requests
             p.title
-              a {{.TotalAudit}}
+              a {{.Stats.TotalAudit}}
       .columns.is-vcentered
         .column.is-one-third
         .column.is-two-thirds.has-text-centered
-          progress.progress.is-primary value={{.ClosedAudit}} max={{.TotalAudit}}
+          progress.progress.is-primary value={{.Stats.ClosedAudit}} max={{.Stats.TotalAudit}}
+    #narratives.section.top-nav.container
+      table.table.is-size-3
+        thead
+          tr
+            th Narrative
+            th PDF
+        tbody
+          {{range .Narratives }}
+          tr
+            td {{.Name}}
+            td
+              a href={{.OutputFilename}} target=_blank
+                {{.OutputFilename}}
+          {{end}}
     #policies.section.top-nav.container
       table.table.is-size-3
         thead
@@ -103,7 +133,7 @@ html lang=en
         thead
           tr
             th. Procedure
-            th Code
+            th Shortcode
             th Schedule
         tbody
           {{range .Procedures }}
