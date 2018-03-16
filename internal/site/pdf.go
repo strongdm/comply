@@ -46,7 +46,7 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 			recordModified(policy.FullPath, policy.ModifiedAt)
 
 			pwg.Add(1)
-			go func(p model.Policy) {
+			go func(p *model.Policy) {
 				outputFilename := p.OutputFilename
 				// save preprocessed markdown
 				preprocessPandoc(p, filepath.Join(".", "output", outputFilename+".md"))
@@ -89,7 +89,7 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 	}
 }
 
-func preprocessPandoc(pol model.Policy, fullPath string) {
+func preprocessPandoc(pol *model.Policy, fullPath string) {
 	cfg := config.Config()
 	doc := fmt.Sprintf("%% %s\n%% %s\n%% %s\n\n%s",
 		pol.Name,

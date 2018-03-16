@@ -17,12 +17,10 @@ func loadValues() map[string]interface{} {
 		"Squat",
 	}
 
-	rt, err := model.DB().ReadAll("tickets")
+	data, err := model.ReadData()
 	if err == nil {
-		ts := model.Tickets(rt)
 		var total, open, oldestDays, openProcess, openAudit, totalAudit int
-
-		for _, t := range ts {
+		for _, t := range data.Tickets {
 			total++
 
 			if t.Bool("audit") {

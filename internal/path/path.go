@@ -12,6 +12,16 @@ type File struct {
 	Info     os.FileInfo
 }
 
+// Standards lists all standard files
+func Standards() []File {
+	return filesForDir("standards")
+}
+
+// Narratives lists all policy files
+func Narratives() []File {
+	return filesForDir("narratives")
+}
+
 // Policies lists all policy files
 func Policies() []File {
 	return filesForDir("policies")

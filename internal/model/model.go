@@ -1,9 +1,11 @@
 package model
 
 type Data struct {
-	Tickets    []*Ticket
+	Standards  []*Standard
+	Narratives []*Narrative
 	Policies   []*Policy
 	Procedures []*Procedure
+	Tickets    []*Ticket
 	Audits     []*Audit
 }
 

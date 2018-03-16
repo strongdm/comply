@@ -5,17 +5,66 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/path"
 	"gopkg.in/yaml.v2"
 )
 
-// ReadProcedures loads procedure records from the filesystem
-func ReadProcedures() []Procedure {
-	var procedures []Procedure
+// ReadData loads all records
+func ReadData() (*Data, error) {
+	rt, err := DB().ReadAll("tickets")
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to load tickets collection")
+	}
+
+	d := &Data{}
+	d.Tickets = Tickets(rt)
+	d.Narratives = ReadNarratives()
+	d.Policies = ReadPolicies()
+	d.Procedures = ReadProcedures()
+	d.Standards = ReadStandards()
+
+	return d, nil
+}
+
+// ReadStandards loads standard definitions from the filesystem
+func ReadStandards() []*Standard {
+	var standards []*Standard
+
+	for _, f := range path.Narratives() {
+		s := &Standard{}
+		mdmd := loadMDMD(f.FullPath)
+		yaml.Unmarshal([]byte(mdmd.yaml), &s)
+		standards = append(standards, s)
+	}
+
+	return standards
+}
+
+// ReadNarratives loads narrative descriptions from the filesystem
+func ReadNarratives() []*Narrative {
+	var narratives []*Narrative
+
+	for _, f := range path.Narratives() {
+		n := &Narrative{}
+		mdmd := loadMDMD(f.FullPath)
+		yaml.Unmarshal([]byte(mdmd.yaml), &n)
+		n.Body = mdmd.body
+		n.FullPath = f.FullPath
+		n.ModifiedAt = f.Info.ModTime()
+		narratives = append(narratives, n)
+	}
+
+	return narratives
+}
+
+// ReadProcedures loads procedure descriptions from the filesystem
+func ReadProcedures() []*Procedure {
+	var procedures []*Procedure
 
 	for _, f := range path.Procedures() {
-		p := Procedure{}
+		p := &Procedure{}
 		mdmd := loadMDMD(f.FullPath)
 		yaml.Unmarshal([]byte(mdmd.yaml), &p)
 		p.Body = mdmd.body
@@ -27,12 +76,12 @@ func ReadProcedures() []Procedure {
 	return procedures
 }
 
-// ReadPolicies loads policy records from the filesystem
-func ReadPolicies() []Policy {
-	var policies []Policy
+// ReadPolicies loads policy documents from the filesystem
+func ReadPolicies() []*Policy {
+	var policies []*Policy
 
 	for _, f := range path.Policies() {
-		p := Policy{}
+		p := &Policy{}
 		mdmd := loadMDMD(f.FullPath)
 		yaml.Unmarshal([]byte(mdmd.yaml), &p)
 		p.Body = mdmd.body
