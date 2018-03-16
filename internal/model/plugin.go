@@ -54,19 +54,6 @@ func Register(ts TicketSystem, plugin TicketPlugin) {
 		panic("Duplicate ticketing system registration: " + ts)
 	}
 
-	// TODO: move parsing and feedback to YAML package
-	// tickets, ok := cfg.Tickets
-	// if !ok {
-	// 	spew.Dump(yml)
-	// 	panic("Missing ticket configuration; add `tickets` block to project YAML")
-	// }
-
-	// ticketsMap, ok := tickets.(map[interface{}]interface{})
-	// if !ok {
-	// 	spew.Dump(tickets)
-	// 	panic("Malformed ticket configuration; modify `tickets` block in project YAML")
-	// }
-
 	ticketsMap := config.Config().Tickets
 
 	cfg, ok := ticketsMap[string(ts)]

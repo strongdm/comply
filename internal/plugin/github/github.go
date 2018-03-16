@@ -82,7 +82,7 @@ func getCfg(cfg map[string]interface{}, k string) (string, error) {
 }
 
 func (g *githubPlugin) FindOpen() ([]*model.Ticket, error) {
-	issues, _, err := g.api().Issues.ListByRepo(g.username, g.reponame, &github.IssueListByRepoOptions{
+	issues, _, err := g.api().Issues.ListByRepo(context.Background(), g.username, g.reponame, &github.IssueListByRepoOptions{
 		State: "open",
 	})
 
@@ -98,7 +98,7 @@ func (g *githubPlugin) FindByTag(name, value string) ([]*model.Ticket, error) {
 }
 
 func (g *githubPlugin) FindByTagName(name string) ([]*model.Ticket, error) {
-	issues, _, err := g.api().Issues.ListByRepo(g.username, g.reponame, &github.IssueListByRepoOptions{
+	issues, _, err := g.api().Issues.ListByRepo(context.Background(), g.username, g.reponame, &github.IssueListByRepoOptions{
 		State:  "all",
 		Labels: []string{name},
 	})
@@ -123,7 +123,7 @@ func (g *githubPlugin) Create(*model.Ticket) error { panic("not implemented") }
 func (g *githubPlugin) Update(*model.Ticket) error { panic("not implemented") }
 func (g *githubPlugin) Close(ID string) error      { panic("not implemented") }
 
-func toTickets(issues []github.Issue) []*model.Ticket {
+func toTickets(issues []*github.Issue) []*model.Ticket {
 	var tickets []*model.Ticket
 	for _, i := range issues {
 		tickets = append(tickets, toTicket(i))
@@ -131,7 +131,7 @@ func toTickets(issues []github.Issue) []*model.Ticket {
 	return tickets
 }
 
-func toTicket(i github.Issue) *model.Ticket {
+func toTicket(i *github.Issue) *model.Ticket {
 	t := &model.Ticket{Attributes: make(map[string]interface{})}
 	t.ID = strconv.Itoa(*i.Number)
 	t.Name = ss(i.Title)

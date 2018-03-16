@@ -20,12 +20,12 @@ func TestMarshal(t *testing.T) {
 		},
 		Procedures: []*Procedure{
 			&Procedure{
-				ID: "pro1",
+				Code: "pro1",
 			},
 		},
 		Policies: []*Policy{
 			&Policy{
-				ID: "pol1",
+				Name: "pol1",
 			},
 		},
 	}

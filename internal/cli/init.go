@@ -8,7 +8,7 @@ import (
 
 var initCommand = cli.Command{
 	Name:   "init",
-	Usage:  "initialize a new compliance repository",
+	Usage:  "initialize a new compliance repository (interactive)",
 	Action: initAction,
 }
 
