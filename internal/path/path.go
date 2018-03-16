@@ -14,32 +14,32 @@ type File struct {
 
 // Standards lists all standard files
 func Standards() []File {
-	return filesForDir("standards")
+	return filesFor("standards", "yml")
 }
 
 // Narratives lists all policy files
 func Narratives() []File {
-	return filesForDir("narratives")
+	return filesFor("narratives", "md")
 }
 
 // Policies lists all policy files
 func Policies() []File {
-	return filesForDir("policies")
+	return filesFor("policies", "md")
 }
 
 // Procedures lists all procedure files
 func Procedures() []File {
-	return filesForDir("procedures")
+	return filesFor("procedures", "md")
 }
 
-func filesForDir(name string) []File {
+func filesFor(name, extension string) []File {
 	var filtered []File
 	files, err := ioutil.ReadDir(filepath.Join(".", name))
 	if err != nil {
 		panic(err)
 	}
 	for _, f := range files {
-		if !strings.HasSuffix(f.Name(), ".md") || strings.HasPrefix(strings.ToUpper(f.Name()), "README") {
+		if !strings.HasSuffix(f.Name(), "."+extension) || strings.HasPrefix(strings.ToUpper(f.Name()), "README") {
 			continue
 		}
 		abs, err := filepath.Abs(filepath.Join(".", name, f.Name()))

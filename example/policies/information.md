@@ -2,19 +2,6 @@ name: "Acme Information Security Policy"
 acronym: "ISP"
 ---
 
-|Version|Date|Comment|
-|-----+-------+------|
-| 2   | 16 Nov 2017 | Add Data Retention Policy |
-| 1     |   18 Oct 2017 | Initial Version |
-Table: Document history
-
-|Compliance Regime|Responsive To|
-|-----+-------------|
-| SOC 2 |  CCX.X, CCX.Y |
-Table: Compliance mapping
-
-\newpage
-
 # Overview
 
 The Information Security Policy is a composite policy referencing other Acme policies impacting information security.

@@ -32,10 +32,14 @@ func ReadData() (*Data, error) {
 func ReadStandards() []*Standard {
 	var standards []*Standard
 
-	for _, f := range path.Narratives() {
+	for _, f := range path.Standards() {
 		s := &Standard{}
-		mdmd := loadMDMD(f.FullPath)
-		yaml.Unmarshal([]byte(mdmd.yaml), &s)
+		sBytes, err := ioutil.ReadFile(f.FullPath)
+		if err != nil {
+			panic(err)
+		}
+
+		yaml.Unmarshal(sBytes, &s)
 		standards = append(standards, s)
 	}
 

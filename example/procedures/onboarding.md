@@ -1,6 +1,5 @@
 name: "Onboard New User"
 code: "onboard"
-cron: "* * * * *"
 ---
 
 # Onboarding Steps
@@ -11,3 +10,4 @@ cron: "* * * * *"
 
 # Attach Evidence
 
+No evidence beyond activity logs within Slack, Github
