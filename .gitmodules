@@ -1,0 +1,6 @@
+[submodule "themes/comply-blank"]
+	path = themes/comply-blank
+	url = git@github.com:strongdm/comply-blank.git
+[submodule "themes/comply-soc2"]
+	path = themes/comply-soc2
+	url = git@github.com:strongdm/comply-soc2.git
