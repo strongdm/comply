@@ -10,6 +10,7 @@ var syncCommand = cli.Command{
 	ShortName: "s",
 	Usage:     "sync external systems to local data cache",
 	Action:    syncAction,
+	Before:    projectMustExist,
 }
 
 func syncAction(c *cli.Context) error {

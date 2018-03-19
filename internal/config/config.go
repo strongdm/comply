@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -17,9 +16,10 @@ func SetProjectRoot(dir string) {
 }
 
 type Project struct {
-	Name       string                 `yaml:"name"`
-	FilePrefix string                 `yaml:"filePrefix"`
-	Tickets    map[string]interface{} `yaml:"tickets"`
+	Name        string                 `yaml:"name"`
+	FilePrefix  string                 `yaml:"filePrefix"`
+	Tickets     map[string]interface{} `yaml:"tickets"`
+	Initialized bool
 }
 
 // YAML is the parsed contents of ProjectRoot()/config.yml
@@ -54,9 +54,5 @@ func ProjectRoot() string {
 		projectRoot = dir
 	}
 
-	fullPath := filepath.Join(projectRoot, "comply.yml")
-	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-		panic(fmt.Sprintf("%s not found: comply must be run from the root directory of an initialized comply project", fullPath))
-	}
 	return projectRoot
 }

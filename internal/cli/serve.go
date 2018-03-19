@@ -9,6 +9,7 @@ var serveCommand = cli.Command{
 	Name:   "serve",
 	Usage:  "live updating version of the build command",
 	Action: serveAction,
+	Before: beforeAll(projectMustExist, dockerMustExist),
 }
 
 func serveAction(c *cli.Context) error {

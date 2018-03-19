@@ -1,9 +1,17 @@
 package cli
 
 import (
+	"context"
+	"errors"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
+	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/plugin/github"
 	"github.com/urfave/cli"
 )
@@ -37,4 +45,40 @@ func newApp() *cli.App {
 	github.Register()
 
 	return app
+}
+
+func beforeAll(bf ...cli.BeforeFunc) cli.BeforeFunc {
+	return func(c *cli.Context) error {
+		for _, f := range bf {
+			if err := f(c); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+}
+
+func projectMustExist(c *cli.Context) error {
+	_, err := ioutil.ReadFile(filepath.Join(config.ProjectRoot(), "comply.yml"))
+	if err != nil {
+		return errors.New("command must be run from the root of a valid comply project (comply.yml must exist; have you run `comply init`?)")
+	}
+	return nil
+}
+
+func dockerMustExist(c *cli.Context) error {
+	dockerErr := fmt.Errorf("Docker must be available in order to run `%s`", c.Command.Name)
+
+	ctx := context.Background()
+	cli, err := client.NewEnvClient()
+	if err != nil {
+		return dockerErr
+	}
+
+	// TODO: where does this const go?
+	_, err = cli.ImagePull(ctx, "jagregory/pandoc", types.ImagePullOptions{})
+	if err != nil {
+		return dockerErr
+	}
+	return nil
 }

@@ -14,6 +14,7 @@ var todoCommand = cli.Command{
 	Name:   "todo",
 	Usage:  "list declared vs satisfied compliance controls",
 	Action: todoAction,
+	Before: projectMustExist,
 }
 
 func todoAction(c *cli.Context) error {

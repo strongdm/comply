@@ -16,6 +16,7 @@ var buildCommand = cli.Command{
 		},
 	},
 	Action: buildAction,
+	Before: beforeAll(projectMustExist, dockerMustExist),
 }
 
 func buildAction(c *cli.Context) error {
