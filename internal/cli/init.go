@@ -3,10 +3,15 @@ package cli
 import (
 	"errors"
 	"fmt"
-	"strconv"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/manifoldco/promptui"
+	"github.com/strongdm/comply/internal/config"
 	"github.com/urfave/cli"
+	"gopkg.in/yaml.v2"
 )
 
 var initCommand = cli.Command{
@@ -16,39 +21,100 @@ var initCommand = cli.Command{
 }
 
 func initAction(c *cli.Context) error {
-	// create directory structure
+	fi, _ := ioutil.ReadDir(config.ProjectRoot())
+	if len(fi) > 0 {
+		return errors.New("init must be run from an empty directory")
+	}
 
-	validate := func(input string) error {
-		_, err := strconv.ParseFloat(input, 64)
-		if err != nil {
-			return errors.New("Invalid number")
+	atLeast := func(n int) func(string) error {
+		return func(input string) error {
+			if len(input) < n {
+				return errors.New("Too short")
+			}
+			return nil
+		}
+	}
+
+	noSpaces := func(s string) error {
+		if strings.ContainsAny(s, "\n\t ") {
+			return errors.New("Must not contain spaces")
 		}
 		return nil
 	}
 
 	prompt := promptui.Prompt{
-		Label:    "Number",
-		Validate: validate,
+		Label:    "Project Name",
+		Validate: atLeast(1),
 	}
 
-	_, err := prompt.Run()
-
+	name, err := prompt.Run()
 	if err != nil {
 		fmt.Printf("Prompt failed %v\n", err)
-		return nil
+		return err
+	}
+
+	prompt = promptui.Prompt{
+		Label:    "PDF Filename Prefix",
+		Default:  strings.Split(name, " ")[0],
+		Validate: noSpaces,
+	}
+
+	prefix, err := prompt.Run()
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+		return err
 	}
 
 	chooser := promptui.Select{
-		Label: "Compliance Regime",
+		Label: "Project Theme",
 		Items: []string{"SOC2", "Blank"},
 	}
 
-	_, _, err = chooser.Run()
-
+	choice, _, err := chooser.Run()
 	if err != nil {
 		fmt.Printf("Prompt failed %v\n", err)
-		return nil
+		return err
 	}
+
+	theme := "blank"
+	switch choice {
+	case 0:
+		theme = "soc2"
+	case 1:
+		theme = "blank"
+	default:
+		panic("unrecognized selection")
+	}
+
+	chooser = promptui.Select{
+		Label: "Ticket System",
+		Items: []string{"Github", "JIRA"},
+	}
+
+	choice, _, err = chooser.Run()
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+		return err
+	}
+
+	ticketing := "github"
+	switch choice {
+	case 0:
+		ticketing = "github"
+	case 1:
+		ticketing = "jira"
+	default:
+		panic("unrecognized selection")
+	}
+
+	p := config.Project{}
+	p.Name = name
+	p.FilePrefix = prefix
+	p.Tickets = make(map[string]interface{})
+	p.Tickets[ticketing] = "see documentation for format"
+
+	x, _ := yaml.Marshal(&p)
+	ioutil.WriteFile(filepath.Join(config.ProjectRoot(), "comply.yml"), x, os.FileMode(0644))
 
 	return nil
 }

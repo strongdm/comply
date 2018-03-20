@@ -16,10 +16,9 @@ func SetProjectRoot(dir string) {
 }
 
 type Project struct {
-	Name        string                 `yaml:"name"`
-	FilePrefix  string                 `yaml:"filePrefix"`
-	Tickets     map[string]interface{} `yaml:"tickets"`
-	Initialized bool
+	Name       string                 `yaml:"name"`
+	FilePrefix string                 `yaml:"filePrefix"`
+	Tickets    map[string]interface{} `yaml:"tickets"`
 }
 
 // YAML is the parsed contents of ProjectRoot()/config.yml
