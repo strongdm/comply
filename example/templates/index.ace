@@ -2,7 +2,7 @@
 html lang=en
   head
     meta charset=utf-8
-    title Comply
+    title {{.Project.Name}}
     link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css"
     link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulmaswatch/0.6.2/sandstone/bulmaswatch.min.css"
     meta name="viewport" content="width=device-width, initial-scale=1"
@@ -32,7 +32,7 @@ html lang=en
     section.hero.is-primary.is-small
       .hero-body
         .container
-          h1.title {{.Title}}
+          h1.title {{.Project.Name}}
           p.subtitle Policy, Process, and Audit Status
       .hero-foot
         nav.tabs.is-boxed.is-fullwidth
@@ -50,7 +50,7 @@ html lang=en
                 a onclick="javascript:show('evidence')" Evidence Vault
     #overview.section.top-nav.container.content
       blockquote
-        h3 This site consolidates all documents and evidence related to the {{.Title}}
+        h3 This site consolidates all documents and evidence related to the {{.Project.Name}}
       hr
       .columns.is-vcentered
         .column.is-one-third
@@ -60,12 +60,12 @@ html lang=en
           div
             p.heading Satisfied Controls
             p.title
-              a {{.Stats.SatisfiedControls}}
+              a {{.Stats.ControlsSatisfied}}
         .column.has-text-centered
           div
             p.heading Total Controls
             p.title
-              a {{.Stats.TotalControls}}
+              a {{.Stats.ControlsTotal}}
       .columns.is-vcentered
         .column.is-one-third
           div
@@ -74,12 +74,12 @@ html lang=en
           div
             p.heading Active Tickets
             p.title
-              a {{.Stats.OpenProcess}}
+              a {{.Stats.ProcessOpen}}
         .column.has-text-centered
           div
             p.heading Oldest Ticket
             p.title
-              a {{.Stats.OldestDays}} days
+              a {{.Stats.ProcessOldestDays}} days
       .columns.is-vcentered
         .column.is-one-third
           div.has-text-centered
@@ -88,16 +88,16 @@ html lang=en
           div
             p.heading Open Requests
             p.title
-              a {{.Stats.OpenAudit}}
+              a {{.Stats.AuditOpen}}
         .column.has-text-centered
           div
             p.heading Total Requests
             p.title
-              a {{.Stats.TotalAudit}}
+              a {{.Stats.AuditTotal}}
       .columns.is-vcentered
         .column.is-one-third
         .column.is-two-thirds.has-text-centered
-          progress.progress.is-primary value={{.Stats.ClosedAudit}} max={{.Stats.TotalAudit}}
+          progress.progress.is-primary value={{.Stats.AuditClosed}} max={{.Stats.AuditTotal}}
     #narratives.section.top-nav.container
       table.table.is-size-3
         thead
@@ -147,7 +147,7 @@ html lang=en
     footer.footer
       .container
         .content.has-text-centered
-          p {{.Title}} Confidential 2018
+          p {{.Project.OrganizationName}} Confidential 2018
   = javascript
     // commented for development
     show('overview')

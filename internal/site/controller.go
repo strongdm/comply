@@ -1,29 +1,37 @@
 package site
 
 import (
-	"strconv"
+	"fmt"
 	"time"
 
+	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/model"
 )
 
+// Project contains all project-scope fields
+type Project struct {
+	OrganizationName string
+	Name             string
+}
+
+// Stats contains all computed counts
+type Stats struct {
+	ControlsTotal     int
+	ControlsSatisfied int
+
+	ProcessTotal      int
+	ProcessOpen       int
+	ProcessOldestDays int
+
+	AuditOpen   int
+	AuditClosed int
+	AuditTotal  int
+}
+
 func loadValues() map[string]interface{} {
-	values := make(map[string]interface{})
-
-	values["Title"] = "Acme Compliance Program"
-	values["Procedures"] = []string{
-		"Jump",
-		"Sit",
-		"Squat",
-	}
-
-	stats := make(map[string]string)
-	values["Stats"] = stats
-
+	stats := &Stats{}
 	data, err := model.ReadData()
 	if err == nil {
-		var total, open, oldestDays, openProcess, openAudit, totalAudit, satisfiedControls, totalControls int
-
 		// TODO: where does this go?
 		satisfied := make(map[string]bool)
 		for _, n := range data.Narratives {
@@ -49,46 +57,46 @@ func loadValues() map[string]interface{} {
 		}
 
 		for _, std := range data.Standards {
-			totalControls += len(std.Controls)
+			stats.ControlsTotal += len(std.Controls)
 			for controlKey := range std.Controls {
 				if _, ok := satisfied[controlKey]; ok {
-					satisfiedControls++
+					stats.ControlsSatisfied++
 				}
 			}
 		}
 
 		for _, t := range data.Tickets {
-			total++
 
 			if t.Bool("audit") {
-				totalAudit++
+				stats.AuditTotal++
 			}
 
 			if t.State == model.Open {
 				if t.Bool("process") {
-					openProcess++
+					stats.ProcessOpen++
 				}
 				if t.Bool("audit") {
-					openAudit++
+					stats.AuditOpen++
 				}
 				if t.CreatedAt != nil {
-					oldestDays = int(time.Since(*t.CreatedAt).Hours() / float64(24))
+					age := int(time.Since(*t.CreatedAt).Hours() / float64(24))
+					if stats.ProcessOldestDays < age {
+						stats.ProcessOldestDays = age
+					}
 				}
-				open++
 			}
 		}
-
-		stats["SatisfiedControls"] = strconv.Itoa(satisfiedControls)
-		stats["TotalControls"] = strconv.Itoa(totalControls)
-		stats["OldestDays"] = strconv.Itoa(oldestDays)
-		stats["Total"] = strconv.Itoa(total)
-		stats["Open"] = strconv.Itoa(open)
-		stats["TotalAudit"] = strconv.Itoa(totalAudit)
-		stats["OpenAudit"] = strconv.Itoa(openAudit)
-		stats["OpenProcess"] = strconv.Itoa(openProcess)
-		stats["ClosedAudit"] = strconv.Itoa(totalAudit - openAudit)
 	}
 
+	cfg := config.Config()
+	project := Project{
+		OrganizationName: cfg.Name,
+		Name:             fmt.Sprintf("%s Compliance Program", cfg.Name),
+	}
+
+	values := make(map[string]interface{})
+	values["Project"] = project
+	values["Stats"] = stats
 	values["Narratives"] = data.Narratives
 	values["Policies"] = data.Policies
 	values["Procedures"] = data.Procedures

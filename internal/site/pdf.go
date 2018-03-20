@@ -1,12 +1,14 @@
 package site
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
+	"text/template"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -91,12 +93,23 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 
 func preprocessPandoc(pol *model.Policy, fullPath string) {
 	cfg := config.Config()
-	doc := fmt.Sprintf("%% %s\n%% %s\n%% %s\n\n%s",
+
+	var w bytes.Buffer
+	bodyTemplate, err := template.New("body").Parse(pol.Body)
+	if err != nil {
+		w.WriteString(fmt.Sprintf("# Error processing template:\n\n%s\n", err.Error()))
+	} else {
+		bodyTemplate.Execute(&w, loadValues())
+	}
+	body := w.String()
+
+	doc := fmt.Sprintf("%% %s\n%% %s\n%% %s\n\n\\newpage%s",
 		pol.Name,
 		cfg.Name,
 		fmt.Sprintf("%s %d", pol.ModifiedAt.Month().String(), pol.ModifiedAt.Year()),
-		pol.Body)
-	err := ioutil.WriteFile(fullPath, []byte(doc), os.FileMode(0644))
+		body,
+	)
+	err = ioutil.WriteFile(fullPath, []byte(doc), os.FileMode(0644))
 	if err != nil {
 		panic(err)
 	}
