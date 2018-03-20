@@ -1,5 +1,10 @@
 name: "Acme Application Security Policy"
 acronym: "ASP"
+majorRevisions:
+  - date: Nov 17 2017
+    comment: Enhanced Data Sensitivity section
+  - date: Oct 1 2016
+    comment: Initial document
 ---
 
 # Overview

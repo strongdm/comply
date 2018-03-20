@@ -9,7 +9,7 @@ majorRevisions:
   - date: Oct 21 2017
     comment: Excellent changes
   - date: Oct 4 2017
-    comment: Introduced meeats and cheeses
+    comment: Initial document version
 ---
 
 # Overview

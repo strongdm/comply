@@ -7,7 +7,6 @@ majorRevisions:
     comment: Initial document
 ---
 
-
 # Overview
 
 The Information Security Policy is a composite policy referencing other Acme policies impacting information security.
