@@ -10,6 +10,7 @@ import (
 
 	"github.com/manifoldco/promptui"
 	"github.com/strongdm/comply/internal/config"
+	"github.com/strongdm/comply/internal/theme"
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 )
@@ -76,12 +77,12 @@ func initAction(c *cli.Context) error {
 		return err
 	}
 
-	theme := "blank"
+	themeName := "blank"
 	switch choice {
 	case 0:
-		theme = "soc2"
+		themeName = "soc2"
 	case 1:
-		theme = "blank"
+		themeName = "blank"
 	default:
 		panic("unrecognized selection")
 	}
@@ -116,5 +117,6 @@ func initAction(c *cli.Context) error {
 	x, _ := yaml.Marshal(&p)
 	ioutil.WriteFile(filepath.Join(config.ProjectRoot(), "comply.yml"), x, os.FileMode(0644))
 
+	theme.SaveTo(themeName, config.ProjectRoot())
 	return nil
 }
