@@ -1,6 +1,12 @@
-name: "Acme Information Security Policy"
-acronym: "ISP"
+name: Acme Information Security Policy
+acronym: ISP
+majorRevisions:
+  - date: Oct 1 2017
+    comment: Substantial updates
+  - date: Oct 1 2016
+    comment: Initial document
 ---
+
 
 # Overview
 

@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"sync"
 	"text/template"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -103,10 +104,42 @@ func preprocessPandoc(pol *model.Policy, fullPath string) {
 	}
 	body := w.String()
 
-	doc := fmt.Sprintf("%% %s\n%% %s\n%% %s\n\n\\newpage%s",
+	revisionTable := ""
+
+	// ||Date|Comment|
+	// |---+------|
+	// | 4 Jan 2018 | Initial Version |
+	// Table: Document history
+
+	if len(pol.Revisions) > 0 {
+		rows := ""
+		for _, rev := range pol.Revisions {
+			rows += fmt.Sprintf("| %s | %s |\n", rev.Date, rev.Comment)
+		}
+		revisionTable = fmt.Sprintf("|Date|Comment|\n|---+------|\n%s\nTable: Document history", rows)
+	}
+
+	doc := fmt.Sprintf(`%% %s
+%% %s
+%% %s
+
+---
+header-includes: yes
+head-content: "%s"
+foot-content: "%s confidential %d"
+---
+
+%s
+
+\newpage
+%s`,
 		pol.Name,
 		cfg.Name,
 		fmt.Sprintf("%s %d", pol.ModifiedAt.Month().String(), pol.ModifiedAt.Year()),
+		pol.Name,
+		cfg.Name,
+		time.Now().Year(),
+		revisionTable,
 		body,
 	)
 	err = ioutil.WriteFile(fullPath, []byte(doc), os.FileMode(0644))
