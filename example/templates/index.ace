@@ -98,11 +98,16 @@ html lang=en
         .column.is-one-third
         .column.is-two-thirds.has-text-centered
           progress.progress.is-primary value={{.Stats.AuditClosed}} max={{.Stats.AuditTotal}}
-    #narratives.section.top-nav.container
-      table.table.is-size-3
+    #narratives.section.top-nav.container.content
+      blockquote
+        h3
+          p
+            strong Narratives
+            | address blah blah blah things blah blah stuff and blah.
+      table.table.is-size-4
         thead
           tr
-            th Narrative
+            th Name
             th PDF
         tbody
           {{range .Narratives }}
@@ -112,11 +117,16 @@ html lang=en
               a href={{.OutputFilename}} target=_blank
                 {{.OutputFilename}}
           {{end}}
-    #policies.section.top-nav.container
-      table.table.is-size-3
+    #policies.section.top-nav.container.content
+      blockquote
+        h3
+          p
+            strong Policies
+            | address blah blah blah things blah blah stuff and blah.
+      table.table.is-size-4
         thead
           tr
-            th Policy Name
+            th Name
             th Acronym
             th PDF
         tbody
@@ -128,11 +138,16 @@ html lang=en
               a href={{.OutputFilename}} target=_blank
                 {{.OutputFilename}}
           {{end}}
-    #procedures.section.top-nav.container
-      table.table.is-size-3
+    #procedures.section.top-nav.container.content
+      blockquote
+        h3
+          p
+            strong Procedures
+            | address blah blah blah things blah blah stuff and blah.
+      table.table.is-size-4
         thead
           tr
-            th. Procedure
+            th. Name
             th Shortcode
             th Schedule
         tbody
