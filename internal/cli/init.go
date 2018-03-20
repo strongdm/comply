@@ -77,12 +77,12 @@ func initAction(c *cli.Context) error {
 		return err
 	}
 
-	themeName := "blank"
+	themeName := "comply-blank"
 	switch choice {
 	case 0:
-		themeName = "soc2"
+		themeName = "comply-soc2"
 	case 1:
-		themeName = "blank"
+		themeName = "comply-blank"
 	default:
 		panic("unrecognized selection")
 	}
@@ -115,8 +115,19 @@ func initAction(c *cli.Context) error {
 	p.Tickets[ticketing] = "see documentation for format"
 
 	x, _ := yaml.Marshal(&p)
-	ioutil.WriteFile(filepath.Join(config.ProjectRoot(), "comply.yml"), x, os.FileMode(0644))
+	err = ioutil.WriteFile(filepath.Join(config.ProjectRoot(), "comply.yml"), x, os.FileMode(0644))
+	if err != nil {
+		return cli.NewExitError(err, 1)
+	}
 
-	theme.SaveTo(themeName, config.ProjectRoot())
+	err = theme.SaveTo(themeName, config.ProjectRoot())
+	if err != nil {
+		return cli.NewExitError(err, 1)
+	}
+
+	success := fmt.Sprintf("%s Compliance initialized successfully", name)
+	fmt.Println(strings.Repeat("=", len(success)+2))
+	fmt.Printf("%s %s\n", promptui.IconGood, success)
+
 	return nil
 }
