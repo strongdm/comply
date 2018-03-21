@@ -11,3 +11,8 @@ comply: assets $(GO_SOURCES)
 
 install: assets $(GO_SOURCES)
 	go install github.com/strongdm/comply/cmd/comply
+
+export-example:
+	cp example/narratives/* themes/comply-soc2/narratives
+	cp example/procedures/* themes/comply-soc2/procedures
+	cp example/policies/* themes/comply-soc2/policies

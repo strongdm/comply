@@ -42,6 +42,7 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 
 	for {
 		var pwg sync.WaitGroup
+
 		for _, policy := range model.ReadPolicies() {
 			// only files that have been touched
 			if !isNewer(policy.FullPath, policy.ModifiedAt) {
@@ -53,7 +54,7 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 			go func(p *model.Policy) {
 				outputFilename := p.OutputFilename
 				// save preprocessed markdown
-				preprocessPandoc(p, filepath.Join(".", "output", outputFilename+".md"))
+				preprocessPolicy(p, filepath.Join(".", "output", outputFilename+".md"))
 
 				resp, err := cli.ContainerCreate(ctx, &container.Config{
 					Image: "jagregory/pandoc",
@@ -83,6 +84,50 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 			}(policy)
 		}
 
+		for _, narrative := range model.ReadNarratives() {
+			// only files that have been touched
+			if !isNewer(narrative.FullPath, narrative.ModifiedAt) {
+				continue
+			}
+
+			recordModified(narrative.FullPath, narrative.ModifiedAt)
+
+			pwg.Add(1)
+			go func(p *model.Narrative) {
+				outputFilename := p.OutputFilename
+				// save preprocessed markdown
+				preprocessNarrative(p, filepath.Join(".", "output", outputFilename+".md"))
+
+				cmd := []string{"--smart", "--toc", "-N", "--template=/source/templates/default.latex", "-o",
+					fmt.Sprintf("/source/output/%s", outputFilename),
+					fmt.Sprintf("/source/output/%s.md", outputFilename)}
+
+				resp, err := cli.ContainerCreate(ctx, &container.Config{
+					Image: "jagregory/pandoc",
+					Cmd:   cmd},
+					hc, nil, "")
+				if err != nil {
+					panic(err)
+				}
+
+				if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+					panic(err)
+				}
+
+				cli.ContainerWait(ctx, resp.ID)
+
+				_, err = cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
+				// io.Copy(os.Stdout, rc)
+				if err != nil {
+					panic(err)
+				}
+
+				// remove preprocessed markdown
+				os.Remove(filepath.Join(".", "output", outputFilename+".md"))
+				pwg.Done()
+			}(narrative)
+		}
+
 		pwg.Wait()
 
 		if !live {
@@ -93,7 +138,75 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 	}
 }
 
-func preprocessPandoc(pol *model.Policy, fullPath string) {
+func preprocessPolicy(pol *model.Policy, fullPath string) {
+	cfg := config.Config()
+
+	var w bytes.Buffer
+	bodyTemplate, err := template.New("body").Parse(pol.Body)
+	if err != nil {
+		w.WriteString(fmt.Sprintf("# Error processing template:\n\n%s\n", err.Error()))
+	} else {
+		bodyTemplate.Execute(&w, loadValues())
+	}
+	body := w.String()
+
+	revisionTable := ""
+	satisfiesTable := ""
+
+	// ||Date|Comment|
+	// |---+------|
+	// | 4 Jan 2018 | Initial Version |
+	// Table: Document history
+
+	if len(pol.Satisfies) > 0 {
+		rows := ""
+		for standard, keys := range pol.Satisfies {
+			rows += fmt.Sprintf("| %s | %s |\n", standard, strings.Join(keys, ", "))
+		}
+		satisfiesTable = fmt.Sprintf("|Standard|Controls Satisfied|\n|-------+--------------------------------------------|\n%s\nTable: Compliance satisfaction\n", rows)
+	}
+
+	if len(pol.Revisions) > 0 {
+		rows := ""
+		for _, rev := range pol.Revisions {
+			rows += fmt.Sprintf("| %s | %s |\n", rev.Date, rev.Comment)
+		}
+		revisionTable = fmt.Sprintf("|Date|Comment|\n|---+--------------------------------------------|\n%s\nTable: Document history\n", rows)
+	}
+
+	doc := fmt.Sprintf(`%% %s
+%% %s
+%% %s
+
+---
+header-includes: yes
+head-content: "%s"
+foot-content: "%s confidential %d"
+---
+
+%s
+
+%s
+
+\newpage
+%s`,
+		pol.Name,
+		cfg.Name,
+		fmt.Sprintf("%s %d", pol.ModifiedAt.Month().String(), pol.ModifiedAt.Year()),
+		pol.Name,
+		cfg.Name,
+		time.Now().Year(),
+		satisfiesTable,
+		revisionTable,
+		body,
+	)
+	err = ioutil.WriteFile(fullPath, []byte(doc), os.FileMode(0644))
+	if err != nil {
+		panic(err)
+	}
+}
+
+func preprocessNarrative(pol *model.Narrative, fullPath string) {
 	cfg := config.Config()
 
 	var w bytes.Buffer

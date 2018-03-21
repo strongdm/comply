@@ -57,6 +57,8 @@ func ReadNarratives() []*Narrative {
 		n.Body = mdmd.body
 		n.FullPath = f.FullPath
 		n.ModifiedAt = f.Info.ModTime()
+		rewriteFilename := strings.Replace(n.Name, " ", "-", -1)
+		n.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, rewriteFilename)
 		narratives = append(narratives, n)
 	}
 

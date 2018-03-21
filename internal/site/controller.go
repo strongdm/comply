@@ -2,7 +2,6 @@ package site
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/strongdm/comply/internal/config"
@@ -36,8 +35,6 @@ func loadValues() map[string]interface{} {
 		// TODO: where does this go?
 		satisfied := make(map[string]bool)
 		for _, n := range data.Narratives {
-			n.OutputFilename = strings.Replace(n.Name, " ", "-", -1) + ".pdf"
-
 			for _, controlKeys := range n.Satisfies {
 				for _, key := range controlKeys {
 					satisfied[key] = true
