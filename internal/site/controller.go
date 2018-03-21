@@ -2,6 +2,7 @@ package site
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/strongdm/comply/internal/config"
@@ -35,6 +36,8 @@ func loadValues() map[string]interface{} {
 		// TODO: where does this go?
 		satisfied := make(map[string]bool)
 		for _, n := range data.Narratives {
+			n.OutputFilename = strings.Replace(n.Name, " ", "-", -1) + ".pdf"
+
 			for _, controlKeys := range n.Satisfies {
 				for _, key := range controlKeys {
 					satisfied[key] = true
@@ -74,15 +77,15 @@ func loadValues() map[string]interface{} {
 			if t.State == model.Open {
 				if t.Bool("process") {
 					stats.ProcessOpen++
+					if t.CreatedAt != nil {
+						age := int(time.Since(*t.CreatedAt).Hours() / float64(24))
+						if stats.ProcessOldestDays < age {
+							stats.ProcessOldestDays = age
+						}
+					}
 				}
 				if t.Bool("audit") {
 					stats.AuditOpen++
-				}
-				if t.CreatedAt != nil {
-					age := int(time.Since(*t.CreatedAt).Hours() / float64(24))
-					if stats.ProcessOldestDays < age {
-						stats.ProcessOldestDays = age
-					}
 				}
 			}
 		}

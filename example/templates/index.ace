@@ -60,12 +60,12 @@ html lang=en
           div
             p.heading Satisfied Controls
             p.title
-              a {{.Stats.ControlsSatisfied}}
+              {{.Stats.ControlsSatisfied}}
         .column.has-text-centered
           div
             p.heading Total Controls
             p.title
-              a {{.Stats.ControlsTotal}}
+              {{.Stats.ControlsTotal}}
       .columns.is-vcentered
         .column.is-one-third
           div
@@ -74,7 +74,8 @@ html lang=en
           div
             p.heading Active Tickets
             p.title
-              a {{.Stats.ProcessOpen}}
+              a target=_blank href="https://github.com/strongdm/comply/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aprocess"
+                {{.Stats.ProcessOpen}}
         .column.has-text-centered
           div
             p.heading Oldest Ticket
@@ -88,16 +89,18 @@ html lang=en
           div
             p.heading Open Requests
             p.title
-              a {{.Stats.AuditOpen}}
+              a target=_blank href="https://github.com/strongdm/comply/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aaudit"
+                {{.Stats.AuditOpen}}
         .column.has-text-centered
           div
             p.heading Total Requests
             p.title
-              a {{.Stats.AuditTotal}}
+              a target=_blank href="https://github.com/strongdm/comply/issues?q=is%3Aissue+is%3Aclosed+label%3Acomply+label%3Aaudit"
+                {{.Stats.AuditTotal}}
       .columns.is-vcentered
         .column.is-one-third
         .column.is-two-thirds.has-text-centered
-          progress.progress.is-primary value={{.Stats.AuditClosed}} max={{.Stats.AuditTotal}}
+          / progress.progress.is-primary value={{.Stats.AuditClosed}} max={{.Stats.AuditTotal}}
     #narratives.section.top-nav.container.content
       blockquote
         h3

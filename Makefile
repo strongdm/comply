@@ -8,3 +8,6 @@ assets: $(THEME_SOURCES)
 
 comply: assets $(GO_SOURCES)
 	go build github.com/strongdm/comply/cmd/comply
+
+install: assets $(GO_SOURCES)
+	go install github.com/strongdm/comply/cmd/comply

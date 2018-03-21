@@ -44,7 +44,7 @@ func initAction(c *cli.Context) error {
 	}
 
 	prompt := promptui.Prompt{
-		Label:    "Project Name",
+		Label:    "Organization Name",
 		Validate: atLeast(1),
 	}
 
