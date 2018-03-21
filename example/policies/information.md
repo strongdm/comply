@@ -1,5 +1,9 @@
 name: Acme Information Security Policy
 acronym: ISP
+satisfies:
+  TSPC:
+    - CC2.2
+    - CC4.1
 majorRevisions:
   - date: Oct 1 2017
     comment: Substantial updates

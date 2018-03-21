@@ -1,5 +1,11 @@
 name: "Acme Application Security Policy"
 acronym: "ASP"
+satisfies:
+  TSPC:
+    - CC1.2
+    - CC5.1
+    - CC1.2
+    - CC5.1
 majorRevisions:
   - date: Nov 17 2017
     comment: Enhanced Data Sensitivity section

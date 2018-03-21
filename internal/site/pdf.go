@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"text/template"
 	"time"
@@ -105,18 +106,27 @@ func preprocessPandoc(pol *model.Policy, fullPath string) {
 	body := w.String()
 
 	revisionTable := ""
+	satisfiesTable := ""
 
 	// ||Date|Comment|
 	// |---+------|
 	// | 4 Jan 2018 | Initial Version |
 	// Table: Document history
 
+	if len(pol.Satisfies) > 0 {
+		rows := ""
+		for standard, keys := range pol.Satisfies {
+			rows += fmt.Sprintf("| %s | %s |\n", standard, strings.Join(keys, ", "))
+		}
+		satisfiesTable = fmt.Sprintf("|Standard|Controls Satisfied|\n|-------+--------------------------------------------|\n%s\nTable: Compliance satisfaction\n", rows)
+	}
+
 	if len(pol.Revisions) > 0 {
 		rows := ""
 		for _, rev := range pol.Revisions {
 			rows += fmt.Sprintf("| %s | %s |\n", rev.Date, rev.Comment)
 		}
-		revisionTable = fmt.Sprintf("|Date|Comment|\n|---+------|\n%s\nTable: Document history", rows)
+		revisionTable = fmt.Sprintf("|Date|Comment|\n|---+--------------------------------------------|\n%s\nTable: Document history\n", rows)
 	}
 
 	doc := fmt.Sprintf(`%% %s
@@ -131,6 +141,8 @@ foot-content: "%s confidential %d"
 
 %s
 
+%s
+
 \newpage
 %s`,
 		pol.Name,
@@ -139,6 +151,7 @@ foot-content: "%s confidential %d"
 		pol.Name,
 		cfg.Name,
 		time.Now().Year(),
+		satisfiesTable,
 		revisionTable,
 		body,
 	)
