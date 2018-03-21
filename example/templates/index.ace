@@ -160,8 +160,12 @@ html lang=en
             td {{.Code}}
             td {{.Cron}}
           {{end}}
-    #evidence.section.top-nav
-      p.has-text-centered Evidence goes here
+    #evidence.section.top-nav.container.content
+      blockquote
+        h3
+          p
+            strong Evidence Vault
+            | provides a secure storage system for audit evidence.
     footer.footer
       .container
         .content.has-text-centered
