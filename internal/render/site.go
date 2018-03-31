@@ -1,4 +1,4 @@
-package site
+package render
 
 import (
 	"net/http"

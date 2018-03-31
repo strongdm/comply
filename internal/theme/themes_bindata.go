@@ -204,7 +204,7 @@ func complySoc2NarrativesReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/README.md", size: 0, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/README.md", size: 0, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -224,7 +224,7 @@ func complySoc2NarrativesOrganizationalMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/organizational.md", size: 290, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/organizational.md", size: 290, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -244,7 +244,7 @@ func complySoc2NarrativesProductsMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/products.md", size: 250, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/products.md", size: 250, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -264,7 +264,7 @@ func complySoc2NarrativesServicesMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/services.md", size: 250, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/services.md", size: 250, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -284,7 +284,7 @@ func complySoc2PoliciesReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/README.md", size: 24, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/README.md", size: 24, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -304,7 +304,7 @@ func complySoc2PoliciesApplicationMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/application.md", size: 1018, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/application.md", size: 1018, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -324,7 +324,7 @@ func complySoc2PoliciesInformationMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/information.md", size: 824, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/information.md", size: 824, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -344,7 +344,7 @@ func complySoc2PoliciesTrainingMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/training.md", size: 871, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/training.md", size: 871, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -364,7 +364,7 @@ func complySoc2ProceduresReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/procedures/README.md", size: 26, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/procedures/README.md", size: 26, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -384,7 +384,7 @@ func complySoc2ProceduresOffboardingMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/procedures/offboarding.md", size: 259, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/procedures/offboarding.md", size: 259, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -404,7 +404,7 @@ func complySoc2ProceduresOnboardingMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/procedures/onboarding.md", size: 261, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/procedures/onboarding.md", size: 261, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -424,7 +424,7 @@ func complySoc2ProceduresWorkstationMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/procedures/workstation.md", size: 317, mode: os.FileMode(420), modTime: time.Unix(1521665599, 0)}
+	info := bindataFileInfo{name: "comply-soc2/procedures/workstation.md", size: 317, mode: os.FileMode(420), modTime: time.Unix(1522088864, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

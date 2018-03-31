@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/strongdm/comply/internal/site"
+	"github.com/strongdm/comply/internal/render"
 	"github.com/urfave/cli"
 )
 
@@ -13,7 +13,7 @@ var serveCommand = cli.Command{
 }
 
 func serveAction(c *cli.Context) error {
-	err := site.Build("output", true)
+	err := render.Build("output", true)
 	if err != nil {
 		panic(err)
 	}
