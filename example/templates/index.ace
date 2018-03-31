@@ -46,8 +46,8 @@ html lang=en
                 a onclick="javascript:show('policies')" Policies
               li.top-nav.procedures
                 a onclick="javascript:show('procedures')" Procedures
-              li.top-nav.evidence
-                a onclick="javascript:show('evidence')" Evidence Vault
+              / li.top-nav.evidence
+              /   a onclick="javascript:show('evidence')" Evidence Vault
     #overview.section.top-nav.container.content
       blockquote
         h3 This site consolidates all documents and evidence related to the {{.Project.Name}}
@@ -160,12 +160,12 @@ html lang=en
             td {{.Code}}
             td {{.Cron}}
           {{end}}
-    #evidence.section.top-nav.container.content
-      blockquote
-        h3
-          p
-            strong Evidence Vault
-            | provides a secure storage system for audit evidence.
+    / #evidence.section.top-nav.container.content
+    /   blockquote
+    /     h3
+    /       p
+    /         strong Evidence Vault
+    /         | provides a secure storage system for audit evidence.
     footer.footer
       .container
         .content.has-text-centered
