@@ -26,11 +26,6 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 		panic(err)
 	}
 
-	_, err = cli.ImagePull(ctx, "strongdm/pandoc", types.ImagePullOptions{})
-	if err != nil {
-		panic(err)
-	}
-
 	pwd, err := os.Getwd()
 	if err != nil {
 		panic(err)
@@ -83,6 +78,8 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 				if err != nil {
 					panic(err)
 				}
+
+				cli.ContainerRemove(ctx, resp.ID, types.ContainerRemoveOptions{RemoveVolumes: true, RemoveLinks: true, Force: true})
 
 				// remove preprocessed markdown
 				os.Remove(filepath.Join(".", "output", outputFilename+".md"))

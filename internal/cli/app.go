@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -76,9 +78,28 @@ func dockerMustExist(c *cli.Context) error {
 	}
 
 	// TODO: where does this const go?
-	_, err = cli.ImagePull(ctx, "strongdm/pandoc", types.ImagePullOptions{})
+	r, err := cli.ImagePull(ctx, "strongdm/pandoc:latest", types.ImagePullOptions{})
 	if err != nil {
 		return dockerErr
 	}
+	defer r.Close()
+
+	done := make(chan struct{})
+	defer close(done)
+
+	go func() {
+		// if docker IO takes more than N seconds, notify user we're (likely) downloading the pandoc image
+		longishPull := time.After(time.Second * 6)
+		select {
+		case <-longishPull:
+			fmt.Println("Downloading strongdm/pandoc image (this may take sometime) ...")
+		case <-done:
+			// in this case, the docker pull was quick -- suggesting we already have the container
+		}
+	}()
+
+	// hold function open until all docker IO is complete
+	io.Copy(ioutil.Discard, r)
+
 	return nil
 }
