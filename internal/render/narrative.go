@@ -19,7 +19,7 @@ import (
 	"github.com/strongdm/comply/internal/model"
 )
 
-func renderNarrativeToDisk(wg sync.WaitGroup, data *renderData, narrative *model.Narrative) {
+func renderNarrativeToDisk(wg *sync.WaitGroup, data *renderData, narrative *model.Narrative) {
 	// only files that have been touched
 	if !isNewer(narrative.FullPath, narrative.ModifiedAt) {
 		return

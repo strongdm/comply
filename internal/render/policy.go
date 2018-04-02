@@ -19,7 +19,7 @@ import (
 	"github.com/strongdm/comply/internal/model"
 )
 
-func renderPolicyToDisk(wg sync.WaitGroup, data *renderData, policy *model.Policy) {
+func renderPolicyToDisk(wg *sync.WaitGroup, data *renderData, policy *model.Policy) {
 	// only files that have been touched
 	if !isNewer(policy.FullPath, policy.ModifiedAt) {
 		return
@@ -42,6 +42,7 @@ func renderPolicyToDisk(wg sync.WaitGroup, data *renderData, policy *model.Polic
 	}
 
 	wg.Add(1)
+
 	go func(p *model.Policy) {
 		outputFilename := p.OutputFilename
 		// save preprocessed markdown
@@ -62,7 +63,10 @@ func renderPolicyToDisk(wg sync.WaitGroup, data *renderData, policy *model.Polic
 			panic(err)
 		}
 
-		cli.ContainerWait(ctx, resp.ID)
+		_, err = cli.ContainerWait(ctx, resp.ID)
+		if err != nil {
+			panic(err)
+		}
 
 		_, err = cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
 		if err != nil {

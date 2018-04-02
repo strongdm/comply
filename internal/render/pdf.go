@@ -17,11 +17,11 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 		}
 
 		for _, policy := range model.ReadPolicies() {
-			renderPolicyToDisk(pdfWG, data, policy)
+			renderPolicyToDisk(&pdfWG, data, policy)
 		}
 
 		for _, narrative := range model.ReadNarratives() {
-			renderNarrativeToDisk(pdfWG, data, narrative)
+			renderNarrativeToDisk(&pdfWG, data, narrative)
 		}
 
 		pdfWG.Wait()
