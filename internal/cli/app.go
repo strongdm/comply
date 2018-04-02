@@ -77,7 +77,6 @@ func dockerMustExist(c *cli.Context) error {
 		return dockerErr
 	}
 
-	// TODO: where does this const go?
 	r, err := cli.ImagePull(ctx, "strongdm/pandoc:latest", types.ImagePullOptions{})
 	if err != nil {
 		return dockerErr
