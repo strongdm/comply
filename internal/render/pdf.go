@@ -26,7 +26,7 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 		panic(err)
 	}
 
-	_, err = cli.ImagePull(ctx, "jagregory/pandoc", types.ImagePullOptions{})
+	_, err = cli.ImagePull(ctx, "strongdm/pandoc", types.ImagePullOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -43,6 +43,12 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 	for {
 		var pwg sync.WaitGroup
 
+		data, err := loadWithStats()
+		if err != nil {
+			// TODO: errors channel or quit channel or panic?
+			panic(err)
+		}
+
 		for _, policy := range model.ReadPolicies() {
 			// only files that have been touched
 			if !isNewer(policy.FullPath, policy.ModifiedAt) {
@@ -54,10 +60,10 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 			go func(p *model.Policy) {
 				outputFilename := p.OutputFilename
 				// save preprocessed markdown
-				preprocessPolicy(p, filepath.Join(".", "output", outputFilename+".md"))
+				preprocessPolicy(data, p, filepath.Join(".", "output", outputFilename+".md"))
 
 				resp, err := cli.ContainerCreate(ctx, &container.Config{
-					Image: "jagregory/pandoc",
+					Image: "strongdm/pandoc",
 					Cmd: []string{"--smart", "--toc", "-N", "--template=/source/templates/default.latex", "-o",
 						fmt.Sprintf("/source/output/%s", outputFilename),
 						fmt.Sprintf("/source/output/%s.md", outputFilename),
@@ -96,14 +102,14 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 			go func(p *model.Narrative) {
 				outputFilename := p.OutputFilename
 				// save preprocessed markdown
-				preprocessNarrative(p, filepath.Join(".", "output", outputFilename+".md"))
+				preprocessNarrative(data, p, filepath.Join(".", "output", outputFilename+".md"))
 
 				cmd := []string{"--smart", "--toc", "-N", "--template=/source/templates/default.latex", "-o",
 					fmt.Sprintf("/source/output/%s", outputFilename),
 					fmt.Sprintf("/source/output/%s.md", outputFilename)}
 
 				resp, err := cli.ContainerCreate(ctx, &container.Config{
-					Image: "jagregory/pandoc",
+					Image: "strongdm/pandoc",
 					Cmd:   cmd},
 					hc, nil, "")
 				if err != nil {
@@ -138,7 +144,7 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 	}
 }
 
-func preprocessPolicy(pol *model.Policy, fullPath string) {
+func preprocessPolicy(data *renderData, pol *model.Policy, fullPath string) {
 	cfg := config.Config()
 
 	var w bytes.Buffer
@@ -146,7 +152,7 @@ func preprocessPolicy(pol *model.Policy, fullPath string) {
 	if err != nil {
 		w.WriteString(fmt.Sprintf("# Error processing template:\n\n%s\n", err.Error()))
 	} else {
-		bodyTemplate.Execute(&w, loadValues())
+		bodyTemplate.Execute(&w, data)
 	}
 	body := w.String()
 
@@ -206,7 +212,7 @@ foot-content: "%s confidential %d"
 	}
 }
 
-func preprocessNarrative(pol *model.Narrative, fullPath string) {
+func preprocessNarrative(data *renderData, pol *model.Narrative, fullPath string) {
 	cfg := config.Config()
 
 	var w bytes.Buffer
@@ -214,7 +220,7 @@ func preprocessNarrative(pol *model.Narrative, fullPath string) {
 	if err != nil {
 		w.WriteString(fmt.Sprintf("# Error processing template:\n\n%s\n", err.Error()))
 	} else {
-		bodyTemplate.Execute(&w, loadValues())
+		bodyTemplate.Execute(&w, data)
 	}
 	body := w.String()
 

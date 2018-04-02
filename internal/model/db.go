@@ -13,17 +13,17 @@ import (
 var dbSingletonOnce sync.Once
 var dbSingleton *scribble.Driver
 
-// DB provides a singleton reference to a local json cache
+// DB provides a singleton reference to a local json cache; will panic if storage location is not writeable.
 func DB() *scribble.Driver {
 	dbSingletonOnce.Do(func() {
 		if _, err := os.Stat(filepath.Join(config.ProjectRoot(), ".comply", "cache")); os.IsNotExist(err) {
 			err = os.Mkdir(filepath.Join(config.ProjectRoot(), ".comply"), os.FileMode(0755))
 			if err != nil {
-				panic(err)
+				panic("could not create directory .comply: " + err.Error())
 			}
 			err = os.Mkdir(filepath.Join(config.ProjectRoot(), ".comply", "cache"), os.FileMode(0755))
 			if err != nil {
-				panic(err)
+				panic("could not create directory .comply/cache: " + err.Error())
 			}
 		}
 

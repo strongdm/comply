@@ -19,7 +19,7 @@ import (
 // Version is set by the build system
 const Version = "0.0.0-development"
 
-// Main should be invoked by the main functino in the main package
+// Main should be invoked by the main function in the main package
 func Main() {
 	err := newApp().Run(os.Args)
 	if err != nil {
@@ -76,7 +76,7 @@ func dockerMustExist(c *cli.Context) error {
 	}
 
 	// TODO: where does this const go?
-	_, err = cli.ImagePull(ctx, "jagregory/pandoc", types.ImagePullOptions{})
+	_, err = cli.ImagePull(ctx, "strongdm/pandoc", types.ImagePullOptions{})
 	if err != nil {
 		return dockerErr
 	}

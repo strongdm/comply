@@ -8,14 +8,12 @@ import (
 	"github.com/strongdm/comply/internal/model"
 )
 
-// Project contains all project-scope fields
-type Project struct {
+type project struct {
 	OrganizationName string
 	Name             string
 }
 
-// Stats contains all computed counts
-type Stats struct {
+type stats struct {
 	ControlsTotal     int
 	ControlsSatisfied int
 
@@ -28,77 +26,99 @@ type Stats struct {
 	AuditTotal  int
 }
 
-func loadValues() map[string]interface{} {
-	stats := &Stats{}
-	data, err := model.ReadData()
-	if err == nil {
-		// TODO: where does this go?
-		satisfied := make(map[string]bool)
-		for _, n := range data.Narratives {
-			for _, controlKeys := range n.Satisfies {
-				for _, key := range controlKeys {
-					satisfied[key] = true
-				}
-			}
-		}
-		for _, n := range data.Policies {
-			for _, controlKeys := range n.Satisfies {
-				for _, key := range controlKeys {
-					satisfied[key] = true
-				}
-			}
-		}
-		for _, n := range data.Procedures {
-			for _, controlKeys := range n.Satisfies {
-				for _, key := range controlKeys {
-					satisfied[key] = true
-				}
-			}
-		}
+type renderData struct {
+	Project    *project
+	Stats      *stats
+	Narratives []*model.Narrative
+	Policies   []*model.Policy
+	Procedures []*model.Procedure
+	Standards  []*model.Standard
+	Tickets    []*model.Ticket
+}
 
-		for _, std := range data.Standards {
-			stats.ControlsTotal += len(std.Controls)
-			for controlKey := range std.Controls {
-				if _, ok := satisfied[controlKey]; ok {
-					stats.ControlsSatisfied++
-				}
-			}
-		}
-
-		for _, t := range data.Tickets {
-
-			if t.Bool("audit") {
-				stats.AuditTotal++
-			}
-
-			if t.State == model.Open {
-				if t.Bool("process") {
-					stats.ProcessOpen++
-					if t.CreatedAt != nil {
-						age := int(time.Since(*t.CreatedAt).Hours() / float64(24))
-						if stats.ProcessOldestDays < age {
-							stats.ProcessOldestDays = age
-						}
-					}
-				}
-				if t.Bool("audit") {
-					stats.AuditOpen++
-				}
-			}
-		}
+func load() (*renderData, error) {
+	modelData, err := model.ReadData()
+	if err != nil {
+		return nil, err
 	}
 
 	cfg := config.Config()
-	project := Project{
+	project := &project{
 		OrganizationName: cfg.Name,
 		Name:             fmt.Sprintf("%s Compliance Program", cfg.Name),
 	}
 
-	values := make(map[string]interface{})
-	values["Project"] = project
-	values["Stats"] = stats
-	values["Narratives"] = data.Narratives
-	values["Policies"] = data.Policies
-	values["Procedures"] = data.Procedures
-	return values
+	rd := &renderData{}
+	rd.Narratives = modelData.Narratives
+	rd.Project = project
+	return rd, nil
+}
+
+func loadWithStats() (*renderData, error) {
+	d, err := load()
+	if err != nil {
+		return nil, err
+	}
+
+	addStats(d)
+	return d, nil
+}
+
+func addStats(data *renderData) {
+	stats := &stats{}
+
+	satisfied := make(map[string]bool)
+	for _, n := range data.Narratives {
+		for _, controlKeys := range n.Satisfies {
+			for _, key := range controlKeys {
+				satisfied[key] = true
+			}
+		}
+	}
+	for _, n := range data.Policies {
+		for _, controlKeys := range n.Satisfies {
+			for _, key := range controlKeys {
+				satisfied[key] = true
+			}
+		}
+	}
+	for _, n := range data.Procedures {
+		for _, controlKeys := range n.Satisfies {
+			for _, key := range controlKeys {
+				satisfied[key] = true
+			}
+		}
+	}
+
+	for _, std := range data.Standards {
+		stats.ControlsTotal += len(std.Controls)
+		for controlKey := range std.Controls {
+			if _, ok := satisfied[controlKey]; ok {
+				stats.ControlsSatisfied++
+			}
+		}
+	}
+
+	for _, t := range data.Tickets {
+		if t.Bool("audit") {
+			stats.AuditTotal++
+		}
+
+		if t.State == model.Open {
+			if t.Bool("process") {
+				stats.ProcessOpen++
+				if t.CreatedAt != nil {
+					age := int(time.Since(*t.CreatedAt).Hours() / float64(24))
+					if stats.ProcessOldestDays < age {
+						stats.ProcessOldestDays = age
+					}
+				}
+			}
+			if t.Bool("audit") {
+				stats.AuditOpen++
+			}
+		}
+	}
+
+	data.Stats = stats
 }

@@ -11,12 +11,29 @@ import (
 	"github.com/yosssi/ace"
 )
 
+const websocketReloader = `<script>
+(function(){
+	var ws = new WebSocket("ws://localhost:5122/ws")
+	ws.onclose = function(e) {
+		// reload!
+		window.location=window.location
+	}
+})()
+</script>`
+
 func html(output string, live bool, wg *sync.WaitGroup) {
 	for {
 		files, err := ioutil.ReadDir("./templates")
 		if err != nil {
 			panic(err)
 		}
+
+		data, err := loadWithStats()
+		if err != nil {
+			// TODO: errors channel or quit channel or panic?
+			panic(err)
+		}
+
 		for _, fileInfo := range files {
 			if !strings.HasSuffix(fileInfo.Name(), ".ace") {
 				continue
@@ -34,22 +51,14 @@ func html(output string, live bool, wg *sync.WaitGroup) {
 				fmt.Println(err)
 			}
 
-			err = tpl.Execute(w, loadValues())
+			err = tpl.Execute(w, data)
 			if err != nil {
 				w.Write([]byte("<htmL><body>template error</body></html>"))
 				fmt.Println(err)
 			}
 
 			if live {
-				w.Write([]byte(`<script>
-	(function(){
-		var ws = new WebSocket("ws://localhost:5122/ws")
-		ws.onclose = function(e) {
-			// reload!
-			window.location=window.location
-		}
-	})()
-	</script>`))
+				w.Write([]byte(websocketReloader))
 			}
 			w.Close()
 		}
