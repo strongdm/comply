@@ -5,8 +5,17 @@ html lang=en
     title {{.Project.Name}}
     link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css"
     link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulmaswatch/0.6.2/sandstone/bulmaswatch.min.css"
+    script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment.min.js"
+    script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/later/1.2.0/later.min.js"
+    script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prettycron/0.11.0/prettycron.min.js"
     meta name="viewport" content="width=device-width, initial-scale=1"
     = javascript
+      document.addEventListener("DOMContentLoaded", function(event) {
+        document.querySelectorAll('.cron').forEach(function(el) {
+          el.innerHTML = prettyCron.toString(el.innerHTML)
+        })
+      })
+
       function show(name) {
         var items = document.getElementsByClassName('top-nav')
         for (var i=0; i<items.length; i++) {
@@ -158,7 +167,11 @@ html lang=en
           tr
             td {{.Name}}
             td {{.Code}}
-            td {{.Cron}}
+            {{if .Cron}}
+            td.cron {{.Cron}}
+            {{else}}
+            td On demandq
+            {{end}}
           {{end}}
     / #evidence.section.top-nav.container.content
     /   blockquote

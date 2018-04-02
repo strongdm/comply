@@ -50,6 +50,10 @@ func load() (*renderData, error) {
 
 	rd := &renderData{}
 	rd.Narratives = modelData.Narratives
+	rd.Policies = modelData.Policies
+	rd.Procedures = modelData.Procedures
+	rd.Standards = modelData.Standards
+	rd.Tickets = modelData.Tickets
 	rd.Project = project
 	return rd, nil
 }

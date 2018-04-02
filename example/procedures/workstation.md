@@ -1,6 +1,6 @@
 name: "Collect Workstation Details"
 code: "workstation"
-cron: "0 0 0 1 12"
+cron: "0 0 1 1,4,7,10 *"
 ---
 
 # Workstation Details
