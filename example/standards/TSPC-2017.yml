@@ -209,37 +209,37 @@ P5.2:
   description: The entity corrects, amends, or appends personal information based on information provided by data subjects and communicates such information to third parties, as committed or required, to meet the entity’s objectives related to privacy. If a request for correction is denied, data subjects are informed of the denial and reason for such denial to meet the entity’s objectives related to privacy
 P6.1:
   family: P6
-  name:
+  name: Consent for Third Party Disclosure
   description: The entity discloses personal information to third parties with the explicit consent of data subjects, and such consent is obtained prior to disclosure to meet the entity’s objectives related to privacy
 P6.2:
   family: P6
-  name:
+  name: Authorized Disclosures
   description: The entity creates and retains a complete, accurate, and timely record of authorized disclosures of personal information to meet the entity’s objectives related to privacy
 P6.3:
   family: P6
-  name:
+  name: Unauthorized Disclosures
   description: The entity creates and retains a complete, accurate, and timely record of detected or reported unauthorized disclosures (including breaches) of personal information to meet the entity’s objectives related to privacy
 P6.4:
   family: P6
-  name:
+  name: Appropriate Third Party Disclosure
   description: The entity obtains privacy commitments from vendors and other third parties who have access to personal information to meet the entity’s objectives related to privacy. The entity assesses those parties’ compliance on a periodic and as-needed basis and takes corrective action, if necessary
 P6.5:
   family: P6
-  name:
+  name: Unauthorized Third Party Disclosure
   description: The entity obtains commitments from vendors and other third parties with access to personal information to notify the entity in the event of actual or suspected unauthorized disclosures of personal information. Such notifications are reported to appropriate personnel and acted on in accordance with established incident response procedures to meet the entity’s objectives related to privacy
 P6.6:
   family: P6
-  name:
+  name: Notification of Unauthorized Third Party Disclosure
   description: The entity provides notification of breaches and incidents to affected data subjects, regulators, and others to meet the entity’s objectives related to privacy
 P6.7:
   family: P6
-  name:
+  name: Accounting of Personal Information
   description: The entity provides data subjects with an accounting of the personal information held and disclosure of the data subjects’ personal information, upon the data subjects’ request, to meet the entity’s objectives related to privacy
 P7.1:
   family: P7
-  name:
+  name: Accuracy of Personal Information
   description: The entity collects and maintains accurate, up-to-date, complete, and relevant personal information to meet the entity’s objectives related to privacy
 P8.1:
   family: P8
-  name:
+  name: Personal Information Dispute Resolution
   description: The entity implements a process for receiving, addressing, resolving, and communicating the resolution of inquiries, complaints, and disputes from data subjects and others and periodically monitors compliance to meet the entity’s objectives related to privacy. Corrections and other necessary actions related to identified deficiencies are made or taken in a timely manner
