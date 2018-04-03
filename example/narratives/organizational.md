@@ -1,6 +1,6 @@
 name: "Organizational Narrative"
 satisfies:
-  TSPC:
+  TSC:
     - CC1.1
     - CC1.2
     - CC1.3

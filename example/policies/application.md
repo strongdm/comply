@@ -1,7 +1,7 @@
 name: "Acme Application Security Policy"
 acronym: "ASP"
 satisfies:
-  TSPC:
+  TSC:
     - CC1.2
     - CC5.1
     - CC1.2

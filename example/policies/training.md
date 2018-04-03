@@ -1,7 +1,7 @@
 name: "Policy Training Policy"
 acronym: "PTP"
 satisfies:
-  TSPC:
+  TSC:
     - CC5.2
     - CC5.1
     - CC1.2

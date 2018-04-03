@@ -1,6 +1,6 @@
 name: "Products Narrative"
 satisfies:
-  TSPC:
+  TSC:
     - CC2.1
     - CC4.2
     - CC3.3
