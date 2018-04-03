@@ -170,7 +170,7 @@ html lang=en
             {{if .Cron}}
             td.cron {{.Cron}}
             {{else}}
-            td On demandq
+            td On demand
             {{end}}
           {{end}}
     / #evidence.section.top-nav.container.content
