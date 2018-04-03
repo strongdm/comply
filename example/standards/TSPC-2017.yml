@@ -133,79 +133,79 @@ CC9.2:
   description: The entity assesses and manages risks associated with vendors and business partners
 A1.1:
   family: A1
-  name:
+  name: Capacity Planning
   description: The entity maintains, monitors, and evaluates current processing capacity and use of system components (infrastructure, data, and software) to manage capacity demand and to enable the implementation of additional capacity to help meet its objectives
 A1.2:
   family: A1
-  name:
+  name: Backup and Recovery
   description: The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives
 A1.3:
   family: A1
-  name:
+  name: Recovery Testing
   description: The entity tests recovery plan procedures supporting system recovery to meet its objectives
 C1.1:
   family: C1
-  name:
+  name: Confidential Information Identification
   description: The entity identifies and maintains confidential information to meet the entity’s objectives related to confidentiality
 C1.2:
   family: C1
-  name:
+  name: Confidential Information Disposal
   description: The entity disposes of confidential information to meet the entity’s objectives related to confidentiality.
 PI1.1:
   family: PI1
-  name:
+  name: Processing Integrity Monitoring
   description: The entity obtains or generates, uses, and communicates relevant, quality information regarding the objectives related to processing, including de nitions of data processed and product and service speci cations, to support the use of products and services
 PI1.2:
   family: PI1
-  name:
+  name: Processing Integrity Accuracy
   description: The entity implements policies and procedures over system inputs, including controls over completeness and accuracy, to result in products, services, and reporting to meet the entity’s objectives
 PI1.3:
   family: PI1
-  name:
+  name: Processing Integrity Operations
   description: The entity implements policies and procedures over system processing to result in products, services, and reporting to meet the entity’s objectives
 PI1.4:
   family: PI1
-  name:
+  name: Processing Integrity Outputs
   description: The entity implements policies and procedures to make available or deliver output completely, accurately, and timely in accordance with speci cations to meet the entity’s objectives
 PI1.5:
   family: PI1
-  name:
+  name: Processing Integrity Backups
   description: The entity implements policies and procedures to store inputs, items in processing, and outputs completely, accurately, and timely in accordance with system speci cations to meet the entity’s objectives
 P1.1:
   family: P1
-  name:
+  name: Privacy Notification
   description: The entity provides notice to data subjects about its privacy practices to meet the entity’s objectives related to privacy. The notice is updated and communicated to data subjects in a timely manner for changes to the entity’s privacy practices, including changes in the use of personal information, to meet the entity’s objectives related to privacy
 P2.1:
   family: P2
-  name:
+  name: Privacy Consent and Choice
   description: The entity communicates choices available regarding the collection, use, retention, disclosure, and disposal of personal information to the data subjects and the consequences, if any, of each choice. Explicit consent for the collection, use, retention, disclosure, and disposal of personal information is obtained from data subjects or other authorized persons, if required. Such consent is obtained only for the intended purpose of the information to meet the entity’s objectives related to privacy. The entity’s basis for determining implicit consent for the collection, use, retention, disclosure, and disposal of personal information is documented
 P3.1:
   family: P3
-  name:
+  name: Personal Information Collection
   description: Personal information is collected consistent with the entity’s objectives related to privacy
 P3.2:
   family: P3
-  name:
+  name: Explicit Consent
   description: For information requiring explicit consent, the entity communicates the need for such consent, as well as the consequences of a failure to provide consent for the request for personal information, and obtains the consent prior to the collection of the information to meet the entity’s objectives related to privacy
 P4.1:
   family: P4
-  name:
+  name: Proper Use of Personal Information
   description: The entity limits the use of personal information to the purposes identified in the entity’s objectives related to privacy
 P4.2:
   family: P4
-  name:
+  name: Personal Information Retention
   description: The entity retains personal information consistent with the entity’s objectives related to privacy
 P4.3:
   family: P4
-  name:
+  name: Personal Information Disposal
   description: The entity securely disposes of personal information to meet the entity’s objectives related to privacy
 P5.1:
   family: P5
-  name:
+  name: Data Subject Access
   description: The entity grants identified and authenticated data subjects the ability to access their stored personal information for review and, upon request, provides physical or electronic copies of that information to data subjects to meet the entity’s objectives related to privacy. If access is denied, data subjects are informed of the denial and reason for such denial, as required, to meet the entity’s objectives related to privacy
 P5.2:
   family: P5
-  name:
+  name: Data Subject Amendment
   description: The entity corrects, amends, or appends personal information based on information provided by data subjects and communicates such information to third parties, as committed or required, to meet the entity’s objectives related to privacy. If a request for correction is denied, data subjects are informed of the denial and reason for such denial to meet the entity’s objectives related to privacy
 P6.1:
   family: P6
