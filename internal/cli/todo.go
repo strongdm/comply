@@ -24,14 +24,14 @@ func todoAction(c *cli.Context) error {
 	}
 
 	w := tablewriter.NewWriter(os.Stdout)
-	w.SetHeader([]string{"Standard", "Control", "Satisfied?"})
+	w.SetHeader([]string{"Standard", "Control", "Satisfied?", "Name"})
 
 	type row struct {
-		standard   string
-		controlKey string
-		satisfied  string
+		standard    string
+		controlKey  string
+		satisfied   string
+		controlName string
 	}
-
 	satisfied := make(map[string]bool)
 	for _, n := range d.Narratives {
 		for _, controlKeys := range n.Satisfies {
@@ -43,16 +43,17 @@ func todoAction(c *cli.Context) error {
 
 	var rows []row
 	for _, std := range d.Standards {
-		for id, _ := range std.Controls {
+		for id, c := range std.Controls {
 			sat := "NO"
 			if _, ok := satisfied[id]; ok {
 				sat = color.GreenString("YES")
 			}
 
 			rows = append(rows, row{
-				standard:   std.Name,
-				controlKey: id,
-				satisfied:  sat,
+				standard:    std.Name,
+				controlKey:  id,
+				satisfied:   sat,
+				controlName: c.Name,
 			})
 		}
 	}
@@ -61,8 +62,10 @@ func todoAction(c *cli.Context) error {
 		return rows[i].controlKey < rows[j].controlKey
 	})
 
+	w.SetAutoWrapText(false)
+
 	for _, r := range rows {
-		w.Append([]string{r.standard, r.controlKey, r.satisfied})
+		w.Append([]string{r.standard, r.controlKey, r.satisfied, r.controlName})
 	}
 
 	w.Render()
