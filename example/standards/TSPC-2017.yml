@@ -57,7 +57,7 @@ CC4.2:
   description: The entity evaluates and communicates internal control deficiencies in a timely manner to those parties responsible for taking corrective action, including senior management and the board of directors, as appropriate
 CC5.1:
   family: CC5
-  name: Risk Mitigation
+  name: Objective Risk Mitigation
   description: The entity selects and develops control activities that contribute to the mitigation of risks to the achievement of objectives to acceptable levels
 CC5.2:
   family: CC5
@@ -69,67 +69,67 @@ CC5.3:
   description: The entity deploys control activities through policies that establish what is expected and in procedures that put policies into action
 CC6.1:
   family: CC6
-  name:
+  name: Logical Access
   description: The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity’s objectives
 CC6.2:
   family: CC6
-  name:
+  name: User Access
   description: Prior to issuing system credentials and granting system access, the entity registers and authorizes new internal and external users whose access is administered by the entity. For those users whose access is administered by the entity, user system credentials are removed when user access is no longer authorized
 CC6.3:
   family: CC6
-  name:
+  name: Role-Based Access
   description: The entity authorizes, modifies, or removes access to data, software, functions, and other protected information assets based on roles, responsibilities, or the system design and changes, giving consideration to the concepts of least privilege and segregation of duties, to meet the entity’s objectives
 CC6.4:
   family: CC6
-  name:
+  name: Physical Access
   description: The entity restricts physical access to facilities and protected information assets (for example, data center facilities, back-up media storage, and other sensitive locations) to authorized personnel to meet the entity’s objectives
 CC6.5:
   family: CC6
-  name:
+  name: Data Disposal
   description: The entity discontinues logical and physical protections over physical assets only after the ability to read or recover data and software from those assets has been diminished and is no longer required to meet the entity’s objectives
 CC6.6:
   family: CC6
-  name:
+  name: External Threats
   description: The entity implements logical access security measures to protect against threats from sources outside its system boundaries
 CC6.7:
   family: CC6
-  name:
+  name: Data Custody and Transmission
   description: The entity restricts the transmission, movement, and removal of information to authorized internal and external users and processes, and protects it during transmission, movement, or removal to meet the entity’s objectives
 CC6.8:
   family: CC6
-  name:
+  name: Malware Detection
   description: The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives
 CC7.1:
   family: CC7
-  name:
+  name: Vulnerability Detection
   description: To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities
 CC7.2:
   family: CC7
-  name:
+  name: Anomaly Detection
   description: The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity’s ability to meet its objectives; anomalies are analyzed to determine whether they represent security events
 CC7.3:
   family: CC7
-  name:
+  name: Security Incident Evaluation
   description: The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures
 CC7.4:
   family: CC7
-  name:
-  description: The entity responds to identified security incidents by executing a de ned incident response program to understand, contain, remediate, and communicate security incidents, as appropriate
+  name: Security Incident Response Plan
+  description: The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate, and communicate security incidents, as appropriate
 CC7.5:
   family: CC7
-  name:
+  name: Security Incident Response Execution
   description: The entity identifies, develops, and implements activities to recover from identified security incidents
 CC8.1:
   family: CC8
-  name:
+  name: Change Control
   description: The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure, data, software, and procedures to meet its objectives
 CC9.1:
   family: CC9
-  name:
+  name: Disruption Risk Mitigation
   description: The entity identifies, selects, and develops risk mitigation activities for risks arising from potential business disruptions
 CC9.2:
   family: CC9
-  name:
+  name: Vendor Risk Management
   description: The entity assesses and manages risks associated with vendors and business partners
 A1.1:
   family: A1
