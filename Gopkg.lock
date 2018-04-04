@@ -8,6 +8,12 @@
   version = "v0.4.7"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/chzyer/readline"
+  packages = ["."]
+  revision = "f6d7a1f6fbf35bbf9beb80dc63c56a29dcfb759f"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
@@ -62,6 +68,12 @@
   version = "v0.3.2"
 
 [[projects]]
+  name = "github.com/elazarl/go-bindata-assetfs"
+  packages = ["."]
+  revision = "30f82fa23fd844bd5bb1e5f216db87fd77b5eb43"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
@@ -108,6 +120,31 @@
   name = "github.com/jcelliott/lumber"
   packages = ["."]
   revision = "dd349441af25132d146d7095c6693a15431fc9b1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/juju/ansiterm"
+  packages = [
+    ".",
+    "tabwriter"
+  ]
+  revision = "720a0952cc2ac777afc295d9861263e2a4cf96a1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/lunixbochs/vtclean"
+  packages = ["."]
+  revision = "d14193dfc626125c831501c1c42340b4248e1f5a"
+
+[[projects]]
+  name = "github.com/manifoldco/promptui"
+  packages = [
+    ".",
+    "list",
+    "screenbuf"
+  ]
+  revision = "f6438f6153008ee1b9ba5446d5333bbe63b622b7"
+  version = "v0.2.1"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -214,6 +251,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c47da47b1e71ebdfa475d44c692b1549210dbe43a468f04b0c563a18b9ea4e6f"
+  inputs-digest = "0567ae09b86e4c3ba46a06425917cb5b78c077db23de83732d8ea709c41909c7"
   solver-name = "gps-cdcl"
   solver-version = 1
