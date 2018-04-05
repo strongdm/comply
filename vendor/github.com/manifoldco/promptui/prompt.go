@@ -20,6 +20,10 @@ type Prompt struct {
 
 	Default string // Default is the initial value to populate in the prompt
 
+	// AllowEdit lets the user edit the default value. If false, any key press
+	// other than <Enter> automatically clears the default value.
+	AllowEdit bool
+
 	// Validate is optional. If set, this function is used to validate the input
 	// after each character entry.
 	Validate ValidateFunc
@@ -32,11 +36,14 @@ type Prompt struct {
 	// default templates are used.
 	Templates *PromptTemplates
 
+	// IsConfirm sets the prompt to be a [y/N] question.
 	IsConfirm bool
+
+	// IsVimMode enables vi-like movements (hjkl) and editing.
 	IsVimMode bool
 
-	stdin  io.Reader
-	stdout io.Writer
+	stdin  io.ReadCloser
+	stdout io.WriteCloser
 }
 
 // PromptTemplates allow a prompt to be customized following stdlib
@@ -122,7 +129,10 @@ func (p *Prompt) Run() (string, error) {
 
 	var inputErr error
 	input := p.Default
-	eraseDefault := input != ""
+	if p.IsConfirm {
+		input = ""
+	}
+	eraseDefault := input != "" && !p.AllowEdit
 
 	c.SetListener(func(line []rune, pos int, key rune) ([]rune, int, bool) {
 		if line != nil {
@@ -131,15 +141,16 @@ func (p *Prompt) Run() (string, error) {
 
 		switch key {
 		case 0: // empty
-		case readline.CharEnter:
+		case KeyEnter:
 			return nil, 0, false
-		case readline.CharBackspace:
+		case KeyBackspace:
 			if eraseDefault {
 				eraseDefault = false
 				input = ""
 			}
 			if len(input) > 0 {
-				input = input[:len(input)-1]
+				r := []rune(input)
+				input = string(r[:len(r)-1])
 			}
 		default:
 			if eraseDefault {
@@ -220,9 +231,12 @@ func (p *Prompt) Run() (string, error) {
 	prompt := render(p.Templates.valid, p.Label)
 	prompt = append(prompt, []byte(echo)...)
 
-	if p.IsConfirm && strings.ToLower(echo) != "y" {
-		prompt = render(p.Templates.invalid, p.Label)
-		err = ErrAbort
+	if p.IsConfirm {
+		lowerDefault := strings.ToLower(p.Default)
+		if strings.ToLower(echo) != "y" && (lowerDefault != "y" || (lowerDefault == "y" && echo != "")) {
+			prompt = render(p.Templates.invalid, p.Label)
+			err = ErrAbort
+		}
 	}
 
 	sb.Reset()
@@ -247,7 +261,6 @@ func (p *Prompt) prepareTemplates() error {
 	bold := Styler(FGBold)
 
 	if p.IsConfirm {
-		p.Default = ""
 		if tpls.Confirm == "" {
 			confirm := "y/N"
 			if strings.ToLower(p.Default) == "y" {

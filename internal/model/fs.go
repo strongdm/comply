@@ -1,31 +1,48 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"strings"
 
-	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/path"
 	"gopkg.in/yaml.v2"
 )
 
 // ReadData loads all records
-func ReadData() (*Data, error) {
-	rt, err := DB().ReadAll("tickets")
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to load tickets collection")
-	}
-
+func ReadData() *Data {
 	d := &Data{}
-	d.Tickets = Tickets(rt)
+	d.Tickets = ReadTickets()
 	d.Narratives = ReadNarratives()
 	d.Policies = ReadPolicies()
 	d.Procedures = ReadProcedures()
 	d.Standards = ReadStandards()
+	return d
+}
 
-	return d, nil
+// ReadTickets returns all known tickets, or an empty list in the event the ticket cache is empty or unavailable
+func ReadTickets() []*Ticket {
+	rt, err := DB().ReadAll("tickets")
+	if err != nil {
+		// empty list
+		return make([]*Ticket, 0)
+	}
+	return tickets(rt)
+}
+
+func tickets(rawTickets []string) []*Ticket {
+	var tickets []*Ticket
+	for _, rt := range rawTickets {
+		t := &Ticket{}
+		err := json.Unmarshal([]byte(rt), t)
+		if err != nil {
+			panic("Malformed ticket JSON")
+		}
+		tickets = append(tickets, t)
+	}
+	return tickets
 }
 
 // ReadStandards loads standard definitions from the filesystem

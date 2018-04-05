@@ -18,10 +18,7 @@ var todoCommand = cli.Command{
 }
 
 func todoAction(c *cli.Context) error {
-	d, err := model.ReadData()
-	if err != nil {
-		panic(err)
-	}
+	d := model.ReadData()
 
 	w := tablewriter.NewWriter(os.Stdout)
 	w.SetHeader([]string{"Standard", "Control", "Satisfied?", "Name"})

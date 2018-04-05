@@ -37,10 +37,7 @@ type renderData struct {
 }
 
 func load() (*renderData, error) {
-	modelData, err := model.ReadData()
-	if err != nil {
-		return nil, err
-	}
+	modelData := model.ReadData()
 
 	cfg := config.Config()
 	project := &project{

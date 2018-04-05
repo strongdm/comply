@@ -7,11 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+### Added
+
+- Background colors codes and template helpers
+- `AllowEdit` for prompt to prevent deletion of the default value by any key
+- Added `StartInSearchMode` to allow starting the prompt in search mode
+
+### Fixed
+
+- `<Enter>` key press on Windows
+- `juju/ansiterm` dependency
+- `chzyer/readline#136` new api with ReadCloser
+
 ## [0.2.1] - 2017-11-30
 
 ### Fixed
 
 - `SelectWithAdd` panicking on `.Run` due to lack of keys setup
+- Backspace key on Windows
 
 ## [0.2.0] - 2017-11-16
 

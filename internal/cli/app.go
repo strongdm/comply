@@ -36,11 +36,12 @@ func newApp() *cli.App {
 	app.Usage = "policy compliance toolkit"
 
 	app.Commands = []cli.Command{
-		initCommand,
 		buildCommand,
-		todoCommand,
+		initCommand,
+		schedulerCommand,
 		serveCommand,
 		syncCommand,
+		todoCommand,
 	}
 
 	// Plugins
