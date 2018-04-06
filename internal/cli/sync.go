@@ -16,10 +16,13 @@ func syncAction(c *cli.Context) error {
 	tp := model.GetPlugin(model.Github)
 	tickets, err := tp.FindByTagName("comply")
 	if err != nil {
-		panic(err)
+		return err
 	}
 	for _, t := range tickets {
-		model.DB().Write("tickets", t.ID, t)
+		err = model.DB().Write("tickets", t.ID, t)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

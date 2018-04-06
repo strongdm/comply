@@ -36,13 +36,11 @@ func byProcessByTime(tickets []*model.Ticket) map[string][]*model.Ticket {
 func TriggerScheduled() {
 	rawTickets := model.ReadTickets()
 	tickets := byProcessByTime(rawTickets)
-	// spew.Dump(tickets)
 	for _, procedure := range model.ReadProcedures() {
 		if procedure.Cron == "" {
 			continue
 		}
 
-		// TODO
 		procedureID := procedure.ID
 		schedule, err := cron.Parse(procedure.Cron)
 		if err != nil {
