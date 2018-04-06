@@ -28,7 +28,7 @@ type TicketPlugin interface {
 	FindOpen() ([]*Ticket, error)
 	FindByTag(name, value string) ([]*Ticket, error)
 	FindByTagName(name string) ([]*Ticket, error)
-	Create(*Ticket) error
+	Create(ticket *Ticket, labels []string) error
 	Update(*Ticket) error
 	Close(ID string) error
 	Configure(map[string]interface{}) error

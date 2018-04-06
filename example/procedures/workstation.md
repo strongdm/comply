@@ -1,6 +1,6 @@
 id: "workstation"
 name: "Collect Workstation Details"
-cron: "0 */10 * * * *"
+cron: "0 0 * * * *"
 ---
 
 # Workstation Details
@@ -11,7 +11,3 @@ cron: "0 */10 * * * *"
 # Insert Evidence
 
 Insert evidence into the Evidence Vault
-
-Process-ID: workstation
-Name: Collect Workstation Details
-

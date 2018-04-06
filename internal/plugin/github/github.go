@@ -119,7 +119,14 @@ func (g *githubPlugin) Links() (string, string) {
 		fmt.Sprintf("https://github.com/%s/%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply", g.username, g.reponame)
 }
 
-func (g *githubPlugin) Create(*model.Ticket) error { panic("not implemented") }
+func (g *githubPlugin) Create(ticket *model.Ticket, labels []string) error {
+	_, _, err := g.api().Issues.Create(context.Background(), g.username, g.reponame, &github.IssueRequest{
+		Title:  &ticket.Name,
+		Body:   &ticket.Body,
+		Labels: &labels,
+	})
+	return err
+}
 func (g *githubPlugin) Update(*model.Ticket) error { panic("not implemented") }
 func (g *githubPlugin) Close(ID string) error      { panic("not implemented") }
 

@@ -160,13 +160,13 @@ html lang=en
         thead
           tr
             th. Name
-            th Shortcode
+            th ID
             th Schedule (cron format)
         tbody
           {{range .Procedures }}
           tr
             td {{.Name}}
-            td {{.Code}}
+            td {{.ID}}
             {{if .Cron}}
             td.cron {{.Cron}}
             {{else}}

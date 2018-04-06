@@ -23,9 +23,9 @@ type Ticket struct {
 	UpdatedAt  *time.Time
 }
 
-func (t *Ticket) ProcessID() string {
+func (t *Ticket) ProcedureID() string {
 	md := t.metadata()
-	if v, ok := md["Process-ID"]; ok {
+	if v, ok := md["Procedure-ID"]; ok {
 		return v
 	}
 	return ""

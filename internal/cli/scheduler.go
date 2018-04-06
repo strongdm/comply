@@ -13,6 +13,7 @@ var schedulerCommand = cli.Command{
 }
 
 func schedulerAction(c *cli.Context) error {
+	syncAction(c)
 	ticket.TriggerScheduled()
 	return nil
 }

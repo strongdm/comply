@@ -1,5 +1,5 @@
+id: "onboard"
 name: "Onboard New User"
-code: "onboard"
 ---
 
 # Onboarding Steps

@@ -4,7 +4,7 @@ import "time"
 
 type Procedure struct {
 	Name string `yaml:"name"`
-	Code string `yaml:"code"`
+	ID   string `yaml:"id"`
 	Cron string `yaml:"cron"`
 
 	Revisions      []Revision   `yaml:"majorRevisions"`

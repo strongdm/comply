@@ -14,9 +14,15 @@ import (
 const websocketReloader = `<script>
 (function(){
 	var ws = new WebSocket("ws://localhost:5122/ws")
+	var connected = false
+	ws.onopen = function(e) {
+		connected = true
+	}
 	ws.onclose = function(e) {
 		// reload!
-		window.location=window.location
+		if (connected) {
+			window.location=window.location
+		}
 	}
 })()
 </script>`

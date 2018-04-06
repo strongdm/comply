@@ -1,5 +1,5 @@
+id: "offboard"
 name: "Offboard User"
-code: "offboard"
 ---
 
 # Onboarding Steps
