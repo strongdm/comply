@@ -16,6 +16,7 @@ export-example:
 	cp example/narratives/* themes/comply-soc2/narratives
 	cp example/procedures/* themes/comply-soc2/procedures
 	cp example/policies/* themes/comply-soc2/policies
+	cp example/standards/* themes/comply-soc2/standards
 	cp example/templates/* themes/comply-soc2/templates
 
 docker:
