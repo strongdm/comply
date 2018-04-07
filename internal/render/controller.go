@@ -2,6 +2,7 @@ package render
 
 import (
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/strongdm/comply/internal/config"
@@ -34,6 +35,15 @@ type renderData struct {
 	Procedures []*model.Procedure
 	Standards  []*model.Standard
 	Tickets    []*model.Ticket
+	Controls   []*control
+}
+
+type control struct {
+	Standard    string
+	ControlKey  string
+	Name        string
+	Description string
+	Satisfied   bool
 }
 
 func load() (*renderData, error) {
@@ -45,6 +55,23 @@ func load() (*renderData, error) {
 		Name:             fmt.Sprintf("%s Compliance Program", cfg.Name),
 	}
 
+	satisfied := model.ControlsSatisfied(modelData)
+	controls := make([]*control, 0)
+	for _, standard := range modelData.Standards {
+		for key, c := range standard.Controls {
+			controls = append(controls, &control{
+				Standard:    standard.Name,
+				ControlKey:  key,
+				Name:        c.Name,
+				Description: c.Description,
+				Satisfied:   satisfied[key],
+			})
+		}
+	}
+	sort.Slice(controls, func(i, j int) bool {
+		return controls[i].ControlKey < controls[j].ControlKey
+	})
+
 	rd := &renderData{}
 	rd.Narratives = modelData.Narratives
 	rd.Policies = modelData.Policies
@@ -52,6 +79,7 @@ func load() (*renderData, error) {
 	rd.Standards = modelData.Standards
 	rd.Tickets = modelData.Tickets
 	rd.Project = project
+	rd.Controls = controls
 	return rd, nil
 }
 

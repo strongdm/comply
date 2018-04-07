@@ -42,19 +42,26 @@ html lang=en
       .hero-body
         .container
           h1.title {{.Project.Name}}
-          p.subtitle Policy, Process, and Audit Status
+          p.subtitle Policy, Procedure, and Audit Status
       .hero-foot
         nav.tabs.is-boxed.is-fullwidth
           .container
-            ul
+            ul.is-size-4
               li.top-nav.overview
-                a onclick="javascript:show('overview')" Overview
+                strong
+                  a onclick="javascript:show('overview')" Overview
               li.top-nav.narratives
-                a onclick="javascript:show('narratives')" Narratives
+                strong
+                  a onclick="javascript:show('narratives')" Narratives
               li.top-nav.policies
-                a onclick="javascript:show('policies')" Policies
+                strong
+                  a onclick="javascript:show('policies')" Policies
               li.top-nav.procedures
-                a onclick="javascript:show('procedures')" Procedures
+                strong
+                  a onclick="javascript:show('procedures')" Procedures
+              li.top-nav.standards
+                strong
+                  a onclick="javascript:show('standards')" Standards
               / li.top-nav.evidence
               /   a onclick="javascript:show('evidence')" Evidence Vault
     #overview.section.top-nav.container.content
@@ -78,7 +85,7 @@ html lang=en
       .columns.is-vcentered
         .column.is-one-third
           div
-            p.subtitle.is-3.has-text-centered Process Tracking
+            p.subtitle.is-3.has-text-centered Procedure Tracking
         .column.has-text-centered
           div
             p.heading Active Tickets
@@ -159,7 +166,7 @@ html lang=en
       table.table.is-size-4
         thead
           tr
-            th. Name
+            th Name
             th ID
             th Schedule (cron format)
         tbody
@@ -173,12 +180,30 @@ html lang=en
             td On demand
             {{end}}
           {{end}}
-    / #evidence.section.top-nav.container.content
-    /   blockquote
-    /     h3
-    /       p
-    /         strong Evidence Vault
-    /         | provides a secure storage system for audit evidence.
+    #standards.section.top-nav.container.content
+      blockquote
+        h3
+          p
+            strong Standards
+            | specify the controls satisfied by the compliance program.
+      table.table.is-size-4
+        thead
+          tr
+            th Control Key
+            th Name
+            th Satisfied?
+        tbody
+          {{range .Controls }}
+          tr
+            td {{.ControlKey}}
+            td {{.Name}}
+            {{if .Satisfied}}
+            td.is-success Yes
+            {{else}}
+            td No
+            {{end}}
+          {{end}}
+
     footer.footer
       .container
         .content.has-text-centered

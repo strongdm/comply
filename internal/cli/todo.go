@@ -29,14 +29,8 @@ func todoAction(c *cli.Context) error {
 		satisfied   string
 		controlName string
 	}
-	satisfied := make(map[string]bool)
-	for _, n := range d.Narratives {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
-				satisfied[key] = true
-			}
-		}
-	}
+
+	satisfied := model.ControlsSatisfied(d)
 
 	var rows []row
 	for _, std := range d.Standards {
