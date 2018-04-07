@@ -46,7 +46,7 @@ type control struct {
 	Satisfied   bool
 }
 
-func load() (*renderData, error) {
+func load() (*model.Data, *renderData, error) {
 	modelData := model.ReadData()
 
 	cfg := config.Config()
@@ -80,46 +80,25 @@ func load() (*renderData, error) {
 	rd.Tickets = modelData.Tickets
 	rd.Project = project
 	rd.Controls = controls
-	return rd, nil
+	return modelData, rd, nil
 }
 
-func loadWithStats() (*renderData, error) {
-	d, err := load()
+func loadWithStats() (*model.Data, *renderData, error) {
+	modelData, renderData, err := load()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	addStats(d)
-	return d, nil
+	addStats(modelData, renderData)
+	return modelData, renderData, nil
 }
 
-func addStats(data *renderData) {
+func addStats(modelData *model.Data, renderData *renderData) {
 	stats := &stats{}
 
-	satisfied := make(map[string]bool)
-	for _, n := range data.Narratives {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
-				satisfied[key] = true
-			}
-		}
-	}
-	for _, n := range data.Policies {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
-				satisfied[key] = true
-			}
-		}
-	}
-	for _, n := range data.Procedures {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
-				satisfied[key] = true
-			}
-		}
-	}
+	satisfied := model.ControlsSatisfied(modelData)
 
-	for _, std := range data.Standards {
+	for _, std := range renderData.Standards {
 		stats.ControlsTotal += len(std.Controls)
 		for controlKey := range std.Controls {
 			if _, ok := satisfied[controlKey]; ok {
@@ -128,7 +107,7 @@ func addStats(data *renderData) {
 		}
 	}
 
-	for _, t := range data.Tickets {
+	for _, t := range renderData.Tickets {
 		if t.Bool("audit") {
 			stats.AuditTotal++
 		}
@@ -149,5 +128,5 @@ func addStats(data *renderData) {
 		}
 	}
 
-	data.Stats = stats
+	renderData.Stats = stats
 }
