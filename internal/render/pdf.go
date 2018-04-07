@@ -10,7 +10,7 @@ func pdf(output string, live bool, wg *sync.WaitGroup) {
 	var pdfWG sync.WaitGroup
 
 	for {
-		data, err := loadWithStats()
+		_, data, err := loadWithStats()
 		if err != nil {
 			// TODO: errors channel or quit channel or panic?
 			panic(err)

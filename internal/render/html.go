@@ -34,7 +34,7 @@ func html(output string, live bool, wg *sync.WaitGroup) {
 			panic(err)
 		}
 
-		data, err := loadWithStats()
+		_, data, err := loadWithStats()
 		if err != nil {
 			// TODO: errors channel or quit channel or panic?
 			panic(err)
