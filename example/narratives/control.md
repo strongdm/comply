@@ -1,19 +1,13 @@
-name: "Organizational Narrative"
+name: Control Environment Narrative
 satisfies:
   TSC:
-    - CC1.2
-    - CC1.3
-    - CC1.4
-    - CC1.5
-    - CC3.1
-    - CC3.2
-    - CC3.3
-    - CC3.4
+    - CC4.1
+    - CC4.2
 majorRevisions:
   - date: Oct 1 2016
     comment: Initial document
 ---
 
-# Organizational Narrative
+# Control Environment Narrative
 
 Here we narrate why our org satisfies the control keys listed in the YML block

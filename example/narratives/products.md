@@ -1,10 +1,7 @@
 name: "Products Narrative"
 satisfies:
   TSC:
-    - CC2.1
-    - CC4.2
-    - CC3.3
-    - CC1.5
+    - CC9.9
 majorRevisions:
   - date: Oct 1 2016
     comment: Initial document

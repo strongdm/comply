@@ -2,9 +2,7 @@ name: "Policy Training Policy"
 acronym: "PTP"
 satisfies:
   TSC:
-    - CC5.2
-    - CC5.1
-    - CC1.2
+    - CC9.9
 majorRevisions:
   - date: Oct 21 2017
     comment: Excellent changes
