@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Workstation Policy
+acronym: WP
 satisfies:
   TSC:
     - CC9.9

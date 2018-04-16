@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Encryption Policy
+acronym: EP
 satisfies:
   TSC:
     - CC9.9

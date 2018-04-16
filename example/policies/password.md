@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Password Policy
+acronym: PWP
 satisfies:
   TSC:
     - CC9.9

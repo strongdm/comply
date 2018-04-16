@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Confidentiality Policy
+acronym: CP
 satisfies:
   TSC:
     - C1.1

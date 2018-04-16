@@ -1,5 +1,5 @@
-name: Data Classification Policy
-acronym: DCP
+name: Code of Conduct Policy
+acronym: COCP
 satisfies:
   TSC:
     - CC1.1

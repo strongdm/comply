@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Business Continuity Policy
+acronym: BCP
 satisfies:
   TSC:
     - CC9.9

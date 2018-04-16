@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Office Security Policy
+acronym: OSP
 satisfies:
   TSC:
     - CC9.9

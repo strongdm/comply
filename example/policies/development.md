@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Software Development Lifecycle Policy
+acronym: SDLCP
 satisfies:
   TSC:
     - CC9.9

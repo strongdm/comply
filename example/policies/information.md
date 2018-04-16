@@ -1,4 +1,4 @@
-name: Acme Information Security Policy
+name: Information Security Policy
 acronym: ISP
 satisfies:
   TSC:

@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Disaster Recovery Policy
+acronym: DRP
 satisfies:
   TSC:
     - A1.2

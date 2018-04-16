@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Processing Integrity Management Policy
+acronym: PIMP
 satisfies:
   TSC:
     - PI1.1

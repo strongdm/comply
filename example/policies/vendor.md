@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Vendor Management Policy
+acronym: VMP
 satisfies:
   TSC:
     - CC9.9

@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Removable Media and Cloud Storage Policy
+acronym: MCP
 satisfies:
   TSC:
     - CC9.9

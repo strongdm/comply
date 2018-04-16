@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Security Incident Response Policy
+acronym: SIRP
 satisfies:
   TSC:
     - CC7.3

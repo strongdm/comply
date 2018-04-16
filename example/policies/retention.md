@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Data Retention Policy
+acronym: DRP
 satisfies:
   TSC:
     - CC9.9

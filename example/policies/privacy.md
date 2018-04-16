@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Privacy Management Policy
+acronym: PMP
 satisfies:
   TSC:
     - P1.1

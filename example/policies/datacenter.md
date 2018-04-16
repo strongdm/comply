@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Datacenter Policy
+acronym: DCP
 satisfies:
   TSC:
     - CC9.9

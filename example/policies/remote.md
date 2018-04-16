@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Remote Access Policy
+acronym: REAP
 satisfies:
   TSC:
     - CC9.9

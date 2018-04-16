@@ -1,5 +1,5 @@
-name: XXX Policy
-acronym: XXP
+name: Log Management Policy
+acronym: LMP
 satisfies:
   TSC:
     - CC9.9
