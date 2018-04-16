@@ -1,5 +1,5 @@
 name: Datacenter Policy
-acronym: DCP
+acronym: DP
 satisfies:
   TSC:
     - CC9.9
