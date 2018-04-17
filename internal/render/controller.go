@@ -44,6 +44,7 @@ type control struct {
 	Name        string
 	Description string
 	Satisfied   bool
+	SatisfiedBy []string
 }
 
 func load() (*model.Data, *renderData, error) {
@@ -59,12 +60,15 @@ func load() (*model.Data, *renderData, error) {
 	controls := make([]*control, 0)
 	for _, standard := range modelData.Standards {
 		for key, c := range standard.Controls {
+			satisfactions, ok := satisfied[key]
+			satisfied := ok && len(satisfactions) > 0
 			controls = append(controls, &control{
 				Standard:    standard.Name,
 				ControlKey:  key,
 				Name:        c.Name,
 				Description: c.Description,
-				Satisfied:   satisfied[key],
+				Satisfied:   satisfied,
+				SatisfiedBy: satisfactions,
 			})
 		}
 	}

@@ -2,7 +2,7 @@ name: System Change Policy
 acronym: SCP
 satisfies:
   TSC:
-    - CC9.2
+    - CC8.1
 majorRevisions:
   - date: Jun 1 2018
     comment: Initial document

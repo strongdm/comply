@@ -102,7 +102,7 @@ func preprocessNarrative(data *renderData, pol *model.Narrative, fullPath string
 		for standard, keys := range pol.Satisfies {
 			rows += fmt.Sprintf("| %s | %s |\n", standard, strings.Join(keys, ", "))
 		}
-		satisfiesTable = fmt.Sprintf("|Standard|Controls Satisfied|\n|-------+--------------------------------------------|\n%s\nTable: Compliance satisfaction\n", rows)
+		satisfiesTable = fmt.Sprintf("|Standard|Controls Satisfied|\n|-------+--------------------------------------------|\n%s\nTable: Control satisfaction\n", rows)
 	}
 
 	if len(pol.Revisions) > 0 {

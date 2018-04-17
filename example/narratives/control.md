@@ -1,6 +1,9 @@
 name: Control Environment Narrative
 satisfies:
   TSC:
+    - CC2.1
+    - CC2.2
+    - CC2.3
     - CC4.1
     - CC4.2
     - CC5.1

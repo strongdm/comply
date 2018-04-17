@@ -9,6 +9,7 @@ html lang=en
     script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/later/1.2.0/later.min.js"
     script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prettycron/0.11.0/prettycron.min.js"
     meta name="viewport" content="width=device-width, initial-scale=1"
+    = css
     = javascript
       document.addEventListener("DOMContentLoaded", function(event) {
         document.querySelectorAll('.cron').forEach(function(el) {
@@ -186,22 +187,30 @@ html lang=en
           p
             strong Standards
             | specify the controls satisfied by the compliance program.
-      table.table.is-size-4
+      table.table.is-size-4.is-fullwidth
         thead
           tr
             th Control Key
             th Name
             th Satisfied?
+            th Satisfied By
         tbody
           {{range .Controls }}
           tr
             td {{.ControlKey}}
-            td {{.Name}}
+            td
+              strong {{.Name}}
+              .subtitle {{.Description}}
             {{if .Satisfied}}
             td.is-success Yes
             {{else}}
             td No
             {{end}}
+            td
+              {{range .SatisfiedBy}}
+              a.is-size-7 href={{.}} target=_blank
+                {{.}}
+              {{end}}
           {{end}}
 
     footer.footer
