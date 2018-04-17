@@ -1,10 +1,8 @@
-name: Data Retention Policy
-acronym: RP
+name: Risk Assessment Policy
+acronym: RIAP
 satisfies:
   TSC:
-    - CC1.2
-    - CC6.5
-    - CC4.3
+    - CC9.2
 majorRevisions:
   - date: Jun 1 2018
     comment: Initial document
