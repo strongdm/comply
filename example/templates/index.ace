@@ -128,11 +128,13 @@ html lang=en
         thead
           tr
             th Name
+            th Acronym
             th PDF
         tbody
           {{range .Narratives }}
           tr
             td {{.Name}}
+            td {{.Acronym}}
             td
               a href={{.OutputFilename}} target=_blank
                 {{.OutputFilename}}
