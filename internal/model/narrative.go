@@ -3,7 +3,8 @@ package model
 import "time"
 
 type Narrative struct {
-	Name string `yaml:"name"`
+	Name    string `yaml:"name"`
+	Acronym string `yaml:"acronym"`
 
 	Revisions      []Revision   `yaml:"majorRevisions"`
 	Satisfies      Satisfaction `yaml:"satisfies"`

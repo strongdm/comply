@@ -1,9 +1,7 @@
 name: System Architecture Narrative
-satisfies:
-  TSC:
-    - CC9.9
+acronym: SYN
 majorRevisions:
-  - date: Oct 1 2016
+  - date: Jun 1 2018
     comment: Initial document
 ---
 

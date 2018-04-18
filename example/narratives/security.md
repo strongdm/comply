@@ -1,4 +1,5 @@
 name: Security Architecture Narrative
+acronym: SEN
 satisfies:
   TSC:
     - CC6.6
@@ -6,7 +7,7 @@ satisfies:
     - CC7.1
     - CC7.2
 majorRevisions:
-  - date: Oct 1 2016
+  - date: Jun 1 2018
     comment: Initial document
 ---
 

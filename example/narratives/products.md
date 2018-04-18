@@ -1,9 +1,10 @@
-name: "Products Narrative"
+name: Products and Services Narrative
+acronym: PSN
 satisfies:
   TSC:
     - CC9.9
 majorRevisions:
-  - date: Oct 1 2016
+  - date: Jun 1 2018
     comment: Initial document
 ---
 

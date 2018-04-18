@@ -74,8 +74,7 @@ func ReadNarratives() []*Narrative {
 		n.Body = mdmd.body
 		n.FullPath = f.FullPath
 		n.ModifiedAt = f.Info.ModTime()
-		rewriteFilename := strings.Replace(n.Name, " ", "-", -1)
-		n.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, rewriteFilename)
+		n.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, n.Acronym)
 		narratives = append(narratives, n)
 	}
 
@@ -111,7 +110,6 @@ func ReadPolicies() []*Policy {
 		p.FullPath = f.FullPath
 		p.ModifiedAt = f.Info.ModTime()
 		p.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, p.Acronym)
-
 		policies = append(policies, p)
 	}
 
