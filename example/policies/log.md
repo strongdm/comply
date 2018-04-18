@@ -2,7 +2,7 @@ name: Log Management Policy
 acronym: LMP
 satisfies:
   TSC:
-    - CC9.9
+    - CC7.2
 majorRevisions:
   - date: Jun 1 2018
     comment: Initial document
