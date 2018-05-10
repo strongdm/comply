@@ -45,7 +45,7 @@ cleanse:
 	git push -f origin master
 	git gc --aggressive --prune=all
 
-release: dist gh-release
+release: dist release-deps
 	github-release release \
 	--security-token $$GH_LOGIN \
 	--user strongdm \
@@ -68,6 +68,16 @@ release: dist gh-release
 	--tag $(VERSION) \
 	--name comply-$(VERSION)-linux-amd64.tgz \
 	--file dist/comply-$(VERSION)-linux-amd64.tgz
+
+patch-release: patch release
+
+patch: gitsem
+	gitsem patch
+
+release-deps: gitsem gh-release
+
+gitsem:
+	go get -u github.com/Clever/gitsem
 
 gh-release:
 	go get -u github.com/aktau/github-release
