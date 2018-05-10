@@ -72,8 +72,15 @@ release: dist release-deps
 
 patch-release: patch release
 
+patch-release: minor release
+
 patch: clean gitsem
 	gitsem -m "increment patch for release" patch
+	git push
+	git push origin --tags
+
+minor: clean gitsem
+	gitsem -m "increment minor for release" minor
 	git push
 	git push origin --tags
 
