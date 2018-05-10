@@ -72,7 +72,7 @@ release: dist release-deps
 
 patch-release: patch release
 
-patch-release: minor release
+minor-release: minor release
 
 patch: clean gitsem
 	gitsem -m "increment patch for release" patch
