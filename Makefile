@@ -71,7 +71,7 @@ release: dist release-deps
 
 patch-release: patch release
 
-patch: gitsem
+patch: clean gitsem
 	gitsem patch
 
 release-deps: gitsem gh-release
