@@ -73,6 +73,7 @@ patch-release: patch release
 
 patch: clean gitsem
 	gitsem patch
+	git push origin --tags
 
 release-deps: gitsem gh-release
 
