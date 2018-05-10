@@ -73,7 +73,7 @@ release: dist release-deps
 patch-release: patch release
 
 patch: clean gitsem
-	gitsem patch
+	gitsem patch -m "increment patch for release"
 	git push
 	git push origin --tags
 
