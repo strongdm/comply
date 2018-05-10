@@ -1,0 +1,245 @@
+name: TSC
+CC1.1:
+  family: CC1
+  name: Integrity and Ethics
+  description: The entity demonstrates a commitment to integrity and ethical values
+CC1.2:
+  family: CC1
+  name: Board Independence
+  description: The board of directors demonstrates independence from management and exercises oversight of the development and performance of internal control
+CC1.3:
+  family: CC1
+  name: Organizational Structure
+  description: Management establishes, with board oversight, structures, reporting lines, and appropriate authorities and responsibilities in the pursuit of objectives
+CC1.4:
+  family: CC1
+  name: Hiring, Training and Retention
+  description: The entity demonstrates a commitment to attract, develop, and retain competent individuals in alignment with objectives
+CC1.5:
+  family: CC1
+  name: Individual Accountability
+  description: The entity holds individuals accountable for their internal control responsibilities in the pursuit of objectives.
+CC2.1:
+  family: CC2
+  name: Use of Information Systems
+  description: The entity obtains or generates and uses relevant, quality information to support the functioning of internal control
+CC2.2:
+  family: CC2
+  name: Use of Communication Systems, Internal
+  description: The entity internally communicates information, including objectives and responsibilities for internal control, necessary to support the functioning of internal control
+CC2.3:
+  family: CC2
+  name: Use of Communication Systems, External
+  description: The entity communicates with external parties regarding matters affecting the functioning of internal control
+CC3.1:
+  family: CC3
+  name: Objectives
+  description: The entity specifies objectives with sufficient clarity to enable the identification and assessment of risks relating to objectives
+CC3.2:
+  family: CC3
+  name: Risk to Objectives
+  description: The entity identifies risks to the achievement of its objectives across the entity and analyzes risks as a basis for determining how the risks should be managed
+CC3.3:
+  family: CC3
+  name: Fraud Risk to Objectives
+  description: The entity considers the potential for fraud in assessing risks to the achievement of objectives
+CC3.4:
+  family: CC3
+  name: Impact of Changes
+  description: The entity identifies and assesses changes that could significantly impact the system of internal control
+CC4.1:
+  family: CC4
+  name: Monitoring
+  description: The entity selects, develops, and performs ongoing and/or separate evaluations to ascertain whether the components of internal control are present and functioning
+CC4.2:
+  family: CC4
+  name: Remediation
+  description: The entity evaluates and communicates internal control deficiencies in a timely manner to those parties responsible for taking corrective action, including senior management and the board of directors, as appropriate
+CC5.1:
+  family: CC5
+  name: Objective Risk Mitigation
+  description: The entity selects and develops control activities that contribute to the mitigation of risks to the achievement of objectives to acceptable levels
+CC5.2:
+  family: CC5
+  name: Technology Controls
+  description: The entity also selects and develops general control activities over technology to support the achievement of objectives
+CC5.3:
+  family: CC5
+  name: Established Policies
+  description: The entity deploys control activities through policies that establish what is expected and in procedures that put policies into action
+CC6.1:
+  family: CC6
+  name: Logical Access
+  description: The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity’s objectives
+CC6.2:
+  family: CC6
+  name: User Access
+  description: Prior to issuing system credentials and granting system access, the entity registers and authorizes new internal and external users whose access is administered by the entity. For those users whose access is administered by the entity, user system credentials are removed when user access is no longer authorized
+CC6.3:
+  family: CC6
+  name: Role-Based Access
+  description: The entity authorizes, modifies, or removes access to data, software, functions, and other protected information assets based on roles, responsibilities, or the system design and changes, giving consideration to the concepts of least privilege and segregation of duties, to meet the entity’s objectives
+CC6.4:
+  family: CC6
+  name: Physical Access
+  description: The entity restricts physical access to facilities and protected information assets (for example, data center facilities, back-up media storage, and other sensitive locations) to authorized personnel to meet the entity’s objectives
+CC6.5:
+  family: CC6
+  name: Data Disposal
+  description: The entity discontinues logical and physical protections over physical assets only after the ability to read or recover data and software from those assets has been diminished and is no longer required to meet the entity’s objectives
+CC6.6:
+  family: CC6
+  name: External Threats
+  description: The entity implements logical access security measures to protect against threats from sources outside its system boundaries
+CC6.7:
+  family: CC6
+  name: Data Custody and Transmission
+  description: The entity restricts the transmission, movement, and removal of information to authorized internal and external users and processes, and protects it during transmission, movement, or removal to meet the entity’s objectives
+CC6.8:
+  family: CC6
+  name: Malware Detection
+  description: The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entity’s objectives
+CC7.1:
+  family: CC7
+  name: Vulnerability Detection
+  description: To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities
+CC7.2:
+  family: CC7
+  name: Anomaly Detection
+  description: The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity’s ability to meet its objectives; anomalies are analyzed to determine whether they represent security events
+CC7.3:
+  family: CC7
+  name: Security Incident Evaluation
+  description: The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures
+CC7.4:
+  family: CC7
+  name: Security Incident Response Plan
+  description: The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate, and communicate security incidents, as appropriate
+CC7.5:
+  family: CC7
+  name: Security Incident Response Execution
+  description: The entity identifies, develops, and implements activities to recover from identified security incidents
+CC8.1:
+  family: CC8
+  name: Change Control
+  description: The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure, data, software, and procedures to meet its objectives
+CC9.1:
+  family: CC9
+  name: Disruption Risk Mitigation
+  description: The entity identifies, selects, and develops risk mitigation activities for risks arising from potential business disruptions
+CC9.2:
+  family: CC9
+  name: Vendor Risk Management
+  description: The entity assesses and manages risks associated with vendors and business partners
+A1.1:
+  family: A1
+  name: Capacity Planning
+  description: The entity maintains, monitors, and evaluates current processing capacity and use of system components (infrastructure, data, and software) to manage capacity demand and to enable the implementation of additional capacity to help meet its objectives
+A1.2:
+  family: A1
+  name: Backup and Recovery
+  description: The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives
+A1.3:
+  family: A1
+  name: Recovery Testing
+  description: The entity tests recovery plan procedures supporting system recovery to meet its objectives
+C1.1:
+  family: C1
+  name: Confidential Information Identification
+  description: The entity identifies and maintains confidential information to meet the entity’s objectives related to confidentiality
+C1.2:
+  family: C1
+  name: Confidential Information Disposal
+  description: The entity disposes of confidential information to meet the entity’s objectives related to confidentiality.
+PI1.1:
+  family: PI1
+  name: Processing Integrity Monitoring
+  description: The entity obtains or generates, uses, and communicates relevant, quality information regarding the objectives related to processing, including de nitions of data processed and product and service speci cations, to support the use of products and services
+PI1.2:
+  family: PI1
+  name: Processing Integrity Accuracy
+  description: The entity implements policies and procedures over system inputs, including controls over completeness and accuracy, to result in products, services, and reporting to meet the entity’s objectives
+PI1.3:
+  family: PI1
+  name: Processing Integrity Operations
+  description: The entity implements policies and procedures over system processing to result in products, services, and reporting to meet the entity’s objectives
+PI1.4:
+  family: PI1
+  name: Processing Integrity Outputs
+  description: The entity implements policies and procedures to make available or deliver output completely, accurately, and timely in accordance with speci cations to meet the entity’s objectives
+PI1.5:
+  family: PI1
+  name: Processing Integrity Backups
+  description: The entity implements policies and procedures to store inputs, items in processing, and outputs completely, accurately, and timely in accordance with system speci cations to meet the entity’s objectives
+P1.1:
+  family: P1
+  name: Privacy Notification
+  description: The entity provides notice to data subjects about its privacy practices to meet the entity’s objectives related to privacy. The notice is updated and communicated to data subjects in a timely manner for changes to the entity’s privacy practices, including changes in the use of personal information, to meet the entity’s objectives related to privacy
+P2.1:
+  family: P2
+  name: Privacy Consent and Choice
+  description: The entity communicates choices available regarding the collection, use, retention, disclosure, and disposal of personal information to the data subjects and the consequences, if any, of each choice. Explicit consent for the collection, use, retention, disclosure, and disposal of personal information is obtained from data subjects or other authorized persons, if required. Such consent is obtained only for the intended purpose of the information to meet the entity’s objectives related to privacy. The entity’s basis for determining implicit consent for the collection, use, retention, disclosure, and disposal of personal information is documented
+P3.1:
+  family: P3
+  name: Personal Information Collection
+  description: Personal information is collected consistent with the entity’s objectives related to privacy
+P3.2:
+  family: P3
+  name: Explicit Consent
+  description: For information requiring explicit consent, the entity communicates the need for such consent, as well as the consequences of a failure to provide consent for the request for personal information, and obtains the consent prior to the collection of the information to meet the entity’s objectives related to privacy
+P4.1:
+  family: P4
+  name: Proper Use of Personal Information
+  description: The entity limits the use of personal information to the purposes identified in the entity’s objectives related to privacy
+P4.2:
+  family: P4
+  name: Personal Information Retention
+  description: The entity retains personal information consistent with the entity’s objectives related to privacy
+P4.3:
+  family: P4
+  name: Personal Information Disposal
+  description: The entity securely disposes of personal information to meet the entity’s objectives related to privacy
+P5.1:
+  family: P5
+  name: Data Subject Access
+  description: The entity grants identified and authenticated data subjects the ability to access their stored personal information for review and, upon request, provides physical or electronic copies of that information to data subjects to meet the entity’s objectives related to privacy. If access is denied, data subjects are informed of the denial and reason for such denial, as required, to meet the entity’s objectives related to privacy
+P5.2:
+  family: P5
+  name: Data Subject Amendment
+  description: The entity corrects, amends, or appends personal information based on information provided by data subjects and communicates such information to third parties, as committed or required, to meet the entity’s objectives related to privacy. If a request for correction is denied, data subjects are informed of the denial and reason for such denial to meet the entity’s objectives related to privacy
+P6.1:
+  family: P6
+  name: Consent for Third Party Disclosure
+  description: The entity discloses personal information to third parties with the explicit consent of data subjects, and such consent is obtained prior to disclosure to meet the entity’s objectives related to privacy
+P6.2:
+  family: P6
+  name: Authorized Disclosures
+  description: The entity creates and retains a complete, accurate, and timely record of authorized disclosures of personal information to meet the entity’s objectives related to privacy
+P6.3:
+  family: P6
+  name: Unauthorized Disclosures
+  description: The entity creates and retains a complete, accurate, and timely record of detected or reported unauthorized disclosures (including breaches) of personal information to meet the entity’s objectives related to privacy
+P6.4:
+  family: P6
+  name: Appropriate Third Party Disclosure
+  description: The entity obtains privacy commitments from vendors and other third parties who have access to personal information to meet the entity’s objectives related to privacy. The entity assesses those parties’ compliance on a periodic and as-needed basis and takes corrective action, if necessary
+P6.5:
+  family: P6
+  name: Unauthorized Third Party Disclosure
+  description: The entity obtains commitments from vendors and other third parties with access to personal information to notify the entity in the event of actual or suspected unauthorized disclosures of personal information. Such notifications are reported to appropriate personnel and acted on in accordance with established incident response procedures to meet the entity’s objectives related to privacy
+P6.6:
+  family: P6
+  name: Notification of Unauthorized Third Party Disclosure
+  description: The entity provides notification of breaches and incidents to affected data subjects, regulators, and others to meet the entity’s objectives related to privacy
+P6.7:
+  family: P6
+  name: Accounting of Personal Information
+  description: The entity provides data subjects with an accounting of the personal information held and disclosure of the data subjects’ personal information, upon the data subjects’ request, to meet the entity’s objectives related to privacy
+P7.1:
+  family: P7
+  name: Accuracy of Personal Information
+  description: The entity collects and maintains accurate, up-to-date, complete, and relevant personal information to meet the entity’s objectives related to privacy
+P8.1:
+  family: P8
+  name: Personal Information Dispute Resolution
+  description: The entity implements a process for receiving, addressing, resolving, and communicating the resolution of inquiries, complaints, and disputes from data subjects and others and periodically monitors compliance to meet the entity’s objectives related to privacy. Corrections and other necessary actions related to identified deficiencies are made or taken in a timely manner
