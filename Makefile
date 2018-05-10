@@ -13,9 +13,10 @@ comply: assets $(GO_SOURCES)
 
 dist: clean
 	mkdir dist
-	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build $(LDFLAGS) -o dist/comply-$(VERSION)-darwin-amd64 github.com/strongdm/comply/cmd/comply
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build $(LDFLAGS) -o dist/comply-$(VERSION)-linux-amd64 github.com/strongdm/comply/cmd/comply
-
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-darwin-amd64 github.com/strongdm/comply/cmd/comply
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-linux-amd64 github.com/strongdm/comply/cmd/comply
+	cd dist && tar -czvf comply-$(VERSION)-darwin-amd64.tgz comply-$(VERSION)-darwin-amd64
+	cd dist && tar -czvf comply-$(VERSION)-linux-amd64.tgz comply-$(VERSION)-linux-amd64
 clean:
 	rm -rf dist
 	rm -f comply
@@ -57,16 +58,16 @@ release: dist gh-release
 	--user strongdm \
 	--repo comply \
 	--tag $(VERSION) \
-	--name comply-$(VERSION)-darwin-amd64 \
-	--file dist/comply-$(VERSION)-darwin-amd64
+	--name comply-$(VERSION)-darwin-amd64.tgz \
+	--file dist/comply-$(VERSION)-darwin-amd64.tgz
 
 	github-release upload \
 	--security-token $$GH_LOGIN \
 	--user strongdm \
 	--repo comply \
 	--tag $(VERSION) \
-	--name comply-$(VERSION)-linux-amd64 \
-	--file dist/comply-$(VERSION)-linux-amd64
+	--name comply-$(VERSION)-linux-amd64.tgz \
+	--file dist/comply-$(VERSION)-linux-amd64.tgz
 
 gh-release:
 	go get -u github.com/aktau/github-release
