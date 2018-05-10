@@ -75,6 +75,8 @@ patch: clean gitsem
 	gitsem patch
 	git push
 	git push origin --tags
+	$(eval VERSION = $(shell git describe --tags --always --dirty="-dev"))
+	echo "--> $(VERSION)"
 
 release-deps: gitsem gh-release
 
