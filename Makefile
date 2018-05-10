@@ -1,8 +1,6 @@
 .DEFAULT_GOAL := comply
 GO_SOURCES := $(shell find . -name '*.go')
 THEME_SOURCES := $(shell find themes)
-VERSION := $(shell git describe --tags --always --dirty="-dev")
-LDFLAGS := -ldflags='-X "cli.Version=$(VERSION)"'
 
 assets: $(THEME_SOURCES)
 	go-bindata-assetfs -pkg theme -prefix themes themes/...
@@ -12,6 +10,8 @@ comply: assets $(GO_SOURCES)
 	go build github.com/strongdm/comply/cmd/comply
 
 dist: clean
+	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
+	$(eval LDFLAGS := -ldflags='-X "cli.Version=$(VERSION)"')
 	mkdir dist
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-darwin-amd64 github.com/strongdm/comply/cmd/comply
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-linux-amd64 github.com/strongdm/comply/cmd/comply
@@ -46,6 +46,7 @@ cleanse:
 	git gc --aggressive --prune=all
 
 release: dist release-deps
+	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
 	github-release release \
 	--security-token $$GH_LOGIN \
 	--user strongdm \
@@ -75,8 +76,6 @@ patch: clean gitsem
 	gitsem patch
 	git push
 	git push origin --tags
-	$(eval VERSION = $(shell git describe --tags --always --dirty="-dev"))
-	echo "--> $(VERSION)"
 
 release-deps: gitsem gh-release
 
