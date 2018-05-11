@@ -6,6 +6,16 @@ Comply manages the lifecycle of your program throughout the year via your existi
 
 In addition to automation, Comply includes a SOC2-focused module featuring open source policy and procedure **templates** suitable for satisfying a SOC2 audit.
 
+# Getting Started
+
+macOS:
+
+`brew install comply`
+
+Go users:
+
+`go get github.com/strongdm/comply`
+
 # Discussion
 
 Join us in [Comply Users](https://join.slack.com/t/comply-users/shared_invite/enQtMzU3MTk5MDkxNDU4LTMwYzZkMjA4YjQ2YTM5Zjc0NTAyYWY5MDBlOGMwMzRmZTk5YzBlOTRiMTVlNGRlZjY1MTY1NDE0MjY5ZjYwNWU)

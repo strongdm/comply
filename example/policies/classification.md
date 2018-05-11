@@ -34,4 +34,4 @@ This policy defines the high level objectives and implementation instructions fo
   - Sensitivity and criticality of the information, based on the highest risk calculated for each information item during the risk assessment.
   - Legal, regulatory and contractual obligations.
 
-- Information must be classified based on confidentiality levels as defined in Table 1.
+- Information must be classified based on confidentiality levels as defined in Table 1
