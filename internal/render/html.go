@@ -1,0 +1,80 @@
+package render
+
+import (
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+
+	"github.com/pkg/errors"
+	"github.com/yosssi/ace"
+)
+
+const websocketReloader = `<script>
+(function(){
+	var ws = new WebSocket("ws://localhost:5122/ws")
+	var connected = false
+	ws.onopen = function(e) {
+		connected = true
+	}
+	ws.onclose = function(e) {
+		// reload!
+		if (connected) {
+			window.location=window.location
+		}
+	}
+})()
+</script>`
+
+func html(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
+	for {
+		files, err := ioutil.ReadDir(filepath.Join(".", "templates"))
+		if err != nil {
+			errCh <- errors.Wrap(err, "unable to open template directory")
+			return
+		}
+
+		_, data, err := loadWithStats()
+		if err != nil {
+			errCh <- errors.Wrap(err, "unable to load data")
+			return
+		}
+
+		for _, fileInfo := range files {
+			if !strings.HasSuffix(fileInfo.Name(), ".ace") {
+				continue
+			}
+
+			basename := strings.Replace(fileInfo.Name(), ".ace", "", -1)
+			w, err := os.Create(filepath.Join(output, fmt.Sprintf("%s.html", basename)))
+			if err != nil {
+				errCh <- errors.Wrap(err, "unable to create HTML file")
+				return
+			}
+
+			tpl, err := ace.Load("", filepath.Join("templates", basename), aceOpts)
+			if err != nil {
+				w.Write([]byte("<htmL><body>template error</body></html>"))
+				fmt.Println(err)
+			}
+
+			err = tpl.Execute(w, data)
+			if err != nil {
+				w.Write([]byte("<htmL><body>template error</body></html>"))
+				fmt.Println(err)
+			}
+
+			if live {
+				w.Write([]byte(websocketReloader))
+			}
+			w.Close()
+		}
+		if !live {
+			wg.Done()
+			return
+		}
+		<-subscribe()
+	}
+}
