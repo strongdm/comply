@@ -3,19 +3,22 @@ GO_SOURCES := $(shell find . -name '*.go')
 THEME_SOURCES := $(shell find themes)
 
 assets: $(THEME_SOURCES)
-	go get github.com/jteeuwen/go-bindata/...
-	go get github.com/elazarl/go-bindata-assetfs/...
-	go install github.com/elazarl/go-bindata-assetfs
+	@go get github.com/jteeuwen/go-bindata/...
+	@go get github.com/elazarl/go-bindata-assetfs/...
+	@go install github.com/elazarl/go-bindata-assetfs
 	go-bindata-assetfs -o bindata.go -pkg theme -prefix themes themes/...
-	mv bindata.go internal/theme/themes_bindata.go
+	mv bindata_assetfs.go internal/theme/themes_bindata.go
 
 comply: assets $(GO_SOURCES)
-	go build github.com/strongdm/comply/cmd/comply
+	@# $(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
+	@# $(eval LDFLAGS := -ldflags='-X "github.com/strongdm/comply/internal/cli.Version=$(VERSION)"')
+	go build $(LDFLAGS) github.com/strongdm/comply/cmd/comply
 
 dist: clean
-	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
+	$(eval VERSION := $(shell cat VERSION))
 	$(eval LDFLAGS := -ldflags='-X "cli.Version=$(VERSION)"')
 	mkdir dist
+	echo $(VERSION)
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-darwin-amd64 ./cmd/comply
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-linux-amd64 ./cmd/comply
 	cd dist && tar -czvf comply-$(VERSION)-darwin-amd64.tgz comply-$(VERSION)-darwin-amd64

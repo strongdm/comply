@@ -19,7 +19,7 @@ import (
 )
 
 // Version is set by the build system.
-const Version = "0.0.0-development"
+var Version = ""
 
 // Main should be invoked by the main function in the main package.
 func Main() {
