@@ -60,6 +60,9 @@ cleanse:
 	git gc --aggressive --prune=all
 
 release: dist release-deps
+ifndef GH_LOGIN
+	$(error GH_LOGIN must be set to a valid GitHub token)
+endif
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
 	github-release release \
 	--security-token $$GH_LOGIN \
