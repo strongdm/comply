@@ -7,7 +7,7 @@ assets: $(THEME_SOURCES)
 	@go get github.com/elazarl/go-bindata-assetfs/...
 	@go install github.com/elazarl/go-bindata-assetfs
 	go-bindata-assetfs -o bindata.go -pkg theme -prefix themes themes/...
-	mv bindata_assetfs.go internal/theme/themes_bindata.go
+	mv bindata.go internal/theme/themes_bindata.go
 
 comply: assets $(GO_SOURCES)
 	@# $(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
