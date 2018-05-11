@@ -16,7 +16,7 @@ comply: assets $(GO_SOURCES)
 
 dist: clean
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
-	$(eval LDFLAGS := -ldflags='-X "cli.Version=$(VERSION)"')
+	$(eval LDFLAGS := -ldflags='-X "github.com/strongdm/comply/internal/cli.Version=$(VERSION)"')
 	mkdir dist
 	echo $(VERSION)
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-darwin-amd64 ./cmd/comply
@@ -26,7 +26,7 @@ dist: clean
 
 brew: clean assets $(GO_SOURCES)
 	$(eval VERSION := $(shell cat version))
-	$(eval LDFLAGS := -ldflags='-X "cli.Version=$(VERSION)"')
+	$(eval LDFLAGS := -ldflags='-X "github.com/strongdm/comply/internal/cli.Version=$(VERSION)"')
 	mkdir bin
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o bin/comply ./cmd/comply
 
