@@ -12,15 +12,15 @@ assets: $(THEME_SOURCES)
 comply: assets $(GO_SOURCES)
 	@# $(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
 	@# $(eval LDFLAGS := -ldflags='-X "github.com/strongdm/comply/internal/cli.Version=$(VERSION)"')
-	go build $(LDFLAGS) github.com/strongdm/comply/cmd/comply
+	go build $(LDFLAGS) github.com/strongdm/comply
 
 dist: clean
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
 	$(eval LDFLAGS := -ldflags='-X "github.com/strongdm/comply/internal/cli.Version=$(VERSION)"')
 	mkdir dist
 	echo $(VERSION)
-	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-darwin-amd64 ./cmd/comply
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-linux-amd64 ./cmd/comply
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-darwin-amd64 .
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-linux-amd64 .
 	cd dist && tar -czvf comply-$(VERSION)-darwin-amd64.tgz comply-$(VERSION)-darwin-amd64
 	cd dist && tar -czvf comply-$(VERSION)-linux-amd64.tgz comply-$(VERSION)-linux-amd64
 
@@ -28,7 +28,7 @@ brew: clean assets $(GO_SOURCES)
 	$(eval VERSION := $(shell cat version))
 	$(eval LDFLAGS := -ldflags='-X "github.com/strongdm/comply/internal/cli.Version=$(VERSION)"')
 	mkdir bin
-	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o bin/comply ./cmd/comply
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o bin/comply .
 
 clean:
 	rm -rf bin
@@ -36,7 +36,7 @@ clean:
 	rm -f comply
 
 install: assets $(GO_SOURCES)
-	go install github.com/strongdm/comply/cmd/comply
+	go install github.com/strongdm/comply
 
 export-example:
 	cp example/narratives/* themes/comply-soc2/narratives
