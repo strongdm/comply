@@ -59,10 +59,12 @@ cleanse:
 	git push -f origin master
 	git gc --aggressive --prune=all
 
-release: dist release-deps
+release-env:
 ifndef GH_LOGIN
 	$(error GH_LOGIN must be set to a valid GitHub token)
 endif
+
+release: release-env dist release-deps
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
 	github-release release \
 	--security-token $$GH_LOGIN \
@@ -87,9 +89,9 @@ endif
 	--name comply-$(VERSION)-linux-amd64.tgz \
 	--file dist/comply-$(VERSION)-linux-amd64.tgz
 
-patch-release: patch release
+patch-release: release-env patch release
 
-minor-release: minor release
+minor-release: release-env minor release
 
 patch: clean gitsem
 	gitsem -m "increment patch for release" patch
