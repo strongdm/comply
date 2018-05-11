@@ -18,7 +18,7 @@ dist: clean
 	cd dist && tar -czvf comply-$(VERSION)-darwin-amd64.tgz comply-$(VERSION)-darwin-amd64
 	cd dist && tar -czvf comply-$(VERSION)-linux-amd64.tgz comply-$(VERSION)-linux-amd64
 
-brew: clean
+brew: clean assets $(GO_SOURCES)
 	$(eval VERSION := $(shell cat version))
 	$(eval LDFLAGS := -ldflags='-X "cli.Version=$(VERSION)"')
 	mkdir bin
