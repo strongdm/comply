@@ -15,7 +15,7 @@ comply: assets $(GO_SOURCES)
 	go build $(LDFLAGS) github.com/strongdm/comply/cmd/comply
 
 dist: clean
-	$(eval VERSION := $(shell cat VERSION))
+	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
 	$(eval LDFLAGS := -ldflags='-X "cli.Version=$(VERSION)"')
 	mkdir dist
 	echo $(VERSION)
