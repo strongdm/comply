@@ -3,8 +3,11 @@ GO_SOURCES := $(shell find . -name '*.go')
 THEME_SOURCES := $(shell find themes)
 
 assets: $(THEME_SOURCES)
-	go-bindata-assetfs -pkg theme -prefix themes themes/...
-	mv bindata_assetfs.go internal/theme/themes_bindata.go
+	go get github.com/jteeuwen/go-bindata/...
+	go get github.com/elazarl/go-bindata-assetfs/...
+	go install github.com/elazarl/go-bindata-assetfs
+	go-bindata-assetfs -o bindata.go -pkg theme -prefix themes themes/...
+	mv bindata.go internal/theme/themes_bindata.go
 
 comply: assets $(GO_SOURCES)
 	go build github.com/strongdm/comply/cmd/comply

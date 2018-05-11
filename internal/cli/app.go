@@ -32,7 +32,9 @@ func Main() {
 func newApp() *cli.App {
 	app := cli.NewApp()
 	app.Name = "comply"
-	app.HideVersion = true
+	if Version == "" {
+		app.HideVersion = true
+	}
 	app.Version = Version
 	app.Usage = "policy compliance toolkit"
 
