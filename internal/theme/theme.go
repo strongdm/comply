@@ -7,8 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/alecthomas/template"
+	"text/template"
 )
 
 // SaveTo persists a compliance theme to a destination directory with optional
