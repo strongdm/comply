@@ -3,7 +3,7 @@
 Comply is a SOC2-focused compliance automation tool:
 
 - **Policy Generator**: markdown-powered **document pipeline** for publishing auditor-friendly **policy documents**
-- **Ticketing Integration**: manage the lifecycle of your program throughout the year via your existing **ticketing system**
+- **Ticketing Integration**: automate compliance throughout the year via your existing **ticketing system**
 - **SOC2 Templates**: open source policy and procedure **templates** suitable for satisfying a SOC2 audit
 
 # Installation
@@ -25,6 +25,8 @@ $ mkdir my-company
 $ cd my-company
 $ comply init
 ```
+
+Once `comply init` is complete, just `git init` and `git push` your project to a new repository. You're ready to begin editing the included policy boilerplate text.
 
 # Discussion
 
