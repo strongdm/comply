@@ -1,0 +1,224 @@
+= doctype html
+html lang=en
+  head
+    meta charset=utf-8
+    title {{.Project.Name}}
+    link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css"
+    link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulmaswatch/0.6.2/sandstone/bulmaswatch.min.css"
+    script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment.min.js"
+    script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/later/1.2.0/later.min.js"
+    script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prettycron/0.11.0/prettycron.min.js"
+    meta name="viewport" content="width=device-width, initial-scale=1"
+    = css
+    = javascript
+      document.addEventListener("DOMContentLoaded", function(event) {
+        document.querySelectorAll('.cron').forEach(function(el) {
+          el.innerHTML = prettyCron.toString(el.innerHTML)
+        })
+      })
+
+      function show(name) {
+        var items = document.getElementsByClassName('top-nav')
+        for (var i=0; i<items.length; i++) {
+          var item = items[i]
+          if (item.tagName === "LI") {
+            // navigation tabs
+            if (item.classList.contains(name)) {
+              item.classList.add('is-active')
+            } else {
+              item.classList.remove('is-active')
+            }
+          } else {
+            // sections
+            if (item.id === name) {
+              item.classList.remove('is-hidden')
+            } else {
+              item.classList.add('is-hidden')
+            }
+          }
+        }
+      }
+  body
+    section.hero.is-primary.is-small
+      .hero-body
+        .container
+          h1.title {{.Project.Name}}
+          p.subtitle Policy, Procedure, and Audit Status
+      .hero-foot
+        nav.tabs.is-boxed.is-fullwidth
+          .container
+            ul.is-size-4
+              li.top-nav.overview
+                strong
+                  a onclick="javascript:show('overview')" Overview
+              li.top-nav.narratives
+                strong
+                  a onclick="javascript:show('narratives')" Narratives
+              li.top-nav.policies
+                strong
+                  a onclick="javascript:show('policies')" Policies
+              li.top-nav.procedures
+                strong
+                  a onclick="javascript:show('procedures')" Procedures
+              li.top-nav.standards
+                strong
+                  a onclick="javascript:show('standards')" Standards
+              / li.top-nav.evidence
+              /   a onclick="javascript:show('evidence')" Evidence Vault
+    #overview.section.top-nav.container.content
+      blockquote
+        h3 This site consolidates all documents related to the {{.Project.Name}}
+      hr
+      .columns.is-vcentered
+        .column.is-one-third
+          div
+            p.subtitle.is-3.has-text-centered Control Tracking
+        .column.has-text-centered
+          div
+            p.heading Satisfied Controls
+            p.title
+              {{.Stats.ControlsSatisfied}}
+        .column.has-text-centered
+          div
+            p.heading Total Controls
+            p.title
+              {{.Stats.ControlsTotal}}
+      .columns.is-vcentered
+        .column.is-one-third
+          div
+            p.subtitle.is-3.has-text-centered Procedure Tracking
+        .column.has-text-centered
+          div
+            p.heading Active Tickets
+            p.title
+              a target=_blank href="{{.Links.ProcedureOpen}}"
+                {{.Stats.ProcedureOpen}}
+        .column.has-text-centered
+          div
+            p.heading Oldest Ticket
+            p.title
+              a {{.Stats.ProcedureOldestDays}} days
+      .columns.is-vcentered
+        .column.is-one-third
+          div.has-text-centered
+            p.subtitle.is-3 Audit Tracking
+        .column.has-text-centered
+          div
+            p.heading Open Requests
+            p.title
+              a target=_blank href="{{.Links.AuditOpen}}"
+                {{.Stats.AuditOpen}}
+        .column.has-text-centered
+          div
+            p.heading Total Requests
+            p.title
+              a target=_blank href="{{.Links.AuditAll}}"
+                {{.Stats.AuditTotal}}
+      .columns.is-vcentered
+        .column.is-one-third
+        .column.is-two-thirds.has-text-centered
+          / progress.progress.is-primary value={{.Stats.AuditClosed}} max={{.Stats.AuditTotal}}
+    #narratives.section.top-nav.container.content
+      blockquote
+        h3
+          p
+            strong Narratives
+            | provide an overview of the organization and the compliance environment.
+      table.table.is-size-4
+        thead
+          tr
+            th Name
+            th Acronym
+            th PDF
+        tbody
+          {{range .Narratives }}
+          tr
+            td {{.Name}}
+            td {{.Acronym}}
+            td
+              a href={{.OutputFilename}} target=_blank
+                {{.OutputFilename}}
+          {{end}}
+    #policies.section.top-nav.container.content
+      blockquote
+        h3
+          p
+            strong Policies
+            | govern the behavior of {{.Name}} employees and contractors.
+      table.table.is-size-4
+        thead
+          tr
+            th Name
+            th Acronym
+            th PDF
+        tbody
+          {{range .Policies }}
+          tr
+            td {{.Name}}
+            td {{.Acronym}}
+            td
+              a href={{.OutputFilename}} target=_blank
+                {{.OutputFilename}}
+          {{end}}
+    #procedures.section.top-nav.container.content
+      blockquote
+        h3
+          p
+            strong Procedures
+            | prescribe specific steps that are taken in response to key events.
+      table.table.is-size-4
+        thead
+          tr
+            th Name
+            th ID
+            th Schedule (cron format)
+        tbody
+          {{range .Procedures }}
+          tr
+            td {{.Name}}
+            td {{.ID}}
+            {{if .Cron}}
+            td.cron {{.Cron}}
+            {{else}}
+            td On demand
+            {{end}}
+          {{end}}
+    #standards.section.top-nav.container.content
+      blockquote
+        h3
+          p
+            strong Standards
+            | specify the controls satisfied by the compliance program.
+      table.table.is-size-4.is-fullwidth
+        thead
+          tr
+            th Control Key
+            th Name
+            th Satisfied?
+            th Satisfied By
+        tbody
+          {{range .Controls }}
+          tr
+            td {{.ControlKey}}
+            td
+              strong {{.Name}}
+              .subtitle {{.Description}}
+            {{if .Satisfied}}
+            td.is-success Yes
+            {{else}}
+            td No
+            {{end}}
+            td
+              {{range .SatisfiedBy}}
+              a.is-size-7 href={{.}} target=_blank
+                {{.}}
+              {{end}}
+          {{end}}
+
+    footer.footer
+      .container
+        .content.has-text-centered
+          p {{.Project.OrganizationName}} Confidential 2018
+  = javascript
+    // commented for development
+    show('overview')

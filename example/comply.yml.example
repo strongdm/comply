@@ -1,0 +1,7 @@
+name: "Acme"
+filePrefix: "Acme"
+tickets:
+  github:
+    token: XXX
+    username: strongdm
+    repo: comply
