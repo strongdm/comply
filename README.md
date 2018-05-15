@@ -10,7 +10,7 @@ Comply is a SOC2-focused compliance automation tool:
 
 macOS:
 
-`brew install comply`
+`brew install comply` (_coming soon_)
 
 Go users:
 
