@@ -9,6 +9,15 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/alecthomas/template"
+  packages = [
+    ".",
+    "parse"
+  ]
+  revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
+
+[[projects]]
+  branch = "master"
   name = "github.com/chzyer/readline"
   packages = ["."]
   revision = "f6d7a1f6fbf35bbf9beb80dc63c56a29dcfb759f"
@@ -257,6 +266,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4fd2ff9f9869c3f3e30601504f4b00fce69d282ae8df42583a1c60848bfd0766"
+  inputs-digest = "6e787e78feef91daf35156f0621de05e59affbd8f932a98d929001a86173a909"
   solver-name = "gps-cdcl"
   solver-version = 1
