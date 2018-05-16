@@ -104,6 +104,9 @@ release: release-env dist release-deps
 	--name comply-$(VERSION)-linux-amd64.tgz \
 	--file dist/comply-$(VERSION)-linux-amd64.tgz
 
+	@echo "Update homebrew formula with the following: "
+	@echo "version $(VERSION)"
+	@curl -L https://github.com/strongdm/comply/archive/$(VERSION).tar.gz |shasum -a 256
 patch-release: release-env push-assets patch release
 
 minor-release: release-env push-assets minor release
