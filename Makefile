@@ -104,9 +104,9 @@ release: release-env dist release-deps
 	--name comply-$(VERSION)-linux-amd64.tgz \
 	--file dist/comply-$(VERSION)-linux-amd64.tgz
 
-patch-release: release-env patch release
+patch-release: release-env push-assets patch release
 
-minor-release: release-env minor release
+minor-release: release-env push-assets minor release
 
 patch: clean gitsem
 	gitsem -m "increment patch for release" patch
