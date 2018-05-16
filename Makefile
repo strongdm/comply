@@ -109,12 +109,12 @@ patch-release: release-env push-assets patch release
 minor-release: release-env push-assets minor release
 
 patch: clean gitsem
-	gitsem -m "increment patch for release" patch
+	gitsem -m "increment patch for release (via Makefile)" patch
 	git push
 	git push origin --tags
 
 minor: clean gitsem
-	gitsem -m "increment minor for release" minor
+	gitsem -m "increment minor for release (via Makefile)" minor
 	git push
 	git push origin --tags
 
