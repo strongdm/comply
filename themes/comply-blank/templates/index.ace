@@ -13,7 +13,7 @@ html lang=en
     = javascript
       document.addEventListener("DOMContentLoaded", function(event) {
         document.querySelectorAll('.cron').forEach(function(el) {
-          el.innerHTML = prettyCron.toString(el.innerHTML)
+          el.innerHTML = prettyCron.toString(el.innerHTML,true) // 6-field expressions
         })
       })
 

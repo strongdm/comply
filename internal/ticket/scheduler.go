@@ -98,6 +98,8 @@ func TriggerScheduled() error {
 }
 
 func trigger(procedure *model.Procedure) {
+	fmt.Printf("triggering procedure %s (cron expression: %s)\n", procedure.Name, procedure.Cron)
+
 	// TODO: don't hardcode GH
 	tp := model.GetPlugin(model.GitHub)
 	tp.Create(&model.Ticket{

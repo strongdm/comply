@@ -22,7 +22,7 @@ const websocketReloader = `<script>
 	ws.onclose = function(e) {
 		// reload!
 		if (connected) {
-			window.location=window.location
+			window.location.reload(true)
 		}
 	}
 })()
