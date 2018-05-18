@@ -7,8 +7,7 @@ majorRevisions:
   - date: Jun 1 2018
     comment: Initial document
 ---
-
-#Appendices
+# Appendices 
 
 Appendix A: Handling of Classified Information
 
@@ -44,42 +43,48 @@ a. When classifying information, the level of confidentiality is determined by:
 
     i. Sensitivity and criticality of the information, based on the highest risk calculated for each information item during the risk assessment.
 
-    i. Legal, regulatory and contractual obligations.
+    i. Legal, regulatory and contractual obligations. 
 
-a. Information must be classified based on confidentiality levels as defined in Table 3. 
 
-+-------------------+------------------+---------------------------+------------------+
-|**Confidentiality**| **Label**        |  **Classification**       |  **Access**      |
-|     **Level**     |                  |   **Criteria**            | **Restrictions** |
-+===================+==================+===========================+==================+
-| Public            | FOR PUBLIC       | Making the information    | Information      |
-|                   | RELEASE          | public will not harm      | is available to  |
-|                   |                  | the organization in       | to the public.   |
-|                   |                  | any way.                  |                  |
-+-------------------+------------------+---------------------------+------------------+
-| Internal Use      | INTERNAL USE     | Unauthorized access       | Information      |
-|                   |                  | may cause minor damage    | is available to  |
-|                   |                  | and/or inconvenience      | all employees    |
-|                   |                  | to the organization.      | and authorized   |
-|                   |                  |                           | third parties.   |
-+-------------------+------------------+---------------------------+------------------+
-| Restricted        | RESTRICTED       | Unauthorized access to    | Information      |
-|                   |                  | information may cause     | is available only|
-|                   |                  | considerable damage to    | to a specific    |
-|                   |                  | the business and/or       | group of         |
-|                   |                  | the organization's        | employees and    |
-|                   |                  | reputation.               | authorized third |           
-|                   |                  |                           | parties.         |
-+-------------------+------------------+---------------------------+------------------+
-| Confidential      | CONFIDENTIAL     | Unauthorized access to    | Information is   |           
-|                   |                  | information may cause     | availalbe only to|
-|                   |                  | catastrophic damage to    | specific indivi- |
-|                   |                  | business and/or the       | duals in the     |
-|                   |                  | organization's            | organization.    |
-|                   |                  | reputation.               |                  |
-+-------------------+------------------+---------------------------+------------------+
++-------------------+------------------+---------------------------+---------------------------+
+|**Confidentiality**| **Label**        |  **Classification**       |  **Access**               |
+|     **Level**     |                  |   **Criteria**            | **Restrictions**          |
++===================+==================+===========================+============================+
+| Public            | For Public       | Making the information    | Information is available  |   
+|                   | Release          | public will not harm      | to the public.            |
+|                   |                  | the organization in       |                           |        
+|                   |                  | any way.                  |                           |
++-------------------+------------------+---------------------------+---------------------------+
+|                   |                  |                           |                           |
++-------------------+------------------+---------------------------+---------------------------+
+| Internal Use      | Internal Use     | Unauthorized access       | Information is available  |
+|                   |                  | may cause minor damage    | to all employees and      |   
+|                   |                  | and/or inconvenience      | authorized third parties. |        
+|                   |                  | to the organization.      | 
++-------------------+------------------+---------------------------+---------------------------+
+|                   |                  |                           |                           |
++-------------------+------------------+---------------------------+---------------------------+
+| Restricted        | Restricted       | Unauthorized access to    | Information is available  |
+|                   |                  | information may cause     | to a specific group of    |
+|                   |                  | considerable damage to    | employees and authhorized |
+|                   |                  | the business and/or       | third parties.            |
+|                   |                  | the organization's        |                           |
+|                   |                  | reputation.               |                           |           
++-------------------+------------------+---------------------------+---------------------------+
+|                   |                  |                           |                           |
++-------------------+------------------+---------------------------+---------------------------+
+| Confidential      |Confidential      | Unauthorized access to    | Information is available  |           
+|                   |                  | information may cause     | only to specific indivi-  |
+|                   |                  | catastrophic damage to    | duals in the              |
+|                   |                  | business and/or the       | organization.             |
+|                   |                  | organization's reputation.|                           |
++-------------------+------------------+---------------------------+---------------------------+
 
 Table 3: Information Confidentiality Levels
+
+&nbsp;
+
+d. Information must be classified based on confidentiality levels as defined in Table 3.
 
 e. Information and information system owners should try to use the lowest confidentiality level that ensures an adequate level of protection, thereby avoiding unnecessary production costs.
 
