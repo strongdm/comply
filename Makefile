@@ -105,8 +105,9 @@ release: release-env dist release-deps
 	--file dist/comply-$(VERSION)-linux-amd64.tgz
 
 	@echo "Update homebrew formula with the following: "
-	@echo "version $(VERSION)"
-	@curl -L https://github.com/strongdm/comply/archive/$(VERSION).tar.gz |shasum -a 256
+	$(eval SHA := $(shell curl -s -L https://github.com/strongdm/comply/archive/$(VERSION).tar.gz |shasum -a 256))
+	@echo "version $(VERSION) sha $(SHA)"
+
 
 patch-release: release-env push-assets patch release
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
