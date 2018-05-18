@@ -107,7 +107,10 @@ release: release-env dist release-deps
 	@echo "Update homebrew formula with the following: "
 	@echo "version $(VERSION)"
 	@curl -L https://github.com/strongdm/comply/archive/$(VERSION).tar.gz |shasum -a 256
-patch-release: release-env push-assets patch release
+
+patch-release: release-env #push-assets patch release
+	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
+	curl -X POST --data-urlencode 'payload={"channel": "#release", "username": "release", "text": "comply $(VERSION) released", "icon_emoji": ":shipit:"}' https://hooks.slack.com/services/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
 
 minor-release: release-env push-assets minor release
 
