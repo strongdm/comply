@@ -58,12 +58,13 @@ USAGE:
    comply [global options] command [command options] [arguments...]
 
 COMMANDS:
-     init       initialize a new compliance repository (interactive)
-     build, b   generate a static website summarizing the compliance program
-     scheduler  create tickets based on procedure schedule
-     serve      live updating version of the build command
-     sync       sync ticket status to local cache
-     todo       list declared vs satisfied compliance controls
-     help, h    Shows a list of commands or help for one command
+     init             initialize a new compliance repository (interactive)
+     build, b         generate a static website summarizing the compliance program
+     procedure, proc  create ticket by procedure ID
+     scheduler        create tickets based on procedure schedule
+     serve            live updating version of the build command
+     sync             sync ticket status to local cache
+     todo             list declared vs satisfied compliance controls
+     help, h          Shows a list of commands or help for one command
 ```
 
