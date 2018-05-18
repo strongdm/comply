@@ -49,14 +49,6 @@ func renderNarrativeToDisk(wg *sync.WaitGroup, errOutputCh chan error, data *ren
 	go func(p *model.Narrative) {
 		defer wg.Done()
 
-		if live {
-			rel, err := filepath.Rel(config.ProjectRoot(), p.FullPath)
-			if err != nil {
-				rel = p.FullPath
-			}
-			fmt.Printf("%s -> %s\n", rel, filepath.Join("output", p.OutputFilename))
-		}
-
 		outputFilename := p.OutputFilename
 		// save preprocessed markdown
 		err = preprocessNarrative(data, p, filepath.Join(".", "output", outputFilename+".md"))
@@ -112,6 +104,13 @@ func renderNarrativeToDisk(wg *sync.WaitGroup, errOutputCh chan error, data *ren
 			errOutputCh <- err
 			return
 		}
+
+		rel, err := filepath.Rel(config.ProjectRoot(), p.FullPath)
+		if err != nil {
+			rel = p.FullPath
+		}
+		fmt.Printf("%s -> %s\n", rel, filepath.Join("output", p.OutputFilename))
+
 	}(narrative)
 }
 

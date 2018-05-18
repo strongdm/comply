@@ -59,9 +59,7 @@ func html(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 				return
 			}
 
-			if live {
-				fmt.Printf("%s -> %s\n", filepath.Join("templates", fileInfo.Name()), outputFilename)
-			}
+			fmt.Printf("%s -> %s\n", filepath.Join("templates", fileInfo.Name()), outputFilename)
 
 			tpl, err := ace.Load("", filepath.Join("templates", basename), aceOpts)
 			if err != nil {
