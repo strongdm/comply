@@ -13,11 +13,15 @@ html lang=en
     = javascript
       document.addEventListener("DOMContentLoaded", function(event) {
         document.querySelectorAll('.cron').forEach(function(el) {
-          el.innerHTML = prettyCron.toString(el.innerHTML)
+          el.innerHTML = prettyCron.toString((""+el.innerHTML).trim(),true) // 6-field expressions
         })
       })
 
       function show(name) {
+        if (history.replaceState) {
+            history.replaceState(null, null, '#'+name)
+        }
+
         var items = document.getElementsByClassName('top-nav')
         for (var i=0; i<items.length; i++) {
           var item = items[i]
@@ -220,5 +224,14 @@ html lang=en
         .content.has-text-centered
           p {{.Project.OrganizationName}} Confidential 2018
   = javascript
-    // commented for development
-    show('overview')
+    if (window.location.hash=="") {
+      show('overview')
+    } else {
+      var hashComponents = window.location.hash.split('#')
+      if (hashComponents.length>1) {
+        var destination = hashComponents[1]
+        if (["overview","narratives","policies","procedures","standards"].indexOf(destination) >= 0) {
+          show(destination)
+        }
+      }
+    }

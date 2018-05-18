@@ -9,7 +9,6 @@ satisfies:
     - CC3.1
     - CC3.2
     - CC3.3
-    - CC3.4
 majorRevisions:
   - date: Jun 1 2018
     comment: Initial document

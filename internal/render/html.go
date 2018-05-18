@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/pkg/errors"
+	"github.com/skratchdot/open-golang/open"
 	"github.com/yosssi/ace"
 )
 
@@ -22,13 +23,15 @@ const websocketReloader = `<script>
 	ws.onclose = function(e) {
 		// reload!
 		if (connected) {
-			window.location=window.location
+			window.location.reload(true)
 		}
 	}
 })()
 </script>`
 
 func html(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
+	opened := false
+
 	for {
 		files, err := ioutil.ReadDir(filepath.Join(".", "templates"))
 		if err != nil {
@@ -56,9 +59,7 @@ func html(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 				return
 			}
 
-			if live {
-				fmt.Printf("%s -> %s\n", filepath.Join("templates", fileInfo.Name()), outputFilename)
-			}
+			fmt.Printf("%s -> %s\n", filepath.Join("templates", fileInfo.Name()), outputFilename)
 
 			tpl, err := ace.Load("", filepath.Join("templates", basename), aceOpts)
 			if err != nil {
@@ -77,10 +78,17 @@ func html(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 			}
 			w.Close()
 		}
-		if !live {
+
+		if live {
+			if !opened {
+				opened = true
+				open.Run("output/index.html")
+			}
+		} else {
 			wg.Done()
 			return
 		}
+
 		<-subscribe()
 	}
 }

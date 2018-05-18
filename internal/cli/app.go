@@ -44,6 +44,7 @@ func newApp() *cli.App {
 	}
 
 	app.Commands = append(app.Commands, beforeCommand(buildCommand, projectMustExist))
+	app.Commands = append(app.Commands, beforeCommand(procedureCommand, projectMustExist))
 	app.Commands = append(app.Commands, beforeCommand(schedulerCommand, projectMustExist))
 	app.Commands = append(app.Commands, beforeCommand(serveCommand, projectMustExist))
 	app.Commands = append(app.Commands, beforeCommand(syncCommand, projectMustExist))

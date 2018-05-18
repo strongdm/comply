@@ -8,7 +8,6 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
-	"github.com/skratchdot/open-golang/open"
 	"github.com/yosssi/ace"
 )
 
@@ -102,10 +101,6 @@ func Build(output string, live bool) error {
 		wg.Wait()
 		close(wgCh)
 	}()
-
-	if live {
-		open.Run("output/index.html")
-	}
 
 	select {
 	case <-wgCh:

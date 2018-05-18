@@ -49,14 +49,6 @@ func renderPolicyToDisk(wg *sync.WaitGroup, errOutputCh chan error, data *render
 	go func(p *model.Policy) {
 		defer wg.Done()
 
-		if live {
-			rel, err := filepath.Rel(config.ProjectRoot(), p.FullPath)
-			if err != nil {
-				rel = p.FullPath
-			}
-			fmt.Printf("%s -> %s\n", rel, filepath.Join("output", p.OutputFilename))
-		}
-
 		outputFilename := p.OutputFilename
 		// save preprocessed markdown
 		err = preprocessPolicy(data, p, filepath.Join(".", "output", outputFilename+".md"))
@@ -110,6 +102,12 @@ func renderPolicyToDisk(wg *sync.WaitGroup, errOutputCh chan error, data *render
 			errOutputCh <- err
 			return
 		}
+
+		rel, err := filepath.Rel(config.ProjectRoot(), p.FullPath)
+		if err != nil {
+			rel = p.FullPath
+		}
+		fmt.Printf("%s -> %s\n", rel, filepath.Join("output", p.OutputFilename))
 	}(policy)
 }
 
