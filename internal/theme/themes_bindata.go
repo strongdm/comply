@@ -137,7 +137,7 @@ func complyBlankReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-blank/README.md", size: 1965, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-blank/README.md", size: 1965, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -157,7 +157,7 @@ func complyBlankTodoMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-blank/TODO.md", size: 1429, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-blank/TODO.md", size: 1429, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -277,7 +277,7 @@ func complyBlankTemplatesDefaultLatex() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-blank/templates/default.latex", size: 7649, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-blank/templates/default.latex", size: 7649, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -297,7 +297,7 @@ func complyBlankTemplatesIndexAce() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-blank/templates/index.ace", size: 7596, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-blank/templates/index.ace", size: 7596, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -317,7 +317,7 @@ func complySoc2ReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/README.md", size: 1965, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/README.md", size: 1965, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -337,7 +337,7 @@ func complySoc2TodoMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/TODO.md", size: 1429, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/TODO.md", size: 1429, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -357,7 +357,7 @@ func complySoc2NarrativesReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/README.md", size: 96, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/README.md", size: 96, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -377,7 +377,7 @@ func complySoc2NarrativesControlMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/control.md", size: 387, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/control.md", size: 387, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -397,7 +397,7 @@ func complySoc2NarrativesOrganizationalMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/organizational.md", size: 2378, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/organizational.md", size: 2378, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -417,7 +417,7 @@ func complySoc2NarrativesProductsMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/products.md", size: 232, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/products.md", size: 232, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -437,7 +437,7 @@ func complySoc2NarrativesSecurityMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/security.md", size: 327, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/security.md", size: 327, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -457,7 +457,7 @@ func complySoc2NarrativesSystemMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/narratives/system.md", size: 257, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/narratives/system.md", size: 257, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -477,7 +477,7 @@ func complySoc2PoliciesReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/README.md", size: 71, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/README.md", size: 71, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -497,7 +497,7 @@ func complySoc2PoliciesAccessMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/access.md", size: 200, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/access.md", size: 200, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -517,7 +517,7 @@ func complySoc2PoliciesApplicationMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/application.md", size: 8377, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/application.md", size: 8377, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -537,7 +537,7 @@ func complySoc2PoliciesAvailabilityMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/availability.md", size: 7019, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/availability.md", size: 7019, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -557,7 +557,7 @@ func complySoc2PoliciesChangeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/change.md", size: 2793, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/change.md", size: 2793, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -577,7 +577,7 @@ func complySoc2PoliciesClassificationMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/classification.md", size: 14376, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/classification.md", size: 14376, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -597,7 +597,7 @@ func complySoc2PoliciesConductMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/conduct.md", size: 4492, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/conduct.md", size: 4492, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -617,7 +617,7 @@ func complySoc2PoliciesConfidentialityMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/confidentiality.md", size: 3653, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/confidentiality.md", size: 3653, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -637,7 +637,7 @@ func complySoc2PoliciesContinuityMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/continuity.md", size: 5043, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/continuity.md", size: 5043, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -657,7 +657,7 @@ func complySoc2PoliciesCyberMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/cyber.md", size: 4805, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/cyber.md", size: 4805, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -677,7 +677,7 @@ func complySoc2PoliciesDatacenterMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/datacenter.md", size: 3014, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/datacenter.md", size: 3014, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -697,7 +697,7 @@ func complySoc2PoliciesDevelopmentMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/development.md", size: 8933, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/development.md", size: 8933, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -717,7 +717,7 @@ func complySoc2PoliciesDisasterMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/disaster.md", size: 10315, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/disaster.md", size: 10315, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -737,7 +737,7 @@ func complySoc2PoliciesEncryptionMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/encryption.md", size: 5381, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/encryption.md", size: 5381, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -757,7 +757,7 @@ func complySoc2PoliciesIncidentMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/incident.md", size: 8552, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/incident.md", size: 8552, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -777,7 +777,7 @@ func complySoc2PoliciesInformationMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/information.md", size: 5359, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/information.md", size: 5359, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -797,7 +797,7 @@ func complySoc2PoliciesLogMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/log.md", size: 4307, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/log.md", size: 4307, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -817,7 +817,7 @@ func complySoc2PoliciesMediaMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/media.md", size: 8819, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/media.md", size: 8819, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -837,7 +837,7 @@ func complySoc2PoliciesOfficeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/office.md", size: 3927, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/office.md", size: 3927, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -857,7 +857,7 @@ func complySoc2PoliciesPasswordMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/password.md", size: 1796, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/password.md", size: 1796, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -877,7 +877,7 @@ func complySoc2PoliciesPolicyMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/policy.md", size: 892, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/policy.md", size: 892, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -897,7 +897,7 @@ func complySoc2PoliciesPrivacyMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/privacy.md", size: 346, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/privacy.md", size: 346, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -917,7 +917,7 @@ func complySoc2PoliciesProcessingMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/processing.md", size: 210, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/processing.md", size: 210, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -937,7 +937,7 @@ func complySoc2PoliciesRemoteMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/remote.md", size: 4119, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/remote.md", size: 4119, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -957,12 +957,12 @@ func complySoc2PoliciesRetentionMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/retention.md", size: 6811, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/retention.md", size: 6811, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _complySoc2PoliciesRiskMd = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x1c\x8d\x41\x0a\xc2\x30\x10\x45\xf7\x73\x8a\x0f\xae\x23\xd6\x95\x66\x57\xb2\xaa\xab\xd2\x7a\x81\x90\x46\x19\x6d\x66\xa0\x93\x0a\xbd\xbd\xb4\xab\x0f\x9f\xf7\x78\x12\x4b\xf6\x18\xd8\xbe\x68\xcd\xb2\x59\xc9\x52\xd1\xeb\xcc\x69\xa3\x98\x16\x95\xad\x78\x0c\x5d\xdb\x93\xc5\xca\xf6\xe2\x6c\x9e\x80\xe7\x18\xf6\x01\x1c\x42\xb8\x9f\x1b\x2a\xf1\xa3\xcb\x90\x7f\x6c\xac\x72\x20\x0e\x53\xac\xd9\xe3\xb1\x0a\x1a\x5c\x2f\xcd\xed\x10\x92\x96\xbd\xe1\xd1\x09\x57\x8e\x33\x26\x4d\xeb\xfe\x90\x73\x8e\xe8\x84\xa0\x85\xe5\x8d\x51\x55\xfe\x01\x00\x00\xff\xff\x7a\xe5\x35\x49\x9e\x00\x00\x00")
+var _complySoc2PoliciesRiskMd = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xec\x5a\xcd\x92\x1b\xb7\x11\xbe\xf3\x29\xba\x2a\x55\x89\xbc\xa6\xc6\x96\xed\x43\xb2\xaa\x1c\x36\x8a\x53\x51\x4a\xb1\x5d\xab\xcd\x03\x80\x98\x1e\x0e\x2c\x0c\x30\x46\x63\xc8\xa5\x4b\x87\xbc\x46\x5e\x2f\x4f\x92\xea\x06\xe6\x97\xdc\x15\xe9\xad\x52\x2e\xcb\x8b\xad\x59\x00\xfd\xf7\xe1\xeb\x06\x1a\x4e\x35\x78\x0d\xb7\x86\x3e\xc0\x0d\x11\x12\x35\xe8\x22\xfc\xe4\xad\xd1\x87\x95\xd2\xc1\xbb\x43\x73\x0d\xb7\x6f\x6f\x7e\x5a\x91\x8a\x86\x2a\x83\x74\xbd\x02\xb8\x7b\xff\x86\xff\x03\xf0\x12\xde\xbc\xf9\x53\xf1\x6a\xd5\xa8\x9f\x7d\xb8\xc5\x9d\x21\xe3\x9d\x0c\x79\x09\xa5\x8a\x78\x0d\xff\xe8\x1c\xbc\x82\x6f\xbe\x7e\xf5\x47\x99\xa0\x7d\xc3\x32\xae\xe1\xad\x33\xd1\x28\x0b\xa5\xd7\x1d\x7f\x59\xbd\x7c\xf9\x72\xb5\xfa\x1d\xfc\xd4\x85\xd6\x13\x82\x72\x25\xbc\xd7\xbe\xc5\xd5\x4a\x15\x70\x57\x23\xb4\xf9\x2f\xbe\x82\x58\x1b\x82\x56\xd4\x04\x43\x10\x3d\x94\x58\x19\x87\x10\x6b\x84\x06\x63\xed\x4b\x6f\xfd\xf6\x00\x95\x0f\xf2\x4d\x8d\xd6\xf1\xc2\x31\xa0\x8a\xf2\x2f\x5f\x81\x71\x95\x0f\x8d\x8a\xc6\x3b\x20\xd4\x5d\x30\xf1\x00\xc1\xd0\x07\x82\xbd\x89\xb5\x71\xb2\x82\x0f\x5b\xe5\xcc\xaf\x32\x6c\x9d\x16\x99\x49\x55\x5a\x63\x1b\xd5\xc6\x22\x58\xdc\xa1\xe5\x95\x79\x11\x50\x04\x84\x11\x36\x87\xa3\x65\xfe\xfb\xef\xff\x10\x58\x54\x25\x06\xaa\x4d\x5b\x88\xa5\xb7\x69\xce\x4c\x5d\x59\x67\xd4\x59\x05\x04\xd5\xb6\xd6\xa0\x28\xc1\xcb\xa2\x8b\x26\x20\x10\x3b\x2c\x39\xe8\x84\xa8\x93\x86\xb6\xc1\x6f\x83\x6a\x06\x93\x94\xb5\x22\x3e\x12\xec\x6b\xa3\x6b\x91\xd6\x11\x96\x0f\x39\x03\x7c\xc8\x23\xb5\xef\x6c\x09\xb5\xda\x71\xf4\xc0\x34\xad\xd2\x11\xbc\x3b\x2d\x37\xaf\x66\x62\x91\x03\x3c\x46\x34\xd9\x46\xbd\x36\xd8\xb4\xd6\x1f\x10\xe9\x94\x61\xb0\xaf\x3d\x44\xf5\x01\xa1\x55\x21\x82\x71\xbd\xd3\x1f\x71\x60\xc1\x38\xfb\x8b\xd2\x1f\xb6\xc1\x77\xae\x14\xf9\x37\xf0\x01\x0f\x80\x16\x7b\x54\x5c\xec\x41\x06\xa2\x82\xda\x5b\x43\xd1\x68\x11\x4b\x07\x8a\xc8\xc3\x35\xdb\x14\xbc\xd2\x35\x1b\x25\xda\x34\xca\xa9\xad\x48\x9b\x1b\x9f\x20\x45\x22\x3f\xe0\x2f\x9d\x09\x32\x88\x64\xc1\x36\x78\x8d\x6c\xda\x00\xec\x99\x2f\xa2\x07\x53\x32\x14\xaa\xc3\x23\xa8\xce\xbb\x29\x2d\x05\xda\x3b\x32\x14\xc5\xb9\x95\xef\x82\xf8\x91\xae\xfb\x85\x8c\xce\x41\x7e\xc0\x23\x09\x2a\x6b\x46\xf9\x1e\x05\x3a\x32\x2e\xd6\xec\xec\xa4\xf4\xae\xb3\x0e\x83\xda\x18\x6b\xa2\x84\xb5\x56\x51\x62\x7c\x78\x3d\x8d\x53\x96\x60\xcd\x07\xb4\xa6\xf6\xbe\x94\xc9\xac\x1e\xfe\xd2\xa1\xd3\x08\x2f\x58\xfd\x2f\xfa\x81\x8f\x89\xd8\xa0\x71\x5b\x08\xa8\xac\xf9\x15\xcb\xf5\x29\x63\x86\xdd\xc4\x9e\x44\x8e\x4c\xe7\x26\x7b\x98\x45\xa5\x3d\x81\x3b\x65\xbb\x99\x13\x02\x92\x29\x3b\x65\x33\xd4\xaa\x88\x61\x01\xae\x5b\xac\x30\xb0\xce\x34\xee\xe9\x09\xc1\xde\x62\xeb\x43\x84\x3b\x46\xb6\x8a\x28\xb4\x97\x38\x97\x47\x5f\x2d\x86\x5f\xad\x84\x39\x4d\x8a\xdb\x12\xde\x7d\x1c\x8d\xd3\xb6\x2b\x33\x70\x4e\x05\xef\x61\x6f\xd5\x6a\xc7\xee\x62\x3e\xf3\xb2\x2f\x99\xa5\x5b\xe5\x0e\x39\xba\xc5\x4c\x81\xca\x04\x8a\x40\x11\x5b\xc8\x6c\xb0\x54\x29\x31\xf2\x80\xc4\x29\xa3\x8c\x14\x32\xa3\xaa\xc7\xf6\xd5\x6b\x16\xe3\x63\x8d\x01\xf6\x3e\x94\x8c\xb5\x25\x45\x35\xea\x00\xaa\xaa\x50\x47\x59\x4d\x7b\x57\x25\xe9\xca\x9a\x78\x58\x83\x71\x11\xb7\x41\xfe\x57\xb9\xf2\x2b\x1f\x40\xed\x94\xb1\xc9\x03\x87\x65\x0e\x38\xc1\x71\x85\x84\x23\x92\x48\xca\x9e\x1e\x32\x17\xfb\x1e\x5a\xd5\x62\x60\x2a\x44\x8b\x3a\x06\xef\x8c\x66\x64\x31\xaf\x32\x9b\xa5\x40\xd0\x9a\x93\xa2\xda\x28\x42\x5a\xcf\x64\x46\xd4\xb5\x4b\x29\x8b\xf7\x7c\xcb\xeb\xca\x88\xa0\x28\x86\x4e\xc7\x2e\x60\x86\xe3\x7d\xc4\xe0\x94\xfd\xca\x77\x91\x7c\x17\x34\x96\x40\x18\x76\x46\xe3\x82\x23\x0a\xf8\x5b\x0f\x6d\xf1\x16\xcf\x07\xbf\x77\x18\xa0\xe9\x28\xc2\x66\xc4\x09\x96\xf3\x18\x3b\xbc\xef\x43\x7c\x1c\xcb\xc7\xa0\xa4\x88\xbc\x36\x2a\xe6\x74\x31\x91\xce\x0b\x3f\x3c\xaf\x57\x88\xc9\x13\x4b\x76\xa8\x3a\x82\x95\x6c\xcc\x02\xbe\x1f\x96\x94\x68\x6c\xf0\x48\x68\xd3\xd9\x68\x5a\x3b\x50\x44\x76\x9c\xb0\xaf\x7c\xf9\xe4\xc4\x85\x7a\x9c\x1e\x48\x35\xad\x3d\xc6\x7a\x62\x0b\xa6\xef\xe0\x77\xa6\xc4\x92\x19\x50\x52\x51\x86\xf6\x27\xf6\x3e\xbc\x08\x3d\x57\xc0\x0b\xf5\xc5\x17\x63\x1c\x86\xe0\xf5\x54\xf4\x70\xec\x46\x62\x48\x43\x24\x95\xe7\xaa\x27\xf6\xd3\x92\xc9\xb2\xf5\x54\xc3\x5b\xae\x34\x3b\xa1\xb1\x51\xe4\x8f\xac\xc5\xb8\x0e\x49\xee\x1f\xe5\xac\x79\xf6\x21\x29\x90\x5c\x70\x9d\xa6\xf2\xef\x55\x01\x6f\x46\xae\xa6\x91\x56\xb5\x6f\x36\xc6\x9d\x45\x44\x3c\x87\x2b\x87\x41\xb5\x6c\x81\xa9\x80\x3a\x8e\x7a\x9f\x3a\x23\x06\x23\xdc\x4e\x05\xcc\x54\x78\x37\x66\x0f\x5f\x81\xd7\xba\x0b\xc9\xb7\x7e\xbe\xc4\x0b\x53\x60\x21\xce\x68\x83\xdf\xf4\x44\x90\x32\x53\x0f\x92\xbd\xe1\xe2\xe3\xbe\xb5\xde\x24\x5e\x99\xaa\x7b\x98\x24\x83\x16\x75\x34\xbb\xec\xee\x3e\x82\xbd\x4f\x82\x11\x65\xc5\xb6\x12\x23\x86\xc6\x38\x66\xdb\x69\x62\x63\x5f\x4c\xf3\x5e\xc0\x5c\x06\xc8\x4e\xb8\x63\x88\x11\x7c\x2b\xc3\xbe\x2b\x64\xf5\xa3\x8c\x90\x6a\x4e\x43\xa0\x95\xd5\x9d\x15\x4c\x6f\x0e\xa0\xca\x52\xa8\x3d\xb1\xe2\x20\x90\xb4\x0f\x38\xc0\x64\x22\x5a\xfe\x50\xac\x56\x5f\xbe\x5c\xfe\xce\xf9\x72\xd1\xef\xcb\xd5\x47\xb8\xba\x9a\x60\xe6\xea\x0a\x4e\x7f\xf9\x2b\x92\x0e\xa6\x65\x04\x5d\x5d\xc1\x45\xbf\x8f\x20\x52\xde\xb1\x77\x86\xb9\xfc\xe5\x3d\x1b\x3a\xf9\xf2\xa4\xdf\xc7\xd5\x97\x7f\x5e\xfe\xce\xf9\x72\xd1\x8f\xfd\xf5\xce\xef\x17\xe6\x7d\x7d\x64\xf0\x3b\x4f\x52\xcc\x3d\x96\x05\x97\x19\x50\xa0\xee\x7c\xcc\x8e\x58\x1d\xfb\xe3\xd4\x97\x49\xca\x9d\x26\xcb\x3f\x30\x08\xa9\x86\xca\xfa\xfd\x1a\x2c\x6e\x95\x15\x89\xda\xbb\x18\x94\x8e\xbc\xaf\x1f\x70\xf9\x99\x82\xfd\xc6\x9a\x6d\x9f\x51\x7d\x80\x80\x6d\x17\x73\xa2\x3e\x27\x58\x9f\x07\xdc\xe7\x58\xf2\xa4\xdf\x47\x80\xcf\x65\xcb\x3f\x7d\x89\x81\xd3\xd5\x20\xfa\xd5\x91\x32\xbf\x05\x78\xb9\x9e\xea\xc2\x45\xc0\xab\x8c\x53\x4e\x1b\x65\x41\x7b\x4a\x27\xbc\x5a\x11\x58\xbf\x67\x01\x4d\xaf\xeb\x78\x02\x65\x88\x3e\xea\xf4\x73\x81\x37\x87\xb9\x60\x7b\x09\xed\x09\x38\xfb\x6a\x33\x4f\x3f\x53\xc8\x45\x68\x3e\x9a\xfe\x8c\xee\xcb\x6d\xf9\xbb\xd9\xd6\x73\xd1\xdf\x1c\x29\xf3\x9b\x69\xb5\x56\x3b\xbc\x08\xdd\xa6\x69\xb0\xe4\xaa\x54\x80\xed\xc3\x57\x72\x44\x67\x4c\x4b\xa9\x39\x03\xf5\x02\x90\x4f\x43\xf7\x84\xb5\x7d\xcb\x5b\x28\x11\x6c\x42\x79\x3e\x8c\x9f\x82\xf9\x9a\x61\x7e\x2e\xba\x2f\xa5\xeb\xf9\xf4\x67\x74\x5f\x6a\xcb\x4a\xca\x47\xf8\xf6\x1a\x26\x65\x14\x03\x79\x52\x67\x81\xd4\x47\xa9\x26\xef\x0b\xd6\xcf\x58\x03\x8e\x45\x3b\x17\x64\xa7\xbf\x3c\xd7\x80\x97\xd4\x80\xdf\x1b\xb9\x2f\xc1\x7b\x43\x91\xeb\xff\xe1\x4e\x45\x76\xb0\xb7\xe9\x64\x47\x31\x78\xb7\xcd\xe9\x73\x87\x40\x1e\x2a\x15\x2e\xab\x01\xc7\x63\xaf\x03\x55\xe2\x2f\x1d\xf3\xd6\x70\x01\xde\x06\x1f\xf9\x70\xe4\x9d\x90\xe3\xf2\xbc\xf5\xa4\x54\x5c\x8d\x77\x4f\xf3\xeb\x3e\x3e\x05\xe1\x7d\x0c\xd8\xa0\x3d\x70\x51\x50\xc0\x0f\x1e\x1c\xee\xb9\xd2\x10\xea\xa6\x73\xc9\x8a\xbd\x84\xf7\x7c\xbe\x4b\x47\x31\x96\x58\x75\xb1\x0b\xf8\x5c\x68\xfe\xff\x0a\xcd\x4f\xa3\x5b\xe0\xdc\x70\x6d\x38\xc5\xe7\xc4\x15\xe7\xc6\xff\x11\x44\x9f\x02\xf4\x14\x94\x4f\x42\xf7\x31\xa2\xfb\xaa\xb6\x80\xf7\xbe\x41\x68\x8c\xf3\x61\x04\xb4\x14\xd2\x62\xf5\x05\x85\xa6\x5c\x8f\x60\x59\xc0\x0f\xd3\xbd\x21\xa0\x6f\x3d\x91\xd9\x58\x5c\xc3\xa6\x8b\x72\x32\xac\xcd\xb6\xe6\xed\xc4\xcc\x7c\x28\x9e\xd1\xfd\x9b\x6c\x39\xa7\xd0\x3c\x8f\xbb\x39\x24\xc6\x41\x6b\x95\xe6\x2a\x70\x98\x7e\x6e\x8d\xe9\x50\x0e\xef\x66\x87\xaf\x19\xb2\x01\x73\xfb\x8a\x15\x7c\x08\xd1\x09\x94\x4f\x03\x76\x0f\xe9\x02\xde\x0e\x80\x4b\x1d\xc3\x24\xdb\x1e\x5f\xe0\xb1\xd0\xc4\xbd\xe7\x5a\x77\x36\x45\x4f\x67\x3d\xe3\xf9\x52\x5b\x72\x69\xf9\xdd\x51\x69\x39\xb9\x85\x3d\x59\x59\xfe\xde\x6d\xa8\x7d\xbd\x5a\x6d\x86\x66\x57\x6a\xbc\x71\x29\xda\x8f\x1a\xbb\x5e\x32\x62\xa7\x6c\x87\x04\x5f\x43\xac\x83\xef\xb6\x35\x7c\x23\xdb\xa0\x3f\x1a\xa5\x4e\xf8\x66\xd6\x86\x4f\xcd\xce\x93\xcb\xe4\xbb\xd4\xd3\x4b\x1c\xf5\x01\xa9\x80\x7f\x1d\x7d\x1b\xee\xe1\xa5\xf3\x27\x0d\x14\xdd\x9b\x73\xd7\x37\x03\x17\x46\x8c\x4d\x47\x43\x7c\x90\x4b\xdd\x66\x16\x9c\x8d\x1a\x1a\x06\xc3\x0a\xe9\xf6\xb7\x80\x1b\x6b\xb3\xdc\x2a\xf8\xe6\x64\x67\x21\x45\xa3\x57\x4b\xfb\x76\xf2\x3e\xe0\xd4\xa2\xe9\x4a\xda\x50\xeb\xc9\xe4\x57\x0d\x96\xeb\x41\x69\x85\x4c\x5e\x48\xb4\xc3\x5d\xc6\xbc\xf3\x39\xe9\x8a\x9c\x5c\x7e\xda\x14\x31\x0e\x66\x7d\x8e\x31\x2c\x37\xd3\x76\x89\xa1\xe5\x5b\x87\xdc\xcd\x92\xd6\x03\xbc\xf9\xfe\xc7\xfe\x4a\x25\x35\x04\xfb\x3e\x65\x6a\xa6\x07\x02\xaa\x95\xb5\xc3\x3d\x3b\x82\xdf\xfc\x9c\x58\x2e\x35\x17\x1a\x13\xe5\xd0\xea\xb6\x92\xbd\x59\x8a\xe4\xd9\x14\x64\xf6\xf1\x71\xf0\x8f\x02\x2d\x9d\x19\x26\x63\xe3\x3a\xdf\x49\x20\x83\xdf\xa5\x87\x03\xf9\x8d\x0a\xad\x8f\x55\x93\x26\xa5\x25\xcf\x0e\x95\xb0\x48\x93\x21\xd9\x91\x23\xeb\xc3\xa2\xf3\xba\x06\xdc\xa1\x03\x23\x24\x6c\xd2\xb8\x7c\x79\x6f\x08\x4a\xc4\xe6\x04\xf0\x27\xad\xbc\xa3\x20\xb2\x88\x24\xac\xef\x62\x4a\x49\xeb\xad\xf5\x7b\xf1\x4a\x1a\x37\xef\xeb\xbc\x97\x9e\x66\x2e\x79\x4a\xde\xd0\xbe\xed\x5b\xf6\xcb\xec\xf4\x82\x16\x0d\x90\xbb\xa0\x1c\x55\x18\x42\xdf\x87\x48\xe2\xa3\x97\x46\x8b\x09\xa5\x84\xff\xf0\x3a\x35\x8c\xee\x05\x4f\x6b\xd8\x1c\xd8\x95\xba\x56\x64\xe4\x84\x02\xc6\x51\x17\x84\x20\xf2\x3b\x09\x1f\x80\xcc\x56\x5a\x29\x6a\xb8\x98\x48\xd8\xa5\x4e\x1e\x90\x04\xe2\x41\xbc\xba\xc3\x40\x73\xad\x6e\x76\xde\x94\x53\x8d\x58\x62\x69\x28\x87\xb5\xff\xcb\xa6\x23\xe3\x90\x08\x14\x83\x68\x68\x11\x69\xd5\x11\x52\x6a\x28\xc9\x4e\x98\xaf\x2d\x91\x98\x2e\xfe\x3a\x41\x3b\x39\x57\xf6\x05\xc3\x33\xf2\xce\xf7\xce\x1e\x72\x7c\x81\x46\x3f\x57\x13\x60\x9c\xd8\x8b\x7b\x79\x69\x23\x97\x9f\x0d\x83\x21\xd6\x2a\x1d\x4e\x5a\x1f\xd3\xd5\xd4\x70\x4f\xf4\xe0\x31\x69\xb2\x05\xe5\x05\x43\x96\x2e\xfe\x5c\x4a\x5c\x8f\x8b\xa4\x6e\x22\xd5\xa2\x01\x52\x34\x0d\xd7\xc7\x51\x9a\xc6\xfb\xc7\xba\x5a\x99\x7a\xf3\x73\x09\xd6\xd5\x2a\xe7\xb0\x9c\xd7\x35\x13\x56\x2c\xf2\x6b\x08\xdc\x76\x56\x05\xb8\xc5\x9d\xc1\xbd\xdc\xc1\x2d\x99\x8f\x25\x3d\x44\xbc\x77\x0f\x32\xe5\xf1\xac\x05\x85\x76\x6d\x99\x7a\xc3\x35\x3a\xb6\x8e\x23\x35\x34\x43\x33\x8e\xe7\x1d\xd2\x02\x6e\x22\x28\x2e\xce\x4d\xd3\x35\xeb\x14\xf6\xb4\x4c\xe6\x4f\xb6\x21\xb3\x94\x90\xb4\x2b\x3b\x9d\x70\xc0\xd0\xc6\x00\x07\x54\xa1\x80\xb7\x92\x22\x72\xcd\x1d\x30\xbd\x9a\x2b\x25\x53\xa8\x78\x92\xfd\x1f\xb4\x66\x69\x88\xec\x9a\xca\x68\xe5\x22\xe8\x5a\xb9\x2d\x52\xaa\xb3\xfa\x5c\x31\x7f\xe9\x36\xbe\x4c\x58\x8f\xdb\x61\xa4\x55\x39\xd7\x0f\xdf\xd1\xed\x4c\xf0\x2e\xbf\x83\x49\xd1\x6b\x7d\x60\x54\x2d\x5e\xb1\x20\x75\x36\x3d\x3a\xfa\xf4\x7b\xad\xd4\xbf\x67\x97\x51\xb7\x49\xf0\x8a\xd9\x95\xb4\x1e\x9d\xd9\xbf\xc7\xe8\xdf\x0f\x9c\xee\xbc\x17\xab\xd5\xff\x02\x00\x00\xff\xff\x01\x6b\x63\xbb\xf6\x28\x00\x00")
 
 func complySoc2PoliciesRiskMdBytes() ([]byte, error) {
 	return bindataRead(
@@ -977,7 +977,7 @@ func complySoc2PoliciesRiskMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/risk.md", size: 158, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/risk.md", size: 10486, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -997,7 +997,7 @@ func complySoc2PoliciesVendorMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/vendor.md", size: 3139, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/vendor.md", size: 3139, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1017,7 +1017,7 @@ func complySoc2PoliciesWorkstationMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/policies/workstation.md", size: 1791, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/policies/workstation.md", size: 1791, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1037,7 +1037,7 @@ func complySoc2ProceduresReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/procedures/README.md", size: 92, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/procedures/README.md", size: 92, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1057,7 +1057,7 @@ func complySoc2ProceduresOffboardingMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/procedures/offboarding.md", size: 358, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/procedures/offboarding.md", size: 358, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1077,7 +1077,7 @@ func complySoc2ProceduresOnboardingMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/procedures/onboarding.md", size: 495, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/procedures/onboarding.md", size: 495, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1097,7 +1097,7 @@ func complySoc2ProceduresPatchMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/procedures/patch.md", size: 380, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/procedures/patch.md", size: 380, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1117,7 +1117,7 @@ func complySoc2ProceduresWorkstationMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/procedures/workstation.md", size: 1081, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/procedures/workstation.md", size: 1081, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1137,7 +1137,7 @@ func complySoc2StandardsReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/standards/README.md", size: 282, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/standards/README.md", size: 282, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1157,7 +1157,7 @@ func complySoc2StandardsTsc2017Yml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/standards/TSC-2017.yml", size: 16305, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/standards/TSC-2017.yml", size: 16305, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1177,7 +1177,7 @@ func complySoc2TemplatesDefaultLatex() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/templates/default.latex", size: 7649, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/templates/default.latex", size: 7649, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1197,7 +1197,7 @@ func complySoc2TemplatesIndexAce() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "comply-soc2/templates/index.ace", size: 7596, mode: os.FileMode(420), modTime: time.Unix(1526686289, 0)}
+	info := bindataFileInfo{name: "comply-soc2/templates/index.ace", size: 7596, mode: os.FileMode(420), modTime: time.Unix(1526687060, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
