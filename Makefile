@@ -78,6 +78,9 @@ release-env:
 ifndef GH_LOGIN
 	$(error GH_LOGIN must be set to a valid GitHub token)
 endif
+ifndef COMPLY_TAPDIR
+	$(error COMPLY_TAPDIR must be set to the path of the comply homebrew tap repo)
+endif
 
 release: release-env dist release-deps
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
@@ -105,8 +108,9 @@ release: release-env dist release-deps
 	--file dist/comply-$(VERSION)-linux-amd64.tgz
 
 	@echo "Update homebrew formula with the following: "
-	@echo "version $(VERSION)"
-	@curl -L https://github.com/strongdm/comply/archive/$(VERSION).tar.gz |shasum -a 256
+	$(eval SHA := $(shell curl -s -L https://github.com/strongdm/comply/archive/$(VERSION).tar.gz |shasum -a 256|cut -d" " -f1))
+	@echo "version $(VERSION) sha $(SHA)"
+	cd $$COMPLY_TAPDIR && ./update.sh $(VERSION) $(SHA)
 
 patch-release: release-env push-assets patch release
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
