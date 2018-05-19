@@ -38,6 +38,8 @@ Join us in [Comply Users](https://join.slack.com/t/comply-users/shared_invite/en
 
 # Screenshots
 
+[Demo video](https://vimeo.com/270257486)
+
 ## Start a Project
 ![screencast 1](sc-1.gif)
 
