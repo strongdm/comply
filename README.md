@@ -12,6 +12,10 @@ macOS:
 
 `brew tap strongdm/comply; brew install comply`
 
+Linux:
+
+[Download latest release](https://github.com/strongdm/comply/releases)
+
 Go users:
 
 `go get github.com/strongdm/comply`
