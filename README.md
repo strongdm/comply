@@ -1,4 +1,4 @@
-# Comply
+![Comply](https://github.com/strongdm/comply/blob/master/logo.png)
 
 Comply is a SOC2-focused compliance automation tool:
 
