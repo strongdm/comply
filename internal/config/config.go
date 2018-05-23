@@ -10,6 +10,15 @@ import (
 
 var projectRoot string
 
+var dockerAvailable, pandocAvailable bool
+
+const (
+	// UseDocker invokes pandoc within Docker
+	UseDocker = "docker"
+	// UsePandoc invokes pandoc directly
+	UsePandoc = "pandoc"
+)
+
 // SetProjectRoot is used by the test suite.
 func SetProjectRoot(dir string) {
 	projectRoot = dir
@@ -17,8 +26,30 @@ func SetProjectRoot(dir string) {
 
 type Project struct {
 	Name       string                 `yaml:"name"`
+	Pandoc     string                 `yaml:"pandoc,omitempty"`
 	FilePrefix string                 `yaml:"filePrefix"`
 	Tickets    map[string]interface{} `yaml:"tickets"`
+}
+
+// SetPandoc records pandoc availability during initialization
+func SetPandoc(pandoc bool, docker bool) {
+	pandocAvailable = pandoc
+	dockerAvailable = docker
+}
+
+// WhichPandoc indicates which pandoc invocation path should be used
+func WhichPandoc() string {
+	cfg := Config()
+	if cfg.Pandoc == UsePandoc {
+		return UsePandoc
+	}
+	if cfg.Pandoc == UseDocker {
+		return UseDocker
+	}
+	if pandocAvailable {
+		return UsePandoc
+	}
+	return UseDocker
 }
 
 // YAML is the parsed contents of ProjectRoot()/config.yml.

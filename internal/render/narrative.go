@@ -2,7 +2,6 @@ package render
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -12,9 +11,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
 	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/model"
@@ -28,75 +24,19 @@ func renderNarrativeToDisk(wg *sync.WaitGroup, errOutputCh chan error, data *ren
 	}
 	recordModified(narrative.FullPath, narrative.ModifiedAt)
 
-	ctx := context.Background()
-	cli, err := client.NewEnvClient()
-	if err != nil {
-		errOutputCh <- errors.Wrap(err, "unable to read Docker environment")
-		return
-	}
-
-	pwd, err := os.Getwd()
-	if err != nil {
-		errOutputCh <- errors.Wrap(err, "unable to get workding directory")
-		return
-	}
-
-	hc := &container.HostConfig{
-		Binds: []string{pwd + ":/source"},
-	}
-
 	wg.Add(1)
 	go func(p *model.Narrative) {
 		defer wg.Done()
 
 		outputFilename := p.OutputFilename
 		// save preprocessed markdown
-		err = preprocessNarrative(data, p, filepath.Join(".", "output", outputFilename+".md"))
+		err := preprocessNarrative(data, p, filepath.Join(".", "output", outputFilename+".md"))
 		if err != nil {
 			errOutputCh <- errors.Wrap(err, "unable to preprocess")
 			return
 		}
 
-		cmd := []string{"--smart", "--toc", "-N", "--template=/source/templates/default.latex", "-o",
-			fmt.Sprintf("/source/output/%s", outputFilename),
-			fmt.Sprintf("/source/output/%s.md", outputFilename)}
-
-		resp, err := cli.ContainerCreate(ctx, &container.Config{
-			Image: "strongdm/pandoc",
-			Cmd:   cmd},
-			hc, nil, "")
-
-		if err != nil {
-			errOutputCh <- errors.Wrap(err, "unable to create Docker container")
-			return
-		}
-
-		defer func() {
-			timeout := 2 * time.Second
-			cli.ContainerStop(ctx, resp.ID, &timeout)
-			err := cli.ContainerRemove(ctx, resp.ID, types.ContainerRemoveOptions{Force: true})
-			if err != nil {
-				errOutputCh <- errors.Wrap(err, "unable to remove container")
-				return
-			}
-		}()
-
-		if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-			errOutputCh <- errors.Wrap(err, "unable to start Docker container")
-			return
-		}
-
-		_, err = cli.ContainerWait(ctx, resp.ID)
-		if err != nil {
-			errOutputCh <- errors.Wrap(err, "error awaiting Docker container")
-			return
-		}
-
-		_, err = cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
-		if err != nil {
-			errOutputCh <- errors.Wrap(err, "error reading Docker container logs")
-			return
-		}
+		pandoc(outputFilename, errOutputCh)
 
 		// remove preprocessed markdown
 		err = os.Remove(filepath.Join(".", "output", outputFilename+".md"))

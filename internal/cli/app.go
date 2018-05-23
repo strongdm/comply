@@ -100,16 +100,16 @@ func ticketingMustBeConfigured(c *cli.Context) error {
 }
 
 func pandocMustExist(c *cli.Context) error {
-	pandocErr := fmt.Errorf("Please install either Docker or the pandoc package and re-run `%s`", c.Command.Name)
+	eitherMustExistErr := fmt.Errorf("Please install either Docker or the pandoc package and re-run `%s`", c.Command.Name)
 
-	err := pandocBinaryMustExist(c)
-	fmt.Println(err)
-	if err != nil {
-		err = dockerMustExist(c)
-		if err != nil {
-			return pandocErr
-		}
+	pandocExistErr := pandocBinaryMustExist(c)
+	dockerExistErr := dockerMustExist(c)
+	config.SetPandoc(pandocExistErr == nil, dockerExistErr == nil)
+
+	if pandocExistErr != nil && dockerExistErr != nil {
+		return eitherMustExistErr
 	}
+
 	return nil
 }
 
@@ -197,12 +197,17 @@ func dockerMustExist(c *cli.Context) error {
 }
 
 func cleanContainers(c *cli.Context) error {
-	dockerErr := fmt.Errorf("Docker must be available in order to run `%s`", c.Command.Name)
-
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	if err != nil {
-		return dockerErr
+		// no Docker? nothing to clean.
+		return nil
+	}
+
+	_, err = cli.Ping(ctx)
+	if err != nil {
+		// no Docker? nothing to clean.
+		return nil
 	}
 
 	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{All: true})
