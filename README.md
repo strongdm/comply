@@ -54,6 +54,10 @@ Join us in [Comply Users](https://join.slack.com/t/comply-users/shared_invite/en
 ## Dashboard
 ![screencast 2](sc-3.gif)
 
+## Dependencies
+
+Comply relies on [pandoc](https://pandoc.org/), which can be installed directly as an OS package or invoked via Docker.
+
 ## CLI
 
 ```
