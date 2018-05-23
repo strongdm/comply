@@ -11,7 +11,7 @@ var buildCommand = cli.Command{
 	ShortName: "b",
 	Usage:     "generate a static website summarizing the compliance program",
 	Action:    buildAction,
-	Before:    beforeAll(dockerMustExist, cleanContainers),
+	Before:    beforeAll(pandocMustExist, cleanContainers),
 }
 
 func buildAction(c *cli.Context) error {

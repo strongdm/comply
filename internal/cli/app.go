@@ -7,7 +7,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -92,6 +95,54 @@ func ticketingMustBeConfigured(c *cli.Context) error {
 	p := config.Config()
 	if p.Tickets == nil || len(p.Tickets) != 1 {
 		return feedbackError("comply.yml must contain a valid ticketing configuration")
+	}
+	return nil
+}
+
+func pandocMustExist(c *cli.Context) error {
+	pandocErr := fmt.Errorf("Please install either Docker or the pandoc package and re-run `%s`", c.Command.Name)
+
+	err := pandocBinaryMustExist(c)
+	fmt.Println(err)
+	if err != nil {
+		err = dockerMustExist(c)
+		if err != nil {
+			return pandocErr
+		}
+	}
+	return nil
+}
+
+func pandocBinaryMustExist(c *cli.Context) error {
+	cmd := exec.Command("pandoc", "-v")
+	outputRaw, err := cmd.Output()
+	if err != nil {
+		return errors.Wrap(err, "error calling pandoc")
+	}
+
+	output := strings.TrimSpace((string(outputRaw)))
+	versionErr := errors.New("cannot determine pandoc version")
+	if !strings.HasPrefix(output, "pandoc") {
+		return versionErr
+	}
+
+	re := regexp.MustCompile(`pandoc (\d+)\.(\d+)`)
+	result := re.FindStringSubmatch(output)
+	if len(result) != 3 {
+		return versionErr
+	}
+
+	major, err := strconv.Atoi(result[1])
+	if err != nil {
+		return versionErr
+	}
+	minor, err := strconv.Atoi(result[2])
+	if err != nil {
+		return versionErr
+	}
+
+	if major < 2 || minor < 1 {
+		return errors.New("pandoc 2.1 or greater required")
 	}
 	return nil
 }
