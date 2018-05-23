@@ -62,7 +62,6 @@ export-example:
 
 docker:
 	cd build && docker build -t strongdm/pandoc .
-	docker tag jagregory/pandoc:latest strongdm/pandoc:latest
 	docker push strongdm/pandoc
 
 cleanse:
