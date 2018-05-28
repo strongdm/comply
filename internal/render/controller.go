@@ -32,8 +32,8 @@ type renderData struct {
 	Name       string
 	Project    *project
 	Stats      *stats
-	Narratives []*model.Narrative
-	Policies   []*model.Policy
+	Narratives []*model.Document
+	Policies   []*model.Document
 	Procedures []*model.Procedure
 	Standards  []*model.Standard
 	Tickets    []*model.Ticket

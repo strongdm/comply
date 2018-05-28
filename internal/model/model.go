@@ -2,8 +2,8 @@ package model
 
 type Data struct {
 	Standards  []*Standard
-	Narratives []*Narrative
-	Policies   []*Policy
+	Narratives []*Document
+	Policies   []*Document
 	Procedures []*Procedure
 	Tickets    []*Ticket
 	Audits     []*Audit

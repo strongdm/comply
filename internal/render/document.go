@@ -17,20 +17,20 @@ import (
 )
 
 // TODO: refactor and eliminate duplication among narrative, policy renderers
-func renderNarrativeToDisk(wg *sync.WaitGroup, errOutputCh chan error, data *renderData, narrative *model.Narrative, live bool) {
+func renderToFilesystem(wg *sync.WaitGroup, errOutputCh chan error, data *renderData, doc *model.Document, live bool) {
 	// only files that have been touched
-	if !isNewer(narrative.FullPath, narrative.ModifiedAt) {
+	if !isNewer(doc.FullPath, doc.ModifiedAt) {
 		return
 	}
-	recordModified(narrative.FullPath, narrative.ModifiedAt)
+	recordModified(doc.FullPath, doc.ModifiedAt)
 
 	wg.Add(1)
-	go func(p *model.Narrative) {
+	go func(p *model.Document) {
 		defer wg.Done()
 
 		outputFilename := p.OutputFilename
 		// save preprocessed markdown
-		err := preprocessNarrative(data, p, filepath.Join(".", "output", outputFilename+".md"))
+		err := preprocessDoc(data, p, filepath.Join(".", "output", outputFilename+".md"))
 		if err != nil {
 			errOutputCh <- errors.Wrap(err, "unable to preprocess")
 			return
@@ -50,11 +50,10 @@ func renderNarrativeToDisk(wg *sync.WaitGroup, errOutputCh chan error, data *ren
 			rel = p.FullPath
 		}
 		fmt.Printf("%s -> %s\n", rel, filepath.Join("output", p.OutputFilename))
-
-	}(narrative)
+	}(doc)
 }
 
-func preprocessNarrative(data *renderData, pol *model.Narrative, fullPath string) error {
+func preprocessDoc(data *renderData, pol *model.Document, fullPath string) error {
 	cfg := config.Config()
 
 	var w bytes.Buffer
@@ -118,7 +117,7 @@ foot-content: "%s confidential %d"
 	)
 	err = ioutil.WriteFile(fullPath, []byte(doc), os.FileMode(0644))
 	if err != nil {
-		return errors.Wrap(err, "unable to write preprocessed narrative to disk")
+		return errors.Wrap(err, "unable to write preprocessed policy to disk")
 	}
 	return nil
 }

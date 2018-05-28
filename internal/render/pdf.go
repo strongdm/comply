@@ -25,7 +25,7 @@ func pdf(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 			return
 		}
 		for _, policy := range policies {
-			renderPolicyToDisk(&pdfWG, errOutputCh, data, policy, live)
+			renderToFilesystem(&pdfWG, errOutputCh, data, policy, live)
 		}
 
 		narratives, err := model.ReadNarratives()
@@ -35,7 +35,7 @@ func pdf(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 		}
 
 		for _, narrative := range narratives {
-			renderNarrativeToDisk(&pdfWG, errOutputCh, data, narrative, live)
+			renderToFilesystem(&pdfWG, errOutputCh, data, narrative, live)
 		}
 
 		pdfWG.Wait()

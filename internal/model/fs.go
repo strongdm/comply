@@ -91,8 +91,8 @@ func ReadStandards() ([]*Standard, error) {
 }
 
 // ReadNarratives loads narrative descriptions from the filesystem.
-func ReadNarratives() ([]*Narrative, error) {
-	var narratives []*Narrative
+func ReadNarratives() ([]*Document, error) {
+	var narratives []*Document
 
 	files, err := path.Narratives()
 	if err != nil {
@@ -100,7 +100,7 @@ func ReadNarratives() ([]*Narrative, error) {
 	}
 
 	for _, f := range files {
-		n := &Narrative{}
+		n := &Document{}
 		mdmd := loadMDMD(f.FullPath)
 		err = yaml.Unmarshal([]byte(mdmd.yaml), &n)
 		if err != nil {
@@ -141,8 +141,8 @@ func ReadProcedures() ([]*Procedure, error) {
 }
 
 // ReadPolicies loads policy documents from the filesystem.
-func ReadPolicies() ([]*Policy, error) {
-	var policies []*Policy
+func ReadPolicies() ([]*Document, error) {
+	var policies []*Document
 
 	files, err := path.Policies()
 	if err != nil {
@@ -150,7 +150,7 @@ func ReadPolicies() ([]*Policy, error) {
 	}
 
 	for _, f := range files {
-		p := &Policy{}
+		p := &Document{}
 		mdmd := loadMDMD(f.FullPath)
 		err = yaml.Unmarshal([]byte(mdmd.yaml), &p)
 		if err != nil {
