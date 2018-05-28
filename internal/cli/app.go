@@ -144,6 +144,18 @@ func pandocBinaryMustExist(c *cli.Context) error {
 	if major < 2 || minor < 1 {
 		return errors.New("pandoc 2.1 or greater required")
 	}
+
+	// pdflatex must also be present
+	cmd = exec.Command("pdflatex", "-v")
+	outputRaw, err = cmd.Output()
+	if err != nil {
+		return errors.Wrap(err, "error calling pdflatex")
+	}
+
+	if !strings.Contains(string(outputRaw), "TeX") {
+		return errors.New("pdflatex is required")
+	}
+
 	return nil
 }
 
