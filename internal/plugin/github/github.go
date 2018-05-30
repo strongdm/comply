@@ -135,7 +135,8 @@ func (g *githubPlugin) FindByTagName(name string) ([]*model.Ticket, error) {
 }
 
 func (g *githubPlugin) LinkFor(t *model.Ticket) string {
-	return fmt.Sprintf("https://github.com/strongdm/comply/issues/%s", t.ID)
+	// return fmt.Sprintf("https://github.com/strongdm/comply/issues/%s", t.ID)
+	panic("not implemented")
 }
 
 func (g *githubPlugin) Create(ticket *model.Ticket, labels []string) error {

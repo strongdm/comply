@@ -18,6 +18,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
+	"github.com/strongdm/comply/internal/jira"
 	"github.com/strongdm/comply/internal/plugin/github"
 	"github.com/urfave/cli"
 )
@@ -55,6 +56,7 @@ func newApp() *cli.App {
 
 	// Plugins
 	github.Register()
+	jira.Register()
 
 	return app
 }
