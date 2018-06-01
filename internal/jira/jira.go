@@ -71,6 +71,8 @@ func (j *jiraPlugin) Configured() bool {
 
 func (j *jiraPlugin) Links() model.TicketLinks {
 	links := model.TicketLinks{}
+	// http://localhost:8080/issues/?jql=labels+%3D+comply
+
 	links.AuditAll = fmt.Sprintf("%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aaudit", j.url)
 	links.AuditOpen = fmt.Sprintf("%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aaudit", j.url)
 	links.ProcedureAll = fmt.Sprintf("%s/issues?q=is%3Aissue+label%3Acomply+label%3Aprocedure", j.url)
@@ -128,17 +130,11 @@ func (j *jiraPlugin) FindByTag(name, value string) ([]*model.Ticket, error) {
 }
 
 func (j *jiraPlugin) FindByTagName(name string) ([]*model.Ticket, error) {
-	return []*model.Ticket{}, nil
-	// issues, _, err := j.api().Issues.ListByRepo(context.Background(), j.username, j.reponame, &github.IssueListByRepoOptions{
-	// 	State:  "all",
-	// 	Labels: []string{name},
-	// })
-
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "error during FindOpen")
-	// }
-
-	// return toTickets(issues), nil
+	issues, _, err := j.api().Issue.Search("labels=comply", &jira.SearchOptions{MaxResults: 1000})
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to fetch Jira issues")
+	}
+	return toTickets(issues), nil
 }
 
 func (j *jiraPlugin) LinkFor(t *model.Ticket) string {
@@ -168,10 +164,10 @@ func (j *jiraPlugin) Create(ticket *model.Ticket, labels []string) error {
 	return nil
 }
 
-func toTickets(issues []*jira.Issue) []*model.Ticket {
+func toTickets(issues []jira.Issue) []*model.Ticket {
 	var tickets []*model.Ticket
 	for _, i := range issues {
-		tickets = append(tickets, toTicket(i))
+		tickets = append(tickets, toTicket(&i))
 	}
 	return tickets
 }
