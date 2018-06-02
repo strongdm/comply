@@ -116,8 +116,7 @@ func initAction(c *cli.Context) error {
 	case 0:
 		ticketing = model.GitHub
 	case 1:
-		fmt.Println("\nHello Jira user! The Jira ticketing plugin is currently in development, please join us on Slack for a status update.")
-		ticketing = model.NoTickets
+		ticketing = model.Jira
 	default:
 		ticketing = model.NoTickets
 	}
