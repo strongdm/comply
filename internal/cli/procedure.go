@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/model"
 	"github.com/urfave/cli"
 )
@@ -28,14 +29,22 @@ func procedureAction(c *cli.Context) error {
 
 	procedureID := c.Args().First()
 
+	ts, err := config.Config().TicketSystem()
+	if err != nil {
+		return cli.NewExitError("error in ticket system configuration", 1)
+	}
+
+	tp := model.GetPlugin(model.TicketSystem(ts))
+
 	for _, procedure := range procedures {
 		if procedure.ID == procedureID {
-			// TODO: don't hardcode GH
-			tp := model.GetPlugin(model.GitHub)
-			tp.Create(&model.Ticket{
+			err = tp.Create(&model.Ticket{
 				Name: procedure.Name,
 				Body: fmt.Sprintf("%s\n\n\n---\nProcedure-ID: %s", procedure.Body, procedure.ID),
 			}, []string{"comply", "comply-procedure"})
+			if err != nil {
+				return err
+			}
 			return nil
 		}
 	}

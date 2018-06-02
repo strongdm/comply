@@ -18,6 +18,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
+	"github.com/strongdm/comply/internal/jira"
 	"github.com/strongdm/comply/internal/plugin/github"
 	"github.com/urfave/cli"
 )
@@ -55,6 +56,7 @@ func newApp() *cli.App {
 
 	// Plugins
 	github.Register()
+	jira.Register()
 
 	return app
 }
@@ -104,10 +106,16 @@ func pandocMustExist(c *cli.Context) error {
 
 	pandocExistErr := pandocBinaryMustExist(c)
 	dockerExistErr := dockerMustExist(c)
+
 	config.SetPandoc(pandocExistErr == nil, dockerExistErr == nil)
 
 	if pandocExistErr != nil && dockerExistErr != nil {
 		return eitherMustExistErr
+	}
+
+	// if we don't have pandoc, but we do have docker, execute a pull
+	if (pandocExistErr != nil && dockerExistErr == nil) || config.WhichPandoc() == config.UseDocker {
+		dockerPull(c)
 	}
 
 	return nil
@@ -160,6 +168,23 @@ func pandocBinaryMustExist(c *cli.Context) error {
 }
 
 func dockerMustExist(c *cli.Context) error {
+	dockerErr := fmt.Errorf("Docker must be available in order to run `%s`", c.Command.Name)
+
+	ctx := context.Background()
+	cli, err := client.NewEnvClient()
+	if err != nil {
+		return dockerErr
+	}
+
+	_, err = cli.Ping(ctx)
+	if err != nil {
+		return dockerErr
+	}
+
+	return nil
+}
+
+func dockerPull(c *cli.Context) error {
 	dockerErr := fmt.Errorf("Docker must be available in order to run `%s`", c.Command.Name)
 
 	ctx := context.Background()

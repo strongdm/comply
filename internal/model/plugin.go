@@ -17,11 +17,11 @@ type TicketSystem string
 
 const (
 	// Jira from Atlassian.
-	Jira = TicketSystem("jira")
+	Jira = TicketSystem(config.Jira)
 	// GitHub from GitHub.
-	GitHub = TicketSystem("github")
+	GitHub = TicketSystem(config.GitHub)
 	// NoTickets indicates no ticketing system integration.
-	NoTickets = TicketSystem("none")
+	NoTickets = TicketSystem(config.NoTickets)
 )
 
 type TicketLinks struct {

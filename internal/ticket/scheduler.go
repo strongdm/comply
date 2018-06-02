@@ -5,7 +5,9 @@ import (
 	"sort"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/robfig/cron"
+	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/model"
 )
 
@@ -68,7 +70,10 @@ func TriggerScheduled() error {
 				// in the future, nothing to do
 				continue
 			}
-			trigger(procedure)
+			err = trigger(procedure)
+			if err != nil {
+				return err
+			}
 		} else {
 			// don't go back further than 13 months
 			tooOld := time.Now().Add(-1 * time.Hour * 24 * (365 + 30))
@@ -88,7 +93,10 @@ func TriggerScheduled() error {
 				}
 
 				// is in the past? then trigger.
-				trigger(procedure)
+				err = trigger(procedure)
+				if err != nil {
+					return err
+				}
 				break SEARCH
 			}
 		}
@@ -97,13 +105,18 @@ func TriggerScheduled() error {
 	return nil
 }
 
-func trigger(procedure *model.Procedure) {
+func trigger(procedure *model.Procedure) error {
 	fmt.Printf("triggering procedure %s (cron expression: %s)\n", procedure.Name, procedure.Cron)
 
-	// TODO: don't hardcode GH
-	tp := model.GetPlugin(model.GitHub)
-	tp.Create(&model.Ticket{
+	ts, err := config.Config().TicketSystem()
+	if err != nil {
+		return errors.Wrap(err, "error in ticket system configuration")
+	}
+
+	tp := model.GetPlugin(model.TicketSystem(ts))
+	err = tp.Create(&model.Ticket{
 		Name: procedure.Name,
 		Body: fmt.Sprintf("%s\n\n\n---\nProcedure-ID: %s", procedure.Body, procedure.ID),
 	}, []string{"comply", "comply-procedure"})
+	return err
 }

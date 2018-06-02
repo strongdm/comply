@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -11,6 +12,12 @@ import (
 var projectRoot string
 
 var dockerAvailable, pandocAvailable bool
+
+const (
+	Jira      = "jira"
+	GitHub    = "github"
+	NoTickets = "none"
+)
 
 const (
 	// UseDocker invokes pandoc within Docker
@@ -73,14 +80,14 @@ func Exists() bool {
 }
 
 // Config is the parsed contents of ProjectRoot()/config.yml.
-func Config() Project {
+func Config() *Project {
 	p := Project{}
 	cfgBytes, err := ioutil.ReadFile(filepath.Join(ProjectRoot(), "comply.yml"))
 	if err != nil {
 		panic("unable to load config.yml: " + err.Error())
 	}
 	yaml.Unmarshal(cfgBytes, &p)
-	return p
+	return &p
 }
 
 // ProjectRoot is the fully-qualified path to the root directory.
@@ -94,4 +101,28 @@ func ProjectRoot() string {
 	}
 
 	return projectRoot
+}
+
+// TicketSystem indicates the type of the configured ticket system
+func (p *Project) TicketSystem() (string, error) {
+	if len(p.Tickets) > 1 {
+		return NoTickets, errors.New("multiple ticket systems configured")
+	}
+
+	for k := range p.Tickets {
+		switch k {
+		case GitHub:
+			return GitHub, nil
+		case Jira:
+			return Jira, nil
+		case NoTickets:
+			return NoTickets, nil
+		default:
+			// explicit error for this case
+			return "", errors.New("unrecognized ticket system configured")
+		}
+	}
+
+	// no ticket block configured
+	return NoTickets, nil
 }

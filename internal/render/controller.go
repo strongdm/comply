@@ -5,6 +5,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/model"
 )
@@ -93,8 +94,12 @@ func load() (*model.Data, *renderData, error) {
 	rd.Name = project.OrganizationName
 	rd.Controls = controls
 
-	// TODO: unhardcode plugin
-	tp := model.GetPlugin(model.GitHub)
+	ts, err := config.Config().TicketSystem()
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error in ticket system configuration")
+	}
+
+	tp := model.GetPlugin(model.TicketSystem(ts))
 	if tp.Configured() {
 		links := tp.Links()
 		rd.Links = &links
@@ -133,7 +138,7 @@ func addStats(modelData *model.Data, renderData *renderData) {
 		}
 
 		if t.State == model.Open {
-			if t.Bool("procedure") {
+			if t.Bool("comply-procedure") {
 				stats.ProcedureOpen++
 				if t.CreatedAt != nil {
 					age := int(time.Since(*t.CreatedAt).Hours() / float64(24))

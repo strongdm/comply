@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/model"
 	"github.com/urfave/cli"
 )
@@ -13,8 +14,12 @@ var syncCommand = cli.Command{
 }
 
 func syncAction(c *cli.Context) error {
-	// TODO: unhardcode plugin
-	tp := model.GetPlugin(model.GitHub)
+	ts, err := config.Config().TicketSystem()
+	if err != nil {
+		return cli.NewExitError("error in ticket system configuration", 1)
+	}
+
+	tp := model.GetPlugin(model.TicketSystem(ts))
 	tickets, err := tp.FindByTagName("comply")
 	if err != nil {
 		return err
