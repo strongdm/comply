@@ -71,12 +71,10 @@ func (j *jiraPlugin) Configured() bool {
 
 func (j *jiraPlugin) Links() model.TicketLinks {
 	links := model.TicketLinks{}
-	// http://localhost:8080/issues/?jql=labels+%3D+comply
-
-	links.AuditAll = fmt.Sprintf("%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aaudit", j.url)
-	links.AuditOpen = fmt.Sprintf("%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aaudit", j.url)
-	links.ProcedureAll = fmt.Sprintf("%s/issues?q=is%3Aissue+label%3Acomply+label%3Aprocedure", j.url)
-	links.ProcedureOpen = fmt.Sprintf("%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aprocedure", j.url)
+	links.ProcedureAll = fmt.Sprintf("%s/issues/?jql=labels+=+comply-procedure", j.url)
+	links.ProcedureOpen = fmt.Sprintf("%s/issues/?jql=labels+=+comply-procedure+AND+resolution+=+Unresolved", j.url)
+	// links.AuditAll = fmt.Sprintf("%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aaudit", j.url)
+	// links.AuditOpen = fmt.Sprintf("%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aaudit", j.url)
 	return links
 }
 
@@ -113,16 +111,7 @@ func getCfg(cfg map[string]interface{}, k string) (string, error) {
 }
 
 func (j *jiraPlugin) FindOpen() ([]*model.Ticket, error) {
-	return []*model.Ticket{}, nil
-	// issues, _, err := j.api().Issues.ListByRepo(context.Background(), j.username, j.reponame, &github.IssueListByRepoOptions{
-	// 	State: "open",
-	// })
-
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "error during FindOpen")
-	// }
-
-	// return toTickets(issues), nil
+	panic("not implemented")
 }
 
 func (j *jiraPlugin) FindByTag(name, value string) ([]*model.Ticket, error) {
@@ -138,7 +127,6 @@ func (j *jiraPlugin) FindByTagName(name string) ([]*model.Ticket, error) {
 }
 
 func (j *jiraPlugin) LinkFor(t *model.Ticket) string {
-	// return fmt.Sprintf("https://github.com/strongdm/comply/issues/%s", t.ID)
 	panic("not implemented")
 }
 
