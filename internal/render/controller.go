@@ -138,7 +138,7 @@ func addStats(modelData *model.Data, renderData *renderData) {
 		}
 
 		if t.State == model.Open {
-			if t.Bool("procedure") {
+			if t.Bool("comply-procedure") {
 				stats.ProcedureOpen++
 				if t.CreatedAt != nil {
 					age := int(time.Since(*t.CreatedAt).Hours() / float64(24))
