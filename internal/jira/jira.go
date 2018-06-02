@@ -179,7 +179,7 @@ func toTicket(i *jira.Issue) *model.Ticket {
 	t.Body = i.Fields.Summary
 	createdAt := time.Time(i.Fields.Created)
 	t.CreatedAt = &createdAt
-	t.State = toState(i.Fields.Status)
+	t.State = toState(i.Fields.Resolution)
 
 	for _, l := range i.Fields.Labels {
 		t.SetBool(l)
@@ -187,9 +187,12 @@ func toTicket(i *jira.Issue) *model.Ticket {
 	return t
 }
 
-func toState(status *jira.Status) model.TicketState {
+func toState(status *jira.Resolution) model.TicketState {
+	if status == nil {
+		return model.Open
+	}
 	switch status.Name {
-	case "Closed":
+	case "Done":
 		return model.Closed
 	}
 	return model.Open
