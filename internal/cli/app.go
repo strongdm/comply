@@ -114,7 +114,7 @@ func pandocMustExist(c *cli.Context) error {
 	}
 
 	// if we don't have pandoc, but we do have docker, execute a pull
-	if pandocExistErr != nil && dockerExistErr == nil {
+	if (pandocExistErr != nil && dockerExistErr == nil) || config.WhichPandoc() == config.UseDocker {
 		dockerPull(c)
 	}
 
