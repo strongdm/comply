@@ -8,6 +8,12 @@
   version = "v0.4.7"
 
 [[projects]]
+  name = "github.com/andygrunwald/go-jira"
+  packages = ["."]
+  revision = "5cfdb85cc91c6299f75b6504a1d0ec174c21be39"
+  version = "v1.3.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/chzyer/readline"
   packages = ["."]
@@ -78,6 +84,12 @@
   packages = ["."]
   revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
   version = "v1.6.0"
+
+[[projects]]
+  name = "github.com/fatih/structs"
+  packages = ["."]
+  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
+  version = "v1.0"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -195,6 +207,15 @@
   revision = "75fb7ed4208cf72d323d7d02fd1a5964a7a9073c"
 
 [[projects]]
+  name = "github.com/trivago/tgo"
+  packages = [
+    "tcontainer",
+    "treflect"
+  ]
+  revision = "e4d1ddd28c17dd89ed26327cf69fded22060671b"
+  version = "v1.0.1"
+
+[[projects]]
   name = "github.com/urfave/cli"
   packages = ["."]
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
@@ -257,6 +278,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4fd2ff9f9869c3f3e30601504f4b00fce69d282ae8df42583a1c60848bfd0766"
+  inputs-digest = "b8eb855eeef730f7fcaabe3acceb26a99b7bce186d815c3f654d7a1cbce97f2a"
   solver-name = "gps-cdcl"
   solver-version = 1
