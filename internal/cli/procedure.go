@@ -14,7 +14,7 @@ var procedureCommand = cli.Command{
 	Usage:     "create ticket by procedure ID",
 	ArgsUsage: "procedureID",
 	Action:    procedureAction,
-	Before:    projectMustExist,
+	Before:    beforeAll(projectMustExist, ticketingMustBeConfigured),
 }
 
 func procedureAction(c *cli.Context) error {

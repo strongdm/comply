@@ -50,6 +50,10 @@ func GetPlugin(ts TicketSystem) TicketPlugin {
 	tsPluginsMu.Lock()
 	defer tsPluginsMu.Unlock()
 
+	if ts == NoTickets {
+		return &noopTicketSystem{}
+	}
+
 	tp, ok := tsPlugins[ts]
 	if !ok {
 		panic("Unknown ticket system: " + ts)
@@ -99,4 +103,37 @@ func Register(ts TicketSystem, plugin TicketPlugin) {
 	}
 
 	tsPlugins[ts] = plugin
+}
+
+type noopTicketSystem struct{}
+
+func (*noopTicketSystem) Get(ID string) (*Ticket, error) {
+	return nil, nil
+}
+func (*noopTicketSystem) FindOpen() ([]*Ticket, error) {
+	return []*Ticket{}, nil
+}
+func (*noopTicketSystem) FindByTag(name, value string) ([]*Ticket, error) {
+	return []*Ticket{}, nil
+}
+func (*noopTicketSystem) FindByTagName(name string) ([]*Ticket, error) {
+	return []*Ticket{}, nil
+}
+func (*noopTicketSystem) Create(ticket *Ticket, labels []string) error {
+	return nil
+}
+func (*noopTicketSystem) Configure(map[string]interface{}) error {
+	return nil
+}
+func (*noopTicketSystem) Prompts() map[string]string {
+	return make(map[string]string)
+}
+func (*noopTicketSystem) Links() TicketLinks {
+	return TicketLinks{}
+}
+func (*noopTicketSystem) LinkFor(ticket *Ticket) string {
+	return ""
+}
+func (*noopTicketSystem) Configured() bool {
+	return false
 }
