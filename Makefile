@@ -24,7 +24,7 @@ dist: clean
 	cd dist && tar -czvf comply-$(VERSION)-darwin-amd64.tgz comply-$(VERSION)-darwin-amd64
 	cd dist && tar -czvf comply-$(VERSION)-linux-amd64.tgz comply-$(VERSION)-linux-amd64
 
-brew: clean assets $(GO_SOURCES)
+brew: clean $(GO_SOURCES)
 	$(eval VERSION := $(shell cat version))
 	$(eval LDFLAGS := -ldflags='-X "github.com/strongdm/comply/internal/cli.Version=$(VERSION)"')
 	mkdir bin
