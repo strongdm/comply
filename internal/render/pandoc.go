@@ -14,6 +14,8 @@ import (
 	"github.com/strongdm/comply/internal/config"
 )
 
+var pandocArgs = []string{"-f", "markdown+smart", "--toc", "-N", "--template", "templates/default.latex", "-o"}
+
 func pandoc(outputFilename string, errOutputCh chan error) {
 	if config.WhichPandoc() == config.UsePandoc {
 		err := pandocPandoc(outputFilename)
@@ -26,12 +28,7 @@ func pandoc(outputFilename string, errOutputCh chan error) {
 }
 
 func dockerPandoc(outputFilename string, errOutputCh chan error) {
-	// TODO: switch to new args once docker image is updated
-	// cmd21 := []string{"-f", "markdown+smart", "--toc", "-N", "--template", "templates/default.latex", "-o", fmt.Sprintf("output/%s", outputFilename), fmt.Sprintf("output/%s.md", outputFilename)}
-	cmd19 := []string{"--smart", "--toc", "-N", "--template=/source/templates/default.latex", "-o",
-		fmt.Sprintf("/source/output/%s", outputFilename),
-		fmt.Sprintf("/source/output/%s.md", outputFilename)}
-
+	pandocCmd := append(pandocArgs, fmt.Sprintf("/source/output/%s", outputFilename), fmt.Sprintf("/source/output/%s.md", outputFilename))
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	if err != nil {
@@ -51,7 +48,7 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
 		Image: "strongdm/pandoc",
-		Cmd:   cmd19},
+		Cmd:   pandocCmd},
 		hc, nil, "")
 
 	if err != nil {
@@ -85,12 +82,16 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 		errOutputCh <- errors.Wrap(err, "error reading Docker container logs")
 		return
 	}
+
+	if _, err = os.Stat(fmt.Sprintf("output/%s", outputFilename)); err != nil && os.IsNotExist(err) {
+		errOutputCh <- errors.Wrap(err, "output not generated; verify your Docker image is up to date")
+		return
+	}
 }
 
 // 🐼
 func pandocPandoc(outputFilename string) error {
-	// -f markdown+smart --toc -N --template=templates/default.latex -o output/%s output/%s.md
-	cmd := exec.Command("pandoc", "-f", "markdown+smart", "--toc", "-N", "--template", "templates/default.latex", "-o", fmt.Sprintf("output/%s", outputFilename), fmt.Sprintf("output/%s.md", outputFilename))
+	cmd := exec.Command("pandoc", append(pandocArgs, fmt.Sprintf("output/%s", outputFilename), fmt.Sprintf("output/%s.md", outputFilename))...)
 	outputRaw, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(string(outputRaw))
