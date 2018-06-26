@@ -6,6 +6,8 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math/rand"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -13,6 +15,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -44,15 +48,15 @@ func newApp() *cli.App {
 	app.Usage = "policy compliance toolkit"
 
 	app.Commands = []cli.Command{
-		initCommand,
+		beforeCommand(initCommand, notifyVersion),
 	}
 
-	app.Commands = append(app.Commands, beforeCommand(buildCommand, projectMustExist))
-	app.Commands = append(app.Commands, beforeCommand(procedureCommand, projectMustExist))
-	app.Commands = append(app.Commands, beforeCommand(schedulerCommand, projectMustExist))
-	app.Commands = append(app.Commands, beforeCommand(serveCommand, projectMustExist))
-	app.Commands = append(app.Commands, beforeCommand(syncCommand, projectMustExist))
-	app.Commands = append(app.Commands, beforeCommand(todoCommand, projectMustExist))
+	app.Commands = append(app.Commands, beforeCommand(buildCommand, projectMustExist, notifyVersion))
+	app.Commands = append(app.Commands, beforeCommand(procedureCommand, projectMustExist, notifyVersion))
+	app.Commands = append(app.Commands, beforeCommand(schedulerCommand, projectMustExist, notifyVersion))
+	app.Commands = append(app.Commands, beforeCommand(serveCommand, projectMustExist, notifyVersion))
+	app.Commands = append(app.Commands, beforeCommand(syncCommand, projectMustExist, notifyVersion))
+	app.Commands = append(app.Commands, beforeCommand(todoCommand, projectMustExist, notifyVersion))
 
 	// Plugins
 	github.Register()
@@ -98,6 +102,33 @@ func ticketingMustBeConfigured(c *cli.Context) error {
 	if p.Tickets == nil || len(p.Tickets) != 1 {
 		return feedbackError("comply.yml must contain a valid ticketing configuration")
 	}
+	return nil
+}
+
+// notifyVersion asynchronously notifies the availability of version updates
+func notifyVersion(c *cli.Context) error {
+	go func() {
+		defer func() {
+			recover() // suppress panic
+		}()
+
+		r, err := http.Get("http://comply-releases.s3.amazonaws.com/channel/stable/VERSION")
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			// fail silently
+		}
+
+		version := strings.TrimSpace(string(body))
+
+		// only when numeric versions are present
+		firstRune, _ := utf8.DecodeRuneInString(string(body))
+		if unicode.IsDigit(firstRune) && version != Version {
+			// only once every ~10 times
+			if rand.Intn(10) == 0 {
+				fmt.Fprintf(os.Stderr, "a new version of comply is available")
+			}
+		}
+	}()
 	return nil
 }
 
