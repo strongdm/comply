@@ -69,10 +69,10 @@ func (g *githubPlugin) Configured() bool {
 
 func (g *githubPlugin) Links() model.TicketLinks {
 	links := model.TicketLinks{}
-	links.AuditAll = fmt.Sprintf("https://github.com/%s/%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aaudit", g.username, g.reponame)
-	links.AuditOpen = fmt.Sprintf("https://github.com/%s/%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aaudit", g.username, g.reponame)
-	links.ProcedureAll = fmt.Sprintf("https://github.com/%s/%s/issues?q=is%3Aissue+label%3Acomply+label%3Aprocedure", g.username, g.reponame)
-	links.ProcedureOpen = fmt.Sprintf("https://github.com/%s/%s/issues?q=is%3Aissue+is%3Aopen+label%3Acomply+label%3Aprocedure", g.username, g.reponame)
+	links.AuditAll = fmt.Sprintf("https://github.com/%s/%s/issues?q=is%%3Aissue+is%%3Aopen+label%%3Acomply+label%%3Aaudit", g.username, g.reponame)
+	links.AuditOpen = fmt.Sprintf("https://github.com/%s/%s/issues?q=is%%3Aissue+is%%3Aopen+label%%3Acomply+label%%3Aaudit", g.username, g.reponame)
+	links.ProcedureAll = fmt.Sprintf("https://github.com/%s/%s/issues?q=is%%3Aissue+label%%3Acomply+label%%3Aprocedure", g.username, g.reponame)
+	links.ProcedureOpen = fmt.Sprintf("https://github.com/%s/%s/issues?q=is%%3Aissue+is%%3Aopen+label%%3Acomply+label%%3Aprocedure", g.username, g.reponame)
 	return links
 }
 
