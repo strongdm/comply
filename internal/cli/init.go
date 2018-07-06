@@ -100,7 +100,7 @@ func initAction(c *cli.Context) error {
 
 	chooser = promptui.Select{
 		Label: "Ticket System",
-		Items: []string{"GitHub", "Jira", "None"},
+		Items: []string{"GitHub", "Jira", "GitLab", "None"},
 	}
 
 	choice, _, err = chooser.Run()
@@ -117,6 +117,8 @@ func initAction(c *cli.Context) error {
 		ticketing = model.GitHub
 	case 1:
 		ticketing = model.Jira
+	case 2:
+		ticketing = model.GitLab
 	default:
 		ticketing = model.NoTickets
 	}
