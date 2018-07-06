@@ -19,10 +19,12 @@ dist: clean
 	$(eval LDFLAGS := -ldflags='-X "github.com/strongdm/comply/internal/cli.Version=$(VERSION)"')
 	mkdir dist
 	echo $(VERSION)
-	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-darwin-amd64 .
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) $(LDFLAGS) -o dist/comply-$(VERSION)-linux-amd64 .
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) -ldflags '-extldflags "-static"' $(LDFLAGS) -o dist/comply-$(VERSION)-darwin-amd64 .
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) -ldflags '-extldflags "-static"' $(LDFLAGS) -o dist/comply-$(VERSION)-linux-amd64 .
+	GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) -ldflags '-extldflags "-static"' $(LDFLAGS) -o dist/comply-$(VERSION)-windows-amd64.exe .
 	cd dist && tar -czvf comply-$(VERSION)-darwin-amd64.tgz comply-$(VERSION)-darwin-amd64
 	cd dist && tar -czvf comply-$(VERSION)-linux-amd64.tgz comply-$(VERSION)-linux-amd64
+	cd dist && zip comply-$(VERSION)-windows-amd64.zip comply-$(VERSION)-windows-amd64.exe
 
 brew: clean $(GO_SOURCES)
 	$(eval VERSION := $(shell cat version))
