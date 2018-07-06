@@ -1,7 +1,6 @@
 package gitlab
 
 import (
-	// "context"
 	"fmt"
 	"strconv"
 	"sync"
@@ -9,7 +8,6 @@ import (
 	"github.com/xanzy/go-gitlab"
 	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/model"
-	// "golang.org/x/oauth2"
 )
 
 const (
@@ -31,8 +29,6 @@ func (g *gitlabPlugin) Prompts() map[string]string {
 
 // Register causes the Github plugin to register itself
 func Register() {
-	fmt.Printf("register %s \n", "gitlab")
-	// fmt.Printf("%s -> %s\n", rel, filepath.Join("output", p.OutputFilename))
 	model.Register(model.GitLab, &gitlabPlugin{})
 }
 
@@ -46,26 +42,18 @@ type gitlabPlugin struct {
 }
 
 func (g *gitlabPlugin) api() *gitlab.Client {
-	fmt.Printf("api called %s \n", "gitlab")
 	g.clientMu.Lock()
 	defer g.clientMu.Unlock()
-	fmt.Printf("g.client: %s \n", g)
 	if g.client == nil {
-		// ts := oauth2.StaticTokenSource(
-		// 	&oauth2.Token{AccessToken: g.token},
-		// )
-
 		// get go-gitlab client
 		gl := gitlab.NewClient(nil, g.token)
 		gl.SetBaseURL(g.domain)
-		// fmt.Printf("%s+v\n", gl)
 		g.client = gl
 	}
 	return g.client
 }
 
 func (g *gitlabPlugin) Get(ID string) (*model.Ticket, error) {
-	fmt.Printf("get ID %s \n", ID)
 	return nil, nil
 }
 
@@ -99,8 +87,6 @@ func (g *gitlabPlugin) Configure(cfg map[string]interface{}) error {
 }
 
 func getCfg(cfg map[string]interface{}, k string) (string, error) {
-	fmt.Printf("get cfg %s \n", "gitlab")
-	fmt.Printf("checking config %s \n", cfg[k])
 	v, ok := cfg[k]
 	if !ok {
 		return "", errors.New("Missing key: " + k)
@@ -114,7 +100,6 @@ func getCfg(cfg map[string]interface{}, k string) (string, error) {
 }
 
 func (g *gitlabPlugin) FindOpen() ([]*model.Ticket, error) {
-	fmt.Printf("find open %s \n", "gitlab")
 	options := &gitlab.ListProjectIssuesOptions{
 		State: gitlab.String("opened"),
 	}
@@ -133,7 +118,6 @@ func (g *gitlabPlugin) FindByTag(name, value string) ([]*model.Ticket, error) {
 }
 
 func (g *gitlabPlugin) FindByTagName(name string) ([]*model.Ticket, error) {
-	fmt.Printf("> find by tag name %s \n", "gitlab")
 	options := &gitlab.ListProjectIssuesOptions{
 		State:  gitlab.String("all"),
 		Labels: []string{name},
@@ -149,7 +133,6 @@ func (g *gitlabPlugin) FindByTagName(name string) ([]*model.Ticket, error) {
 }
 
 func (g *gitlabPlugin) LinkFor(t *model.Ticket) string {
-	// return fmt.Sprintf("https://github.com/strongdm/comply/issues/%s", t.ID)
 	panic("not implemented")
 }
 
