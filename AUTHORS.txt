@@ -1,4 +1,6 @@
 # Authors in alphabetical order:
 
+Anthony Oliver
+Justin Bodeutsch
 Justin McCarthy <justin@strongdm.com>
-Manisha Singh <manisha@strongdm.com>
+Manisha Singh
