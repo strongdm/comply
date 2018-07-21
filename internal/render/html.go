@@ -82,7 +82,7 @@ func html(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 		if live {
 			if !opened {
 				opened = true
-				open.Run("output/index.html")
+				open.Run(filepath.Join(".", "output", "index.html"))
 			}
 		} else {
 			wg.Done()

@@ -185,7 +185,7 @@ func pandocBinaryMustExist(c *cli.Context) error {
 	}
 
 	// pdflatex must also be present
-	cmd = exec.Command("pdflatex", "-v")
+	cmd = exec.Command("pdflatex", "--version")
 	outputRaw, err = cmd.Output()
 	if err != nil {
 		return errors.Wrap(err, "error calling pdflatex")
