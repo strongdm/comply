@@ -16,6 +16,7 @@ var dockerAvailable, pandocAvailable bool
 const (
 	Jira      = "jira"
 	GitHub    = "github"
+	GitLab    = "gitlab"
 	NoTickets = "none"
 )
 
@@ -115,6 +116,8 @@ func (p *Project) TicketSystem() (string, error) {
 			return GitHub, nil
 		case Jira:
 			return Jira, nil
+		case GitLab:
+			return GitLab, nil
 		case NoTickets:
 			return NoTickets, nil
 		default:

@@ -5,3 +5,7 @@ tickets:
     token: XXX
     username: strongdm
     repo: comply
+  # gitlab:
+  #   domain: https://gitlab.example.com:443/ # or https://gitlab.com/
+  #   token: token-here
+  #   repo: full-slug/of-project

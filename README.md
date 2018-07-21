@@ -77,4 +77,24 @@ COMMANDS:
      todo             list declared vs satisfied compliance controls
      help, h          Shows a list of commands or help for one command
 ```
+## Ticketing Integrations:
+- Jira
+- Github
+- Gitlab
 
+## Forking and local development
+> Assumes installation of golang and configuration of GOPATH in .bash_profile, .zshrc, etc
+> Inspiration: http://code.openark.org/blog/development/forking-golang-repositories-on-github-and-managing-the-import-path
+
+```
+$ go get http://github.com/strongdm/comply
+$ cd $GOPATH/src/github.com/strongdm/comply ; go get ./...
+$ make
+$ cd example
+$ mv comply.yml.example comply.yml
+$ ../comply -h
+$ ../comply sync
+$ ../comply serve
+#
+$ make # recompile as needed with in $GOPATH/src/github.com/strongdm/comply
+```
