@@ -133,14 +133,32 @@ func notifyVersion(c *cli.Context) error {
 }
 
 func pandocMustExist(c *cli.Context) error {
-	eitherMustExistErr := fmt.Errorf("Please install either Docker or the pandoc package and re-run `%s`", c.Command.Name)
+	eitherMustExistErr := fmt.Errorf("\n\nPlease install either Docker or the pandoc package and re-run `%s`. Find OS-specific pandoc installation instructions at: [TODO]", c.Command.Name)
 
-	pandocExistErr := pandocBinaryMustExist(c)
-	dockerExistErr := dockerMustExist(c)
+	pandocExistErr, found, goodVersion, pdfLatex := pandocBinaryMustExist(c)
+	dockerExistErr, inPath, isRunning := dockerMustExist(c)
 
 	config.SetPandoc(pandocExistErr == nil, dockerExistErr == nil)
+	check := func(b bool) string {
+		if b {
+			return "✔"
+		} else {
+			return "✖"
+		}
+
+	}
 
 	if pandocExistErr != nil && dockerExistErr != nil {
+
+		fmt.Printf(`
+[%s] pandoc binary installed and in PATH
+[%s] pandoc version compatible
+[%s] pdflatex binary installed and in PATH
+[%s] docker binary installed
+[%s] docker running
+
+`, check(found), check(goodVersion), check(pdfLatex), check(inPath), check(isRunning))
+
 		return eitherMustExistErr
 	}
 
@@ -152,67 +170,89 @@ func pandocMustExist(c *cli.Context) error {
 	return nil
 }
 
-func pandocBinaryMustExist(c *cli.Context) error {
+func pandocBinaryMustExist(c *cli.Context) (e error, found, goodVersion, pdfLatex bool) {
 	cmd := exec.Command("pandoc", "-v")
 	outputRaw, err := cmd.Output()
+
+	e = nil
+	found = false
+	goodVersion = false
+	pdfLatex = false
+
 	if err != nil {
-		return errors.Wrap(err, "error calling pandoc")
-	}
-
-	output := strings.TrimSpace((string(outputRaw)))
-	versionErr := errors.New("cannot determine pandoc version")
-	if !strings.HasPrefix(output, "pandoc") {
-		return versionErr
-	}
-
-	re := regexp.MustCompile(`pandoc (\d+)\.(\d+)`)
-	result := re.FindStringSubmatch(output)
-	if len(result) != 3 {
-		return versionErr
-	}
-
-	major, err := strconv.Atoi(result[1])
-	if err != nil {
-		return versionErr
-	}
-	minor, err := strconv.Atoi(result[2])
-	if err != nil {
-		return versionErr
-	}
-
-	if major < 2 || minor < 1 {
-		return errors.New("pandoc 2.1 or greater required")
+		e = errors.Wrap(err, "error calling pandoc")
+	} else {
+		found = true
+		goodVersion = true
+		output := strings.TrimSpace((string(outputRaw)))
+		versionErr := errors.New("cannot determine pandoc version")
+		if !strings.HasPrefix(output, "pandoc") {
+			e = versionErr
+			goodVersion = false
+		} else {
+			re := regexp.MustCompile(`pandoc (\d+)\.(\d+)`)
+			result := re.FindStringSubmatch(output)
+			if len(result) != 3 {
+				e = versionErr
+				goodVersion = false
+			} else {
+				major, err := strconv.Atoi(result[1])
+				if err != nil {
+					e = versionErr
+					goodVersion = false
+				}
+				minor, err := strconv.Atoi(result[2])
+				if err != nil {
+					e = versionErr
+					goodVersion = false
+				}
+				if major < 2 || minor < 1 {
+					e = errors.New("pandoc 2.1 or greater required")
+					goodVersion = false
+				}
+			}
+		}
 	}
 
 	// pdflatex must also be present
 	cmd = exec.Command("pdflatex", "--version")
 	outputRaw, err = cmd.Output()
 	if err != nil {
-		return errors.Wrap(err, "error calling pdflatex")
+		e = errors.Wrap(err, "error calling pdflatex")
+	} else if !strings.Contains(string(outputRaw), "TeX") {
+		e = errors.New("pdflatex is required")
+	} else {
+		pdfLatex = true
 	}
 
-	if !strings.Contains(string(outputRaw), "TeX") {
-		return errors.New("pdflatex is required")
-	}
-
-	return nil
+	return e, found, goodVersion, pdfLatex
 }
 
-func dockerMustExist(c *cli.Context) error {
+func dockerMustExist(c *cli.Context) (e error, inPath, isRunning bool) {
 	dockerErr := fmt.Errorf("Docker must be available in order to run `%s`", c.Command.Name)
 
+	inPath = true
+	cmd := exec.Command("docker", "--version")
+	_, err := cmd.Output()
+	if err != nil {
+		inPath = false
+	}
+
+	isRunning = true
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
 	if err != nil {
-		return dockerErr
+		isRunning = false
+		return dockerErr, inPath, isRunning
 	}
 
 	_, err = cli.Ping(ctx)
 	if err != nil {
-		return dockerErr
+		isRunning = false
+		return dockerErr, inPath, isRunning
 	}
 
-	return nil
+	return nil, inPath, isRunning
 }
 
 func dockerPull(c *cli.Context) error {
