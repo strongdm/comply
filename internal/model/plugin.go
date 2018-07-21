@@ -20,6 +20,8 @@ const (
 	Jira = TicketSystem(config.Jira)
 	// GitHub from GitHub.
 	GitHub = TicketSystem(config.GitHub)
+	// GitLab from GitLab.
+	GitLab = TicketSystem(config.GitLab)
 	// NoTickets indicates no ticketing system integration.
 	NoTickets = TicketSystem(config.NoTickets)
 )

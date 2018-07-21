@@ -23,6 +23,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/jira"
+	"github.com/strongdm/comply/internal/gitlab"
 	"github.com/strongdm/comply/internal/plugin/github"
 	"github.com/urfave/cli"
 )
@@ -61,6 +62,7 @@ func newApp() *cli.App {
 	// Plugins
 	github.Register()
 	jira.Register()
+	gitlab.Register()
 
 	return app
 }
