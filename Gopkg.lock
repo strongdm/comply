@@ -222,6 +222,12 @@
   version = "v1.20.0"
 
 [[projects]]
+  name = "github.com/xanzy/go-gitlab"
+  packages = ["."]
+  revision = "79dad8e74fd097eb2e0fd0883f1978213e88107a"
+  version = "v0.10.7"
+
+[[projects]]
   name = "github.com/yosssi/ace"
   packages = ["."]
   revision = "ea038f4770b6746c3f8f84f14fa60d9fe1205b56"
@@ -278,6 +284,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b8eb855eeef730f7fcaabe3acceb26a99b7bce186d815c3f654d7a1cbce97f2a"
+  inputs-digest = "50dc710fa4b581d4fd6907e0e3337c53c3d530e46c53aa71ef9f8e80d3a54d8b"
   solver-name = "gps-cdcl"
   solver-version = 1
