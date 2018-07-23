@@ -108,7 +108,7 @@ func ReadNarratives() ([]*Document, error) {
 		}
 		n.Body = mdmd.body
 		n.FullPath = f.FullPath
-		n.ModifiedAt = f.ModTime()
+		n.ModifiedAt = f.Info.ModTime()
 		n.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, n.Acronym)
 		narratives = append(narratives, n)
 	}
@@ -133,7 +133,7 @@ func ReadProcedures() ([]*Procedure, error) {
 		}
 		p.Body = mdmd.body
 		p.FullPath = f.FullPath
-		p.ModifiedAt = f.ModTime()
+		p.ModifiedAt = f.Info.ModTime()
 		procedures = append(procedures, p)
 	}
 
@@ -158,7 +158,7 @@ func ReadPolicies() ([]*Document, error) {
 		}
 		p.Body = mdmd.body
 		p.FullPath = f.FullPath
-		p.ModifiedAt = f.ModTime()
+		p.ModifiedAt = f.Info.ModTime()
 		p.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, p.Acronym)
 		policies = append(policies, p)
 	}
