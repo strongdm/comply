@@ -21,15 +21,15 @@ CC1.5:
   description: The entity holds individuals accountable for their internal control responsibilities in the pursuit of objectives.
 CC2.1:
   family: CC2
-  name: Use of Information Systems
+  name: Generation of Control Information
   description: The entity obtains or generates and uses relevant, quality information to support the functioning of internal control
 CC2.2:
   family: CC2
-  name: Use of Communication Systems, Internal
+  name: Internal Communication of Control Information
   description: The entity internally communicates information, including objectives and responsibilities for internal control, necessary to support the functioning of internal control
 CC2.3:
   family: CC2
-  name: Use of Communication Systems, External
+  name: External Communication of Control Information
   description: The entity communicates with external parties regarding matters affecting the functioning of internal control
 CC3.1:
   family: CC3
