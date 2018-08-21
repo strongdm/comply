@@ -103,7 +103,7 @@ Please make sure that the default *Create Screen* has all of those fields enable
 > Inspiration: http://code.openark.org/blog/development/forking-golang-repositories-on-github-and-managing-the-import-path
 
 ```
-$ go get http://github.com/strongdm/comply
+$ go get github.com/strongdm/comply
 $ cd $GOPATH/src/github.com/strongdm/comply ; go get ./...
 $ make
 $ cd example
