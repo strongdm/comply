@@ -82,6 +82,22 @@ COMMANDS:
 - Github
 - Gitlab
 
+## Configuring Jira
+When comply creates a ticket (through `proc`, for instance), it sets the following fields.
+
+- assignee
+- description
+- issuetype
+- labels
+- project key
+- reporter
+- summary
+
+Please make sure that the default *Create Screen* has all of those fields enabled. Additionally, make sure that there are no other required fields for the issue type you choose.
+
+
+
+
 ## Forking and local development
 > Assumes installation of golang and configuration of GOPATH in .bash_profile, .zshrc, etc
 > Inspiration: http://code.openark.org/blog/development/forking-golang-repositories-on-github-and-managing-the-import-path
