@@ -14,6 +14,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/model"
+	"os/exec"
 )
 
 // TODO: refactor and eliminate duplication among narrative, policy renderers
@@ -53,6 +54,36 @@ func renderToFilesystem(wg *sync.WaitGroup, errOutputCh chan error, data *render
 	}(doc)
 }
 
+func getGitApprovalInfo(pol *model.Document) (string, error) {
+	cfg := config.Config()
+
+	// Decide whether we are on the git branch that contains the approved policies
+	gitBranchArgs := []string{"rev-parse","--abbrev-ref", "HEAD"}
+	gitBranchCmd := exec.Command("git", gitBranchArgs...)
+	gitBranchInfo, err := gitBranchCmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(string(gitBranchInfo))
+		return "", errors.Wrap(err, "error looking up git branch")
+	}
+
+	// if no approved branch specified in config.yaml, then nothing gets added to the document
+	// if on a different branch than the approved branch, then nothing gets added to the document
+	if len(cfg.ApprovedBranch) == 0 || strings.Compare(strings.TrimSpace(fmt.Sprintf("%s",gitBranchInfo)), cfg.ApprovedBranch ) != 0 {
+		return "", nil
+	}
+
+	// Grab information related to commit, so that we can put approval information in the document
+	gitArgs := []string{"log", "-n", "1", "--pretty=format:Last edit made by %an (%aE) on %aD.\n\nApproved by %cn (%cE) on %cD in commit %H.",  "--", pol.FullPath}
+	cmd := exec.Command("git", gitArgs...)
+	gitApprovalInfo, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(string(gitApprovalInfo))
+		return "", errors.Wrap(err, "error looking up git committer and author data")
+	}
+
+	 return fmt.Sprintf("%s\n%s", "# Authorship and Approval", gitApprovalInfo), nil
+}
+
 func preprocessDoc(data *renderData, pol *model.Document, fullPath string) error {
 	cfg := config.Config()
 
@@ -89,6 +120,12 @@ func preprocessDoc(data *renderData, pol *model.Document, fullPath string) error
 		revisionTable = fmt.Sprintf("|Date|Comment|\n|---+--------------------------------------------|\n%s\nTable: Document history\n", rows)
 	}
 
+	gitApprovalInfo, err := getGitApprovalInfo(pol)
+	if err != nil {
+		return err
+	}
+
+
 	doc := fmt.Sprintf(`%% %s
 %% %s
 %% %s
@@ -104,6 +141,8 @@ foot-content: "%s confidential %d"
 %s
 
 \newpage
+%s
+
 %s`,
 		pol.Name,
 		cfg.Name,
@@ -114,6 +153,7 @@ foot-content: "%s confidential %d"
 		satisfiesTable,
 		revisionTable,
 		body,
+		gitApprovalInfo,
 	)
 	err = ioutil.WriteFile(fullPath, []byte(doc), os.FileMode(0644))
 	if err != nil {

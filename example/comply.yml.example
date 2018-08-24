@@ -1,5 +1,17 @@
 name: "Acme"
 filePrefix: "Acme"
+
+# The following setting is optional.
+# If you set this (to, e.g. master), and you build the policies
+# on that branch, then a section is appended to each policy that
+# describes the approval. Text will look like:
+#
+# Last edit made by John Doe (jdoe@email.com) on Wed, 15 Aug 2018 12:45:28 -0400.
+# Approved by Joan Smith (jsmith@email.com) on Wed, 15 Aug 2018 16:54:48 -0400 in commit abc123123.
+#
+# The change author gets credit for the edit.
+# The person who committed or merged to the approval branch gets credit for approval.
+approvedBranch: master
 tickets:
   github:
     token: XXX
