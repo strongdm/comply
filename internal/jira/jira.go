@@ -16,6 +16,7 @@ const (
 	cfgPassword = "password"
 	cfgURL      = "url"
 	cfgProject  = "project"
+	cfgTaskType = "taskType"
 )
 
 var prompts = map[string]string{
@@ -23,6 +24,7 @@ var prompts = map[string]string{
 	cfgPassword: "Jira Password",
 	cfgURL:      "Jira URL",
 	cfgProject:  "Jira Project Code",
+	cfgTaskType: "Jira Task Type",
 }
 
 // Prompts are human-readable configuration element names
@@ -40,6 +42,7 @@ type jiraPlugin struct {
 	password string
 	url      string
 	project  string
+	taskType string
 
 	clientMu sync.Mutex
 	client   *jira.Client
@@ -66,7 +69,7 @@ func (j *jiraPlugin) Get(ID string) (*model.Ticket, error) {
 }
 
 func (j *jiraPlugin) Configured() bool {
-	return j.username != "" && j.password != "" && j.url != "" && j.project != ""
+	return j.username != "" && j.password != "" && j.url != "" && j.project != "" && j.taskType != ""
 }
 
 func (j *jiraPlugin) Links() model.TicketLinks {
@@ -91,6 +94,9 @@ func (j *jiraPlugin) Configure(cfg map[string]interface{}) error {
 		return err
 	}
 	if j.project, err = getCfg(cfg, cfgProject); err != nil {
+		return err
+	}
+	if j.taskType, err = getCfg(cfg, cfgTaskType); err != nil {
 		return err
 	}
 
@@ -134,7 +140,7 @@ func (j *jiraPlugin) Create(ticket *model.Ticket, labels []string) error {
 	i := jira.Issue{
 		Fields: &jira.IssueFields{
 			Type: jira.IssueType{
-				Name: "Task",
+				Name: j.taskType,
 			},
 			Project: jira.Project{
 				Key: j.project,

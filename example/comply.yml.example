@@ -5,6 +5,14 @@ tickets:
     token: XXX
     username: strongdm
     repo: comply
+  # jira:
+  #   username: xxxx     # This is the username you log in to Jira's UI with. Probably your email address.
+  #   password: xxxx     # If you don't have a "managed account", use your password in this field. But if your organization
+  #                      # uses SAML or OAuth, or Jira's built-in multi-factor authentication, you need to use
+  #                      # an API token. Learn more here: https://confluence.atlassian.com/cloud/api-tokens-938839638.html
+  #   project: comply
+  #   url: https://yourjira
+  #   taskType: Task     # This must be an Issue, not a sub-task
   # gitlab:
   #   domain: https://gitlab.example.com:443/ # or https://gitlab.com/
   #   token: token-here
