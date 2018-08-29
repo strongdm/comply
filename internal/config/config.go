@@ -33,11 +33,11 @@ func SetProjectRoot(dir string) {
 }
 
 type Project struct {
-	Name       string                 `yaml:"name"`
-	Pandoc     string                 `yaml:"pandoc,omitempty"`
-	FilePrefix string                 `yaml:"filePrefix"`
-	Tickets    map[string]interface{} `yaml:"tickets"`
-	ApprovedBranch string             `yaml:"approvedBranch"`
+	Name           string                 `yaml:"name"`
+	Pandoc         string                 `yaml:"pandoc,omitempty"`
+	FilePrefix     string                 `yaml:"filePrefix"`
+	Tickets        map[string]interface{} `yaml:"tickets"`
+	ApprovedBranch string                 `yaml:"approvedBranch"`
 }
 
 // SetPandoc records pandoc availability during initialization

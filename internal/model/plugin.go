@@ -88,7 +88,7 @@ func GetPlugin(ts TicketSystem) TicketPlugin {
 					cfgStringed[kS] = v
 				}
 				err := tp.Configure(cfgStringed)
-				if( err != nil) {
+				if err != nil {
 					panic(fmt.Sprintf("Configuration error `%s` in project YAML", err))
 				}
 			}

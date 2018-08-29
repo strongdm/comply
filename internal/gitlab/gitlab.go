@@ -5,21 +5,21 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/xanzy/go-gitlab"
 	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/model"
+	"github.com/xanzy/go-gitlab"
 )
 
 const (
-	cfgDomain   = "domain"
-	cfgToken    = "token"
-	cfgRepo     = "repo"
+	cfgDomain = "domain"
+	cfgToken  = "token"
+	cfgRepo   = "repo"
 )
 
 var prompts = map[string]string{
-	cfgDomain:   "Fully Qualified GitLab Domain",
-	cfgToken:    "GitLab Token",
-	cfgRepo:     "GitLab Repository",
+	cfgDomain: "Fully Qualified GitLab Domain",
+	cfgToken:  "GitLab Token",
+	cfgRepo:   "GitLab Repository",
 }
 
 // Prompts are human-readable configuration element names
@@ -137,10 +137,10 @@ func (g *gitlabPlugin) LinkFor(t *model.Ticket) string {
 }
 
 func (g *gitlabPlugin) Create(ticket *model.Ticket, labels []string) error {
-	options :=  &gitlab.CreateIssueOptions{
-		Title:         gitlab.String(ticket.Name),
-		Description:   gitlab.String(ticket.Body),
-		Labels:        labels,
+	options := &gitlab.CreateIssueOptions{
+		Title:       gitlab.String(ticket.Name),
+		Description: gitlab.String(ticket.Body),
+		Labels:      labels,
 	}
 	_, _, err := g.api().Issues.CreateIssue(g.reponame, options)
 	return err
