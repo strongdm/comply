@@ -11,10 +11,11 @@ import (
 	"text/template"
 	"time"
 
+	"os/exec"
+
 	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/model"
-	"os/exec"
 )
 
 // TODO: refactor and eliminate duplication among narrative, policy renderers
@@ -57,8 +58,13 @@ func renderToFilesystem(wg *sync.WaitGroup, errOutputCh chan error, data *render
 func getGitApprovalInfo(pol *model.Document) (string, error) {
 	cfg := config.Config()
 
+	// if no approved branch specified in config.yaml, then nothing gets added to the document
+	if cfg.ApprovedBranch == "" {
+		return "", nil
+	}
+
 	// Decide whether we are on the git branch that contains the approved policies
-	gitBranchArgs := []string{"rev-parse","--abbrev-ref", "HEAD"}
+	gitBranchArgs := []string{"rev-parse", "--abbrev-ref", "HEAD"}
 	gitBranchCmd := exec.Command("git", gitBranchArgs...)
 	gitBranchInfo, err := gitBranchCmd.CombinedOutput()
 	if err != nil {
@@ -66,14 +72,13 @@ func getGitApprovalInfo(pol *model.Document) (string, error) {
 		return "", errors.Wrap(err, "error looking up git branch")
 	}
 
-	// if no approved branch specified in config.yaml, then nothing gets added to the document
 	// if on a different branch than the approved branch, then nothing gets added to the document
-	if len(cfg.ApprovedBranch) == 0 || strings.Compare(strings.TrimSpace(fmt.Sprintf("%s",gitBranchInfo)), cfg.ApprovedBranch ) != 0 {
+	if strings.Compare(strings.TrimSpace(fmt.Sprintf("%s", gitBranchInfo)), cfg.ApprovedBranch) != 0 {
 		return "", nil
 	}
 
 	// Grab information related to commit, so that we can put approval information in the document
-	gitArgs := []string{"log", "-n", "1", "--pretty=format:Last edit made by %an (%aE) on %aD.\n\nApproved by %cn (%cE) on %cD in commit %H.",  "--", pol.FullPath}
+	gitArgs := []string{"log", "-n", "1", "--pretty=format:Last edit made by %an (%aE) on %aD.\n\nApproved by %cn (%cE) on %cD in commit %H.", "--", pol.FullPath}
 	cmd := exec.Command("git", gitArgs...)
 	gitApprovalInfo, err := cmd.CombinedOutput()
 	if err != nil {
@@ -81,7 +86,7 @@ func getGitApprovalInfo(pol *model.Document) (string, error) {
 		return "", errors.Wrap(err, "error looking up git committer and author data")
 	}
 
-	 return fmt.Sprintf("%s\n%s", "# Authorship and Approval", gitApprovalInfo), nil
+	return fmt.Sprintf("%s\n%s", "# Authorship and Approval", gitApprovalInfo), nil
 }
 
 func preprocessDoc(data *renderData, pol *model.Document, fullPath string) error {
@@ -124,7 +129,6 @@ func preprocessDoc(data *renderData, pol *model.Document, fullPath string) error
 	if err != nil {
 		return err
 	}
-
 
 	doc := fmt.Sprintf(`%% %s
 %% %s
