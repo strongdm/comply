@@ -1,6 +1,9 @@
 # Authors in alphabetical order:
 
+Alan Cox
+Andy Magnusson
 Anthony Oliver
 Justin Bodeutsch
 Justin McCarthy <justin@strongdm.com>
 Manisha Singh
+Mason Hensley
