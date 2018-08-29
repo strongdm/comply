@@ -37,6 +37,7 @@ type Project struct {
 	Pandoc     string                 `yaml:"pandoc,omitempty"`
 	FilePrefix string                 `yaml:"filePrefix"`
 	Tickets    map[string]interface{} `yaml:"tickets"`
+	ApprovedBranch string             `yaml:"approvedBranch"`
 }
 
 // SetPandoc records pandoc availability during initialization
