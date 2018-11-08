@@ -164,10 +164,10 @@ func toTicket(i *gitlab.Issue) *model.Ticket {
 
 	for _, l := range i.Labels {
 		if l == "audit" {
-			t.SetBool("audit")
+			t.SetBool("comply-audit")
 		}
 		if l == "procedure" {
-			t.SetBool("procedure")
+			t.SetBool("comply-procedure")
 		}
 	}
 	return t
