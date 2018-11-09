@@ -63,10 +63,10 @@ func (g *gitlabPlugin) Configured() bool {
 
 func (g *gitlabPlugin) Links() model.TicketLinks {
 	links := model.TicketLinks{}
-	links.AuditAll = fmt.Sprintf("%s/%s/issues?scope=all&utf8=✓&state=all&label_name[]=audit", g.domain, g.reponame)
-	links.AuditOpen = fmt.Sprintf("%s/%s/issues?scope=all&utf8=✓&state=opened&label_name[]=audit", g.domain, g.reponame)
-	links.ProcedureAll = fmt.Sprintf("%s/%s/issues?scope=all&utf8=✓&state=all&label_name[]=procedure", g.domain, g.reponame)
-	links.ProcedureOpen = fmt.Sprintf("%s/%s/issues?scope=all&utf8=✓&state=opened&label_name[]=procedure", g.domain, g.reponame)
+	links.AuditAll = fmt.Sprintf("%s/%s/issues?scope=all&utf8=✓&state=all&label_name[]=comply-audit", g.domain, g.reponame)
+	links.AuditOpen = fmt.Sprintf("%s/%s/issues?scope=all&utf8=✓&state=opened&label_name[]=comply-audit", g.domain, g.reponame)
+	links.ProcedureAll = fmt.Sprintf("%s/%s/issues?scope=all&utf8=✓&state=all&label_name[]=comply-procedure", g.domain, g.reponame)
+	links.ProcedureOpen = fmt.Sprintf("%s/%s/issues?scope=all&utf8=✓&state=opened&label_name[]=comply-procedure", g.domain, g.reponame)
 	return links
 }
 
@@ -164,10 +164,10 @@ func toTicket(i *gitlab.Issue) *model.Ticket {
 
 	for _, l := range i.Labels {
 		if l == "audit" {
-			t.SetBool("audit")
+			t.SetBool("comply-audit")
 		}
 		if l == "procedure" {
-			t.SetBool("procedure")
+			t.SetBool("comply-procedure")
 		}
 	}
 	return t
