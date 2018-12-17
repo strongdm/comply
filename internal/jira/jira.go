@@ -169,8 +169,8 @@ func toTickets(issues []jira.Issue) []*model.Ticket {
 func toTicket(i *jira.Issue) *model.Ticket {
 	t := &model.Ticket{Attributes: make(map[string]interface{})}
 	t.ID = i.ID
-	t.Name = i.Fields.Description
-	t.Body = i.Fields.Summary
+	t.Name = i.Fields.Summary
+	t.Body = i.Fields.Description
 	createdAt := time.Time(i.Fields.Created)
 	t.CreatedAt = &createdAt
 	t.State = toState(i.Fields.Resolution)
