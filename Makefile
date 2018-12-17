@@ -40,7 +40,7 @@ clean:
 install: assets $(GO_SOURCES)
 	go install github.com/strongdm/comply
 
-push-assets: is-clean export-example assets
+push-assets: is-clean assets
 	git commit -am "automated asset refresh (via Makefile)"
 	git push
 
@@ -51,16 +51,6 @@ else
 	@echo working directory must be clean to proceed
 	@exit 1
 endif
-
-export-example:
-	cp example/narratives/* themes/comply-soc2/narratives
-	cp example/procedures/* themes/comply-soc2/procedures
-	cp example/policies/* themes/comply-soc2/policies
-	cp example/standards/* themes/comply-soc2/standards
-	cp example/templates/* themes/comply-soc2/templates
-	cp example/templates/* themes/comply-blank/templates
-	cp example/*.md themes/comply-soc2
-	cp example/*.md themes/comply-blank
 
 docker:
 	cd build && docker build -t strongdm/pandoc .
