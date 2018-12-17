@@ -8,8 +8,7 @@ majorRevisions:
   - date: Jun 1 2018
     comment: Initial document
 ---
-
-# Purpose and Scope
+#Purpose and Scope 
 
 a. The purpose of this policy is to define the organization’s procedures to recover Information Technology (IT) infrastructure and IT services within set deadlines in the case of a disaster or other disruptive incident. The objective of this plan is to complete the recovery of IT infrastructure and IT services within a set Recovery Time Objective (RTO).
 
