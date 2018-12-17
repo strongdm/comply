@@ -1,10 +1,12 @@
 # Authors in alphabetical order:
 
+arambhashura
 Alan Cox
 Andy Magnusson
 Anthony Oliver
 Justin Bodeutsch
 Justin McCarthy <justin@strongdm.com>
+Kevin N. Murphy
 Manisha Singh
 Mason Hensley
 Matt Simerson
