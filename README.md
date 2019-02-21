@@ -77,6 +77,23 @@ COMMANDS:
      todo             list declared vs satisfied compliance controls
      help, h          Shows a list of commands or help for one command
 ```
+
+## Running in Docker
+
+Comply is currently only released for Linux and macOS, however from other operating systems it's possible to run using Docker:
+
+```
+# using the included Dockerfile in the root of this project
+$ docker build -t comply .
+
+# from an empty directory that will contain your comply project
+$ docker run -it --rm -v "$PWD":/source comply
+$ docker init
+```
+
+For Windows users, replace $PWD with the full path to your project directory
+
+
 ## Ticketing Integrations:
 - Jira
 - Github
