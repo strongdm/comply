@@ -83,12 +83,13 @@ COMMANDS:
 Comply is currently only released for Linux and macOS, however from other operating systems it's possible to run using Docker:
 
 ```
-# using the included Dockerfile in the root of this project
+# first build a copy of the container using the included Dockerfile in the root of this project
 $ docker build -t comply .
 
 # from an empty directory that will contain your comply project
 $ docker run -it --rm -v "$PWD":/source comply
-$ docker init
+root@ec4544732298:/source# comply init
+✗ Organization Name:
 ```
 
 For Windows users, replace $PWD with the full path to your project directory
