@@ -111,6 +111,9 @@ minor-release: release-env minor release
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
 	curl -X POST --data-urlencode 'payload={"channel": "#release", "username": "release", "text": "comply $(VERSION) released", "icon_emoji": ":shipit:"}' https://hooks.slack.com/services/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
 
+docker-release:
+	docker build --build-arg COMPLY_VERSION=`cat VERSION` -t strongdm/comply .
+
 patch: clean gitsem
 	gitsem -m "increment patch for release (via Makefile)" patch
 	git push

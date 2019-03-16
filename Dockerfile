@@ -6,7 +6,10 @@ MAINTAINER Comply <comply@strongdm.com>
 RUN apt-get update -y \
   && apt-get install -y curl
 
-ENV COMPLY_VERSION "1.3.7"
+ARG COMPLY_VERSION
+ENV COMPLY_VERSION ${COMPLY_VERSION:-1.4.0}
+
+EXPOSE 4000/tcp
 
 # install comply binary
 RUN curl -J -L -o /tmp/comply.tgz https://github.com/strongdm/comply/releases/download/v${COMPLY_VERSION}/comply-v${COMPLY_VERSION}-linux-amd64.tgz \
