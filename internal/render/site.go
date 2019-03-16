@@ -94,7 +94,7 @@ func Build(output string, live bool) error {
 
 		go func() {
 			http.Handle("/", http.FileServer(http.Dir(filepath.Join(".", "output"))))
-			err := http.ListenAndServe(fmt.Sprintf("127.0.0.1:%d", ServePort), nil)
+			err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", ServePort), nil)
 			if err != nil {
 				panic(err)
 			}
