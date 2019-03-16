@@ -103,11 +103,11 @@ release: release-env dist release-deps
 	@echo "version $(VERSION) sha $(SHA)"
 	cd $$COMPLY_TAPDIR && ./update.sh $(VERSION) $(SHA)
 
-patch-release: release-env push-assets patch release
+patch-release: release-env patch release
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
 	curl -X POST --data-urlencode 'payload={"channel": "#release", "username": "release", "text": "comply $(VERSION) released", "icon_emoji": ":shipit:"}' https://hooks.slack.com/services/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
 
-minor-release: release-env push-assets minor release
+minor-release: release-env minor release
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
 	curl -X POST --data-urlencode 'payload={"channel": "#release", "username": "release", "text": "comply $(VERSION) released", "icon_emoji": ":shipit:"}' https://hooks.slack.com/services/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
 
