@@ -113,6 +113,7 @@ minor-release: release-env minor release
 
 docker-release:
 	docker build --build-arg COMPLY_VERSION=`cat VERSION` -t strongdm/comply .
+	docker push strongdm/comply
 
 patch: clean gitsem
 	gitsem -m "increment patch for release (via Makefile)" patch

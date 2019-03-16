@@ -83,13 +83,18 @@ COMMANDS:
 Comply is currently only released for Linux and macOS, however from other operating systems it's possible to run using Docker:
 
 ```
-# first build a copy of the container using the included Dockerfile in the root of this project
-$ docker build -t comply .
+# first pull the latest published docker image
+$ docker pull strongdm/comply
 
 # from an empty directory that will contain your comply project
-$ docker run -it --rm -v "$PWD":/source comply
+$ docker run --rm -v "$PWD":/source -p 4000:4000 -it strongdm/comply
 root@ec4544732298:/source# comply init
 ✗ Organization Name:
+
+# serve content live from an established project
+$ docker run --rm -v "$PWD":/source -p 4000:4000 -it strongdm/comply
+root@ae4d499583fc:/source# comply serve
+Serving content of output/ at http://127.0.0.1:4000 (ctrl-c to quit)
 ```
 
 For Windows users, replace $PWD with the full path to your project directory
