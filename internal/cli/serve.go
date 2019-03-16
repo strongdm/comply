@@ -7,8 +7,15 @@ import (
 )
 
 var serveCommand = cli.Command{
-	Name:   "serve",
-	Usage:  "live updating version of the build command",
+	Name:  "serve",
+	Usage: "live updating version of the build command",
+	Flags: []cli.Flag{
+		cli.IntFlag{
+			Name:        "port",
+			Value:       4000,
+			Destination: &render.ServePort,
+		},
+	},
 	Action: serveAction,
 	Before: beforeAll(pandocMustExist, cleanContainers),
 }

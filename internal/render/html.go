@@ -15,7 +15,10 @@ import (
 
 const websocketReloader = `<script>
 (function(){
-	var ws = new WebSocket("ws://localhost:5122/ws")
+	var ws = new WebSocket("ws://localhost:%d/ws")
+	if (location.host != "") {
+		ws = new WebSocket("ws://"+location.host+"/ws")
+	}
 	var connected = false
 	ws.onopen = function(e) {
 		connected = true
@@ -74,7 +77,7 @@ func html(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 			}
 
 			if live {
-				w.Write([]byte(websocketReloader))
+				w.Write([]byte(fmt.Sprintf(websocketReloader, ServePort)))
 			}
 			w.Close()
 		}
@@ -82,7 +85,7 @@ func html(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 		if live {
 			if !opened {
 				opened = true
-				open.Run(filepath.Join(".", "output", "index.html"))
+				open.Run(fmt.Sprintf("http://127.0.0.1:%d/", ServePort))
 			}
 		} else {
 			wg.Done()

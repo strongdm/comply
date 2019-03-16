@@ -45,7 +45,6 @@ func watch(errCh chan error) {
 	}
 
 	http.HandleFunc("/ws", serveWs)
-	go http.ListenAndServe("127.0.0.1:5122", nil)
 
 	return
 }

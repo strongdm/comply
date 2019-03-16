@@ -1,8 +1,10 @@
 package render
 
 import (
+	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -10,6 +12,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/yosssi/ace"
 )
+
+var ServePort int
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -87,6 +91,16 @@ func Build(output string, live bool) error {
 
 	if live {
 		watch(errCh)
+
+		go func() {
+			http.Handle("/", http.FileServer(http.Dir(filepath.Join(".", "output"))))
+			err := http.ListenAndServe(fmt.Sprintf("127.0.0.1:%d", ServePort), nil)
+			if err != nil {
+				panic(err)
+			}
+		}()
+
+		fmt.Printf("Serving content of output/ at http://127.0.0.1:%d (ctrl-c to quit)\n", ServePort)
 	}
 	// PDF
 	wg.Add(1)
