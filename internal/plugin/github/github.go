@@ -3,7 +3,9 @@ package github
 import (
 	"context"
 	"fmt"
+	"os"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/google/go-github/github"
@@ -95,7 +97,10 @@ func (g *githubPlugin) Configure(cfg map[string]interface{}) error {
 func getCfg(cfg map[string]interface{}, k string) (string, error) {
 	v, ok := cfg[k]
 	if !ok {
-		return "", errors.New("Missing key: " + k)
+		v = os.Getenv(fmt.Sprintf("GITHUB_%s", strings.ToUpper(k)))
+		if v == "" {
+			return "", errors.New("Missing key: " + k)
+		}
 	}
 
 	vS, ok := v.(string)
