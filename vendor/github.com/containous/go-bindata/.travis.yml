@@ -1,0 +1,18 @@
+language: go
+
+go:
+  - 1.x
+
+install:
+  - echo "TRAVIS_GO_VERSION=$TRAVIS_GO_VERSION"
+
+deploy:
+  - provider: releases
+    api_key: ${GITHUB_TOKEN}
+    file: dist/go-bindata
+    skip_cleanup: true
+    overwrite: true
+    file_glob: true
+    on:
+      tags: true
+      condition: $TRAVIS_GO_VERSION =~ ^1\.x$
