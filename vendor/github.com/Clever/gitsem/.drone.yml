@@ -1,0 +1,24 @@
+image: bradrydzewski/go:1.3
+script:
+  - make test
+notify:
+  email:
+    recipients:
+      - drone@clever.com
+  hipchat:
+    room: Clever-Dev-CI
+    token: {{hipchat_token}}
+    on_started: true
+    on_success: true
+    on_failure: true
+publish:
+  github:
+    branch: master
+    script:
+      - make release
+    artifacts:
+      - release
+    tag: v$(cat VERSION)
+    token: {{github_token}}
+    user: Clever
+    repo: gitsem

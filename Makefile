@@ -3,11 +3,10 @@ GO_SOURCES := $(shell find . -name '*.go')
 THEME_SOURCES := $(shell find themes)
 
 assets: $(THEME_SOURCES)
-	@go get github.com/jteeuwen/go-bindata/...
-	@go get github.com/elazarl/go-bindata-assetfs/...
-	@go install github.com/elazarl/go-bindata-assetfs
-	go-bindata-assetfs -o bindata.go -pkg theme -prefix themes themes/...
-	mv bindata.go internal/theme/themes_bindata.go
+	go install -mod=vendor github.com/containous/go-bindata/go-bindata
+	go install -mod=vendor github.com/elazarl/go-bindata-assetfs/go-bindata-assetfs
+	go-bindata-assetfs -pkg theme -prefix themes themes/...
+	mv bindata_assetfs.go internal/theme/themes_bindata.go
 
 comply: assets $(GO_SOURCES)
 	@# $(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
@@ -128,7 +127,7 @@ minor: clean gitsem
 release-deps: gitsem gh-release
 
 gitsem:
-	go get -u github.com/Clever/gitsem
+	go install github.com/Clever/gitsem
 
 gh-release:
-	go get -u github.com/aktau/github-release
+	go install github.com/aktau/github-release
