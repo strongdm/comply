@@ -8,6 +8,7 @@ html lang=en
     script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment.min.js"
     script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/later/1.2.0/later.min.js"
     script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prettycron/0.11.0/prettycron.min.js"
+    script type="text/javascript" src="https://unpkg.com/tablefilter@latest/dist/tablefilter/tablefilter.js"
     meta name="viewport" content="width=device-width, initial-scale=1"
     = css
     = javascript
@@ -42,6 +43,7 @@ html lang=en
           }
         }
       }
+
   body
     section.hero.is-primary.is-small
       .hero-body
@@ -193,9 +195,10 @@ html lang=en
           p
             strong Standards
             | specify the controls satisfied by the compliance program.
-      table.table.is-size-4.is-fullwidth
+      table.table.is-size-4.is-fullwidth id="standards-table"
         thead
           tr
+            th Standard
             th Control Key
             th Name
             th Satisfied?
@@ -203,6 +206,7 @@ html lang=en
         tbody
           {{range .Controls }}
           tr
+            td {{.Standard}}
             td {{.ControlKey}}
             td
               strong {{.Name}}
@@ -235,3 +239,26 @@ html lang=en
         }
       }
     }
+
+    var tfConfig = { 
+      base_path: 'https://unpkg.com/tablefilter@latest/dist/tablefilter/',
+      alternate_rows: true,
+      rows_counter: {
+        text: 'Controls: '
+      },
+      btn_reset: {
+        text: 'Clear'
+      },
+      col_types: [
+        'string',
+        'string',
+        'string',
+        'string',
+        'string'
+      ],
+      extensions: [{ name: 'sort' }]
+    }
+
+    var tf = new TableFilter('standards-table',tfConfig);
+    tf.init();
+
