@@ -16,7 +16,7 @@ majorRevisions:
 
   a. This policy applies to all employees and contractors. They are bound by their Employment Offer Letter or Independent Contractor Agreement to follow the Code of Conduct Policy while performing their duties. The Code of Conduct is outlined below: 
 
-#Policy
+# Policy
 
   a. *Compliance with law*
       
