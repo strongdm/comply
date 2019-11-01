@@ -38,7 +38,7 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 
 	pwd, err := os.Getwd()
 	if err != nil {
-		errOutputCh <- errors.Wrap(err, "unable to get workding directory")
+		errOutputCh <- errors.Wrap(err, "unable to get working directory")
 		return
 	}
 
