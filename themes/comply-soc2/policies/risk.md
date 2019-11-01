@@ -93,8 +93,8 @@ Table 3: Description of Consequence Levels and Criteria
 +-----------------+-----------------+--------------------------------------------------------------+
 | High            | 2               | Either existing security controls are not in place or        |
 |                 |                 | ineffective; there is a high probability of the risk being   |                    
-|                 |                 | realized. Incidents have a high likelihood of occuring in the|
-|                 |                 | future.                                             |
+|                 |                 | realized. Incidents have a high likelihood of occurring in   |
+|                 |                 | the future.                                                  |
 +-----------------+-----------------+--------------------------------------------------------------+
 |                 |                 |                                                              |  
 +-----------------+-----------------+--------------------------------------------------------------+
