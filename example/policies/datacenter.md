@@ -22,7 +22,7 @@ a. This policy defines the policies and rules governing data centers and secure 
 
 # Policy
 
-a. The following locations are classified by the organization as secure areas and are goverened by this policy:
+a. The following locations are classified by the organization as secure areas and are governed by this policy:
 
     i. [list all data center locations and secure areas under the organization’s control]
 
