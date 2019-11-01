@@ -104,7 +104,7 @@ a. The ISM must take all necessary steps to resolve the incident and recover inf
 
     i. Disclosures (parties to which the details of this incident were disclosed to, such as customers, vendors, law enforcement, etc.)
 
-a. After an incident has been resolved, the ISM must conduct a post mortem that includes root cause analysis and documentation any lessons learned.
+a. After an incident has been resolved, the ISM must conduct a postmortem that includes root cause analysis and documentation any lessons learned.
 
 a. Depending on the severity of the incident, the Chief Executive Officer (CEO) may elect to contact external authorities, including but not limited to law enforcement, private investigation firms, and government organizations as part of the response to the incident.
 
