@@ -44,7 +44,7 @@ majorRevisions:
 
   a. *Corruption*
 
-      i. Employees are discouraged from accepting gifts from clients or partners. Briberies are prohibited for the benefit of any external or internal party. 
+      i. Employees are discouraged from accepting gifts from clients or partners. Bribery is prohibited for the benefit of any external or internal party. 
 
   a. *Job duties and authority*
 
