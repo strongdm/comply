@@ -1,5 +1,6 @@
 name: Processing Integrity Policy
 acronym: PIP
+live: false
 satisfies:
   TSC:
     - PI1.1

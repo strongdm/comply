@@ -1,5 +1,6 @@
 name: Datacenter Policy
 acronym: DP
+live: false
 satisfies:
   TSC:
     - CC6.4

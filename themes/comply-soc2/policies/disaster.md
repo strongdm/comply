@@ -1,5 +1,6 @@
 name: Disaster Recovery Policy
 acronym: DRP
+live: false
 satisfies:
   TSC:
     - A1.2

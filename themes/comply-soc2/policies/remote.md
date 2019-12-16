@@ -1,5 +1,6 @@
 name: Remote Access Policy
 acronym: REAP
+live: false
 satisfies:
   TSC:
     - CC6.1

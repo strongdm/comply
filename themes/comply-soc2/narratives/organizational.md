@@ -1,5 +1,6 @@
 name: Organizational Narrative
 acronym: ON
+live: false
 satisfies:
   TSC:
     - CC1.2

@@ -1,5 +1,6 @@
 name: System Change Policy
 acronym: SCP
+live: false
 satisfies:
   TSC:
     - CC8.1

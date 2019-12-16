@@ -1,5 +1,6 @@
 name: Vendor Management Policy
 acronym: VMP
+live: false
 satisfies:
   TSC:
     - CC9.2

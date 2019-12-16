@@ -1,5 +1,6 @@
 name: Confidentiality Policy
 acronym: CP
+live: false
 satisfies:
   TSC:
     - C1.1

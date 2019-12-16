@@ -1,5 +1,6 @@
 name: Control Environment Narrative
 acronym: CEN
+live: false
 satisfies:
   TSC:
     - CC2.1

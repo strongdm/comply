@@ -1,5 +1,6 @@
 name: Security Incident Response Policy
 acronym: SIRP
+live: false
 satisfies:
   TSC:
     - CC7.3

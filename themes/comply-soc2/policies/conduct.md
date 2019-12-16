@@ -1,5 +1,6 @@
 name: Code of Conduct Policy
 acronym: COCP
+live: false
 satisfies:
   TSC:
     - CC1.1

@@ -1,5 +1,6 @@
 name: Business Continuity Policy
 acronym: BCP
+live: false
 satisfies:
   TSC:
     - CC9.1

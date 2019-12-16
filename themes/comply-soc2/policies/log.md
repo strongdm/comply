@@ -1,5 +1,6 @@
 name: Log Management Policy
 acronym: LMP
+live: false
 satisfies:
   TSC:
     - CC7.2

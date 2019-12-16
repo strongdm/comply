@@ -1,5 +1,6 @@
 name: Office Security Policy
 acronym: OSP
+live: false
 satisfies:
   TSC:
     - CC6.4

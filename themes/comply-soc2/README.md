@@ -26,6 +26,10 @@ The `output/` directory contains all generated assets. Links in the HTML dashboa
 
 Procedure tracking is updated whenever `comply sync` is invoked. Invoke a sync prior to `comply build` to include the most current ticket status.
 
+## Satisfying controls
+
+The standards specified in `standards/` are satisfied based on the documents located in `narratives/`, and `policies/`, and `procedures/`. The default document templates are mapped to standards according to the `satisfies` YAML front matter, however these default controls will not register as "satisfied" until front matter is added to the document indicating the document is live. This ensures you review the default template and customize for your environment. Set `live: true` in the document once the control described within is active in your environment.
+
 # Procedure Scheduler
 
 Any `procedures/` that include a `cron` schedule will automatically created in your configured ticketing system whenever `comply scheduler` is executed. The scheduler will backfill any overdue tickets.

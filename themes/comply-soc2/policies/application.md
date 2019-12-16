@@ -1,5 +1,6 @@
 name: Application Security Policy
 acronym: ASP
+live: false
 satisfies:
   TSC:
     - CC6.2

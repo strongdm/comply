@@ -1,5 +1,6 @@
 name: Cyber Risk Assessment Policy
 acronym: CRP
+live: false
 satisfies:
   TSC:
     - CC9.1

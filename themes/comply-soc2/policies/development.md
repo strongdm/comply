@@ -1,5 +1,6 @@
 name: Software Development Lifecycle Policy
 acronym: SDLCP
+live: false
 satisfies:
   TSC:
     - CC8.1

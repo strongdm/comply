@@ -25,23 +25,29 @@ func ControlsSatisfied(data *Data) map[string][]string {
 	}
 
 	for _, n := range data.Narratives {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
-				satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
+		if n.Live {
+			for _, controlKeys := range n.Satisfies {
+				for _, key := range controlKeys {
+					satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
+				}
 			}
 		}
 	}
 	for _, n := range data.Policies {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
-				satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
+		if n.Live {
+			for _, controlKeys := range n.Satisfies {
+				for _, key := range controlKeys {
+					satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
+				}
 			}
 		}
 	}
 	for _, n := range data.Procedures {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
-				satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
+		if n.Live {
+			for _, controlKeys := range n.Satisfies {
+				for _, key := range controlKeys {
+					satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
+				}
 			}
 		}
 	}

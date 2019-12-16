@@ -1,5 +1,6 @@
 name: Workstation Policy
 acronym: WP
+live: false
 satisfies:
   TSC:
     - CC6.8

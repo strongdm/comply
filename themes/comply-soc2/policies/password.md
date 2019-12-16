@@ -1,5 +1,6 @@
 name: Password Policy
 acronym: PWP
+live: false
 satisfies:
   TSC:
     - CC9.9

@@ -1,5 +1,6 @@
 name: Information Security Policy
 acronym: ISP
+live: false
 satisfies:
   TSC:
     - CC9.9

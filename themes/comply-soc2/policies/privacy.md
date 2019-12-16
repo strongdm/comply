@@ -1,5 +1,6 @@
 name: Privacy Management Policy
 acronym: PMP
+live: false
 satisfies:
   TSC:
     - P1.1

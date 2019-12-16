@@ -1,5 +1,6 @@
 name: Availability Policy
 acronym: AP
+live: false
 satisfies:
   TSC:
     - A1.1

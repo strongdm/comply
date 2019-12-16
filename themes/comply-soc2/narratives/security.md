@@ -1,5 +1,6 @@
 name: Security Architecture Narrative
 acronym: SEN
+live: false
 satisfies:
   TSC:
     - CC6.6

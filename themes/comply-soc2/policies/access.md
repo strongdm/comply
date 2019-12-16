@@ -1,5 +1,6 @@
 name: Access Onboarding and Termination Policy
 acronym: AOTP
+live: false
 satisfies:
   TSC:
     - CC6.1

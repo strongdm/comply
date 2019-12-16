@@ -1,5 +1,6 @@
 name: Data Retention Policy
 acronym: RP
+live: false
 satisfies:
   TSC:
     - CC1.2

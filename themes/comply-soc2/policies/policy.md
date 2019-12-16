@@ -1,5 +1,6 @@
 name: Policy Training Policy
 acronym: PTP
+live: false
 satisfies:
   TSC:
     - CC9.9

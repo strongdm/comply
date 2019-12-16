@@ -1,5 +1,6 @@
 name: Removable Media and Cloud Storage Policy
 acronym: MCP
+live: false
 satisfies:
   TSC:
     - CC6.7

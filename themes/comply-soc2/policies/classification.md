@@ -1,5 +1,6 @@
 name: Data Classification Policy
 acronym: DCP
+live: false
 satisfies:
   TSC:
     - CC9.9

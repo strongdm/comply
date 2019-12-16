@@ -9,6 +9,7 @@ type Procedure struct {
 
 	Revisions      []Revision   `yaml:"majorRevisions"`
 	Satisfies      Satisfaction `yaml:"satisfies"`
+	Live           bool         `yaml:"live"`
 	FullPath       string
 	OutputFilename string
 	ModifiedAt     time.Time

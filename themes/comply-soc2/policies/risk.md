@@ -1,5 +1,6 @@
 name: Risk Assessment Policy
 acronym: RIAP
+live: false
 satisfies:
   TSC:
     - CC9.1

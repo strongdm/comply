@@ -1,5 +1,6 @@
 name: Encryption Policy
 acronym: EP
+live: false
 satisfies:
   TSC:
     - CC9.9
