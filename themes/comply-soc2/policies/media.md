@@ -1,10 +1,10 @@
 name: Removable Media and Cloud Storage Policy
 acronym: MCP
-satisfies:
+<!-- satisfies:
   TSC:
-    - CC6.7
+    - CC6.7 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

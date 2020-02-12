@@ -1,13 +1,13 @@
 name: Security Architecture Narrative
 acronym: SEN
-satisfies:
+<!-- satisfies:
   TSC:
     - CC6.6
     - CC6.7
     - CC7.1
-    - CC7.2
+    - CC7.2 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

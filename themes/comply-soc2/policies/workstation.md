@@ -1,10 +1,10 @@
 name: Workstation Policy
 acronym: WP
-satisfies:
+<!-- satisfies:
   TSC:
-    - CC6.8
+    - CC6.8 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

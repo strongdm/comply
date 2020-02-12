@@ -1,10 +1,10 @@
 name: Vendor Management Policy
 acronym: VMP
-satisfies:
+<!-- satisfies:
   TSC:
-    - CC9.2
+    - CC9.2 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

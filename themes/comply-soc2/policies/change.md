@@ -1,11 +1,11 @@
 name: System Change Policy
 acronym: SCP
-satisfies:
+<!-- satisfies:
   TSC:
     - CC8.1
-    - CC3.4
+    - CC3.4 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

@@ -1,6 +1,6 @@
 name: Organizational Narrative
 acronym: ON
-satisfies:
+<!-- satisfies:
   TSC:
     - CC1.2
     - CC1.3
@@ -8,9 +8,9 @@ satisfies:
     - CC1.5
     - CC3.1
     - CC3.2
-    - CC3.3
+    - CC3.3 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

@@ -1,12 +1,12 @@
 name: Remote Access Policy
 acronym: REAP
-satisfies:
+<!-- satisfies:
   TSC:
     - CC6.1
     - CC6.2
-    - CC6.7
+    - CC6.7 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

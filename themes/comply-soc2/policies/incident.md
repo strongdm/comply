@@ -1,12 +1,12 @@
 name: Security Incident Response Policy
 acronym: SIRP
-satisfies:
+<!-- satisfies:
   TSC:
     - CC7.3
     - CC7.4
-    - CC7.5
+    - CC7.5 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

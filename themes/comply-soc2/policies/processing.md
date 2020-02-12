@@ -1,14 +1,14 @@
 name: Processing Integrity Policy
 acronym: PIP
-satisfies:
+<!-- satisfies:
   TSC:
     - PI1.1
     - PI1.2
     - PI1.3
     - PI1.4
-    - PI1.5
+    - PI1.5 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

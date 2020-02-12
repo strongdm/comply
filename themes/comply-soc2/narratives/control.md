@@ -1,6 +1,6 @@
 name: Control Environment Narrative
 acronym: CEN
-satisfies:
+<!-- satisfies:
   TSC:
     - CC2.1
     - CC2.2
@@ -9,9 +9,9 @@ satisfies:
     - CC4.2
     - CC5.1
     - CC5.2
-    - CC5.3
+    - CC5.3 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

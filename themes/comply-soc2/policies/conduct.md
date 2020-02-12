@@ -1,10 +1,10 @@
 name: Code of Conduct Policy
 acronym: COCP
-satisfies:
+<!-- satisfies:
   TSC:
-    - CC1.1
+    - CC1.1 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

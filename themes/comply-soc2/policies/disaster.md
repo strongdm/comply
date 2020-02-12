@@ -1,11 +1,11 @@
 name: Disaster Recovery Policy
 acronym: DRP
-satisfies:
+<!-- satisfies:
   TSC:
     - A1.2
-    - A1.3
+    - A1.3 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 #Purpose and Scope 

@@ -1,10 +1,10 @@
 name: Log Management Policy
 acronym: LMP
-satisfies:
+<!-- satisfies:
   TSC:
-    - CC7.2
+    - CC7.2 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

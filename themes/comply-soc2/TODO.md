@@ -14,6 +14,7 @@ High-level TODO created by [comply](https://github.com/strongdm/comply)
 - [ ] Customize policies/
     - [ ] Distribute controls among policies
     - [ ] Ensure policies address all controls
+    - [ ] Uncomment 'Satisfies' front-matter
 - [ ] Customize procedures/
     - [ ] Distribute controls among procedures
     - [ ] Create valid ticket templates

@@ -1,10 +1,7 @@
 name: Encryption Policy
 acronym: EP
-satisfies:
-  TSC:
-    - CC9.9
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 # Purpose and Scope

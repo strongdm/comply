@@ -1,10 +1,10 @@
 name: Risk Assessment Policy
 acronym: RIAP
-satisfies:
+<!-- satisfies:
   TSC:
-    - CC9.1
+    - CC9.1 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

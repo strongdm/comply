@@ -1,12 +1,12 @@
 name: Data Retention Policy
 acronym: RP
-satisfies:
+<!-- satisfies:
   TSC:
     - CC1.2
     - CC6.5
-    - P4.2
+    - P4.2 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

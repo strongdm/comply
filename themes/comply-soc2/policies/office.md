@@ -1,10 +1,10 @@
 name: Office Security Policy
 acronym: OSP
-satisfies:
+<!-- satisfies:
   TSC:
-    - CC6.4
+    - CC6.4 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 

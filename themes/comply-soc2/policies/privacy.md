@@ -1,6 +1,6 @@
 name: Privacy Management Policy
 acronym: PMP
-satisfies:
+<!-- satisfies:
   TSC:
     - P1.1
     - P2.1
@@ -19,9 +19,9 @@ satisfies:
     - P6.6
     - P6.7
     - P7.1
-    - P8.1
+    - P8.1 -->
 majorRevisions:
-  - date: Jun 1 2018
+  - date: Jan 1 2020
     comment: Initial document
 ---
 
