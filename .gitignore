@@ -2,3 +2,4 @@ comply
 output
 dist
 .envrc
+bindata.go

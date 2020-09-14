@@ -6,7 +6,7 @@ assets: $(THEME_SOURCES)
 	go install -mod=vendor github.com/containous/go-bindata/go-bindata
 	go install -mod=vendor github.com/elazarl/go-bindata-assetfs/go-bindata-assetfs
 	go-bindata-assetfs -pkg theme -prefix themes themes/...
-	mv bindata_assetfs.go internal/theme/themes_bindata.go
+	mv bindata.go internal/theme/themes_bindata.go
 
 comply: assets $(GO_SOURCES)
 	@# $(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))

@@ -17,10 +17,11 @@ require (
 	github.com/docker/go-connections v0.3.0 // indirect
 	github.com/docker/go-units v0.3.2 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
-	github.com/elazarl/go-bindata-assetfs v0.0.0-20170227122030-30f82fa23fd8
+	github.com/elazarl/go-bindata-assetfs v1.0.1
 	github.com/fatih/color v1.6.0
 	github.com/fatih/structs v1.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
+	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
 	github.com/gohugoio/hugo v0.37.1
 	github.com/golang/protobuf v1.0.0 // indirect
 	github.com/google/go-github v15.0.0+incompatible
