@@ -99,13 +99,33 @@ func getCfg(cfg map[string]interface{}, k string) (string, error) {
 	return vS, nil
 }
 
+func getProjectIssues(g *gitlabPlugin, options *gitlab.ListProjectIssuesOptions) ([]*gitlab.Issue, error) {
+	issues := []*gitlab.Issue{}
+	options.Page = 1
+
+	for {
+		pageIssues, resp, err := g.api().Issues.ListProjectIssues(g.reponame, options)
+		if err != nil {
+			return nil, errors.Wrap(err, "error retreiving issues from gitlab")
+		}
+
+		issues = append(issues, pageIssues...)
+
+		if resp.CurrentPage >= resp.TotalPages {
+			break
+		}
+		options.Page = resp.NextPage
+	}
+
+	return issues, nil
+}
+
 func (g *gitlabPlugin) FindOpen() ([]*model.Ticket, error) {
 	options := &gitlab.ListProjectIssuesOptions{
 		State: gitlab.String("opened"),
 	}
 
-	issues, _, err := g.api().Issues.ListProjectIssues(g.reponame, options)
-
+	issues, err := getProjectIssues(g, options)
 	if err != nil {
 		return nil, errors.Wrap(err, "error during FindOpen")
 	}
@@ -123,10 +143,9 @@ func (g *gitlabPlugin) FindByTagName(name string) ([]*model.Ticket, error) {
 		Labels: []string{name},
 	}
 
-	issues, _, err := g.api().Issues.ListProjectIssues(g.reponame, options)
-
+	issues, err := getProjectIssues(g, options)
 	if err != nil {
-		return nil, errors.Wrap(err, "error during FindOpen")
+		return nil, errors.Wrap(err, "error during FindByTagName")
 	}
 
 	return toTickets(issues), nil
@@ -167,6 +186,15 @@ func toTicket(i *gitlab.Issue) *model.Ticket {
 			t.SetBool("comply-audit")
 		}
 		if l == "procedure" {
+			t.SetBool("comply-procedure")
+		}
+
+		// seems redundant, but fixes a bug the other two labels introduce
+		// whereby open comply tickets aren't properly accounted for in the UI
+		if l == "comply-audit" {
+			t.SetBool("comply-audit")
+		}
+		if l == "comply-procedure" {
 			t.SetBool("comply-procedure")
 		}
 	}
