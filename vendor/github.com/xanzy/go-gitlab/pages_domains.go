@@ -2,7 +2,6 @@ package gitlab
 
 import (
 	"fmt"
-	"net/url"
 	"time"
 )
 
@@ -19,6 +18,7 @@ type PagesDomainsService struct {
 // GitLab API docs: https://docs.gitlab.com/ce/api/pages_domains.html
 type PagesDomain struct {
 	Domain           string     `json:"domain"`
+	AutoSslEnabled   bool       `json:"auto_ssl_enabled"`
 	URL              string     `json:"url"`
 	ProjectID        int        `json:"project_id"`
 	Verified         bool       `json:"verified"`
@@ -45,9 +45,28 @@ func (s *PagesDomainsService) ListPagesDomains(pid interface{}, opt *ListPagesDo
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pages/domains", url.QueryEscape(project))
+	u := fmt.Sprintf("projects/%s/pages/domains", pathEscape(project))
 
 	req, err := s.client.NewRequest("GET", u, opt, options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var pd []*PagesDomain
+	resp, err := s.client.Do(req, &pd)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return pd, resp, err
+}
+
+// ListAllPagesDomains gets a list of all pages domains.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ce/api/pages_domains.html#list-all-pages-domains
+func (s *PagesDomainsService) ListAllPagesDomains(options ...OptionFunc) ([]*PagesDomain, *Response, error) {
+	req, err := s.client.NewRequest("GET", "pages/domains", nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -70,7 +89,7 @@ func (s *PagesDomainsService) GetPagesDomain(pid interface{}, domain string, opt
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pages/domains/%s", url.QueryEscape(project), domain)
+	u := fmt.Sprintf("projects/%s/pages/domains/%s", pathEscape(project), domain)
 
 	req, err := s.client.NewRequest("GET", u, nil, options)
 	if err != nil {
@@ -89,11 +108,12 @@ func (s *PagesDomainsService) GetPagesDomain(pid interface{}, domain string, opt
 // CreatePagesDomainOptions represents the available CreatePagesDomain() options.
 //
 // GitLab API docs:
-// // https://docs.gitlab.com/ce/api/pages_domains.html#create-new-pages-domain
+// https://docs.gitlab.com/ce/api/pages_domains.html#create-new-pages-domain
 type CreatePagesDomainOptions struct {
-	Domain      *string `url:"domain,omitempty" json:"domain,omitempty"`
-	Certificate *string `url:"certifiate,omitempty" json:"certifiate,omitempty"`
-	Key         *string `url:"key,omitempty" json:"key,omitempty"`
+	Domain         *string `url:"domain,omitempty" json:"domain,omitempty"`
+	AutoSslEnabled *bool   `url:"auto_ssl_enabled,omitempty" json:"auto_ssl_enabled,omitempty"`
+	Certificate    *string `url:"certifiate,omitempty" json:"certifiate,omitempty"`
+	Key            *string `url:"key,omitempty" json:"key,omitempty"`
 }
 
 // CreatePagesDomain creates a new project pages domain.
@@ -105,7 +125,7 @@ func (s *PagesDomainsService) CreatePagesDomain(pid interface{}, opt *CreatePage
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pages/domains", url.QueryEscape(project))
+	u := fmt.Sprintf("projects/%s/pages/domains", pathEscape(project))
 
 	req, err := s.client.NewRequest("POST", u, opt, options)
 	if err != nil {
@@ -126,8 +146,9 @@ func (s *PagesDomainsService) CreatePagesDomain(pid interface{}, opt *CreatePage
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pages_domains.html#update-pages-domain
 type UpdatePagesDomainOptions struct {
-	Cerificate *string `url:"certifiate" json:"certifiate"`
-	Key        *string `url:"key" json:"key"`
+	AutoSslEnabled *bool   `url:"auto_ssl_enabled,omitempty" json:"auto_ssl_enabled,omitempty"`
+	Certificate    *string `url:"certifiate,omitempty" json:"certifiate,omitempty"`
+	Key            *string `url:"key,omitempty" json:"key,omitempty"`
 }
 
 // UpdatePagesDomain updates an existing project pages domain.
@@ -139,7 +160,7 @@ func (s *PagesDomainsService) UpdatePagesDomain(pid interface{}, domain string, 
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pages/domains/%s", url.QueryEscape(project), domain)
+	u := fmt.Sprintf("projects/%s/pages/domains/%s", pathEscape(project), domain)
 
 	req, err := s.client.NewRequest("PUT", u, opt, options)
 	if err != nil {
@@ -164,7 +185,7 @@ func (s *PagesDomainsService) DeletePagesDomain(pid interface{}, domain string, 
 	if err != nil {
 		return nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pages/domains/%s", url.QueryEscape(project), domain)
+	u := fmt.Sprintf("projects/%s/pages/domains/%s", pathEscape(project), domain)
 
 	req, err := s.client.NewRequest("DELETE", u, nil, options)
 	if err != nil {

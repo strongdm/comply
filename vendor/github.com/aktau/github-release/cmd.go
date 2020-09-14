@@ -11,11 +11,12 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/aktau/github-release/github"
+	"github.com/github-release/github-release/github"
 )
 
 func infocmd(opt Options) error {
 	user := nvls(opt.Info.User, EnvUser)
+	authUser := nvls(opt.Info.AuthUser, EnvAuthUser)
 	repo := nvls(opt.Info.Repo, EnvRepo)
 	token := nvls(opt.Info.Token, EnvToken)
 	tag := opt.Info.Tag
@@ -25,7 +26,7 @@ func infocmd(opt Options) error {
 	}
 
 	// Find regular git tags.
-	foundTags, err := Tags(user, repo, token)
+	foundTags, err := Tags(user, repo, authUser, token)
 	if err != nil {
 		return fmt.Errorf("could not fetch tags, %v", err)
 	}
@@ -52,14 +53,14 @@ func infocmd(opt Options) error {
 	if tag == "" {
 		// Get all releases.
 		vprintf("%v/%v: getting information for all releases\n", user, repo)
-		releases, err = Releases(user, repo, token)
+		releases, err = Releases(user, repo, authUser, token)
 		if err != nil {
 			return err
 		}
 	} else {
 		// Get only one release.
 		vprintf("%v/%v/%v: getting information for the release\n", user, repo, tag)
-		release, err := ReleaseOfTag(user, repo, tag, token)
+		release, err := ReleaseOfTag(user, repo, tag, authUser, token)
 		if err != nil {
 			return err
 		}
@@ -99,6 +100,7 @@ func renderInfoJSON(tags []Tag, releases []Release) error {
 
 func uploadcmd(opt Options) error {
 	user := nvls(opt.Upload.User, EnvUser)
+	authUser := nvls(opt.Upload.AuthUser, EnvAuthUser)
 	repo := nvls(opt.Upload.Repo, EnvRepo)
 	token := nvls(opt.Upload.Token, EnvToken)
 	tag := opt.Upload.Tag
@@ -118,19 +120,37 @@ func uploadcmd(opt Options) error {
 	}
 
 	// Find the release corresponding to the entered tag, if any.
-	rel, err := ReleaseOfTag(user, repo, tag, token)
+	rel, err := ReleaseOfTag(user, repo, tag, authUser, token)
 	if err != nil {
 		return err
 	}
 
-	// If asked to replace, first delete the existing asset, if any.
-	if assetID := findAssetID(rel.Assets, name); opt.Upload.Replace && assetID != -1 {
-		URL := nvls(EnvApiEndpoint, github.DefaultBaseURL) +
-			fmt.Sprintf(ASSET_DOWNLOAD_URI, user, repo, assetID)
-		resp, err := github.DoAuthRequest("DELETE", URL, "application/json", token, nil, nil)
-		if err != nil || resp.StatusCode != http.StatusNoContent {
-			return fmt.Errorf("could not replace asset %s (ID: %d), deletion failed (error: %v, status: %s)",
-				name, assetID, err, resp.Status)
+	// If the user has attempted to upload this asset before, someone could
+	// expect it to be present in the release struct (rel.Assets). However,
+	// we have to separately ask for the specific assets of this release.
+	// Reason: the assets in the Release struct do not contain incomplete
+	// uploads (which regrettably happen often using the Github API). See
+	// issue #26.
+	var assets []Asset
+	client := github.NewClient(authUser, token, nil)
+	client.SetBaseURL(EnvApiEndpoint)
+	err = client.Get(fmt.Sprintf(ASSET_RELEASE_LIST_URI, user, repo, rel.Id), &assets)
+	if err != nil {
+		return err
+	}
+
+	// Incomplete (failed) uploads will have their state set to new. These
+	// assets are (AFAIK) useless in all cases. The only thing they will do
+	// is prevent the upload of another asset of the same name. To work
+	// around this GH API weirdness, let's just delete assets if:
+	//
+	// 1. Their state is new.
+	// 2. The user explicitly asked to delete/replace the asset with -R.
+	if asset := findAsset(assets, name); asset != nil &&
+		(asset.State == "new" || opt.Upload.Replace) {
+		vprintf("asset (id: %d) already existed in state %s: removing...\n", asset.Id, asset.Name)
+		if err := asset.Delete(user, repo, token); err != nil {
+			return fmt.Errorf("could not replace asset: %v", err)
 		}
 	}
 
@@ -148,21 +168,39 @@ func uploadcmd(opt Options) error {
 		return fmt.Errorf("can't create upload request to %v, %v", url, err)
 	}
 	defer resp.Body.Close()
-
 	vprintln("RESPONSE:", resp)
-	if resp.StatusCode != http.StatusCreated {
-		if msg, err := ToMessage(resp.Body); err == nil {
-			return fmt.Errorf("could not upload, status code (%v), %v",
+
+	var r io.Reader = resp.Body
+	if VERBOSITY != 0 {
+		r = io.TeeReader(r, os.Stderr)
+	}
+	var asset *Asset
+	// For HTTP status 201 and 502, Github will return a JSON encoding of
+	// the (partially) created asset.
+	if resp.StatusCode == http.StatusBadGateway || resp.StatusCode == http.StatusCreated {
+		vprintf("ASSET: ")
+		asset = new(Asset)
+		if err := json.NewDecoder(r).Decode(&asset); err != nil {
+			return fmt.Errorf("upload failed (%s), could not unmarshal asset (err: %v)", resp.Status, err)
+		}
+	} else {
+		vprintf("BODY: ")
+		if msg, err := ToMessage(r); err == nil {
+			return fmt.Errorf("could not upload, status code (%s), %v",
 				resp.Status, msg)
 		}
-		return fmt.Errorf("could not upload, status code (%v)", resp.Status)
+		return fmt.Errorf("could not upload, status code (%s)", resp.Status)
 	}
 
-	if VERBOSITY != 0 {
-		vprintf("BODY: ")
-		if _, err := io.Copy(os.Stderr, resp.Body); err != nil {
-			return fmt.Errorf("while reading response, %v", err)
+	if resp.StatusCode == http.StatusBadGateway {
+		// 502 means the upload failed, but GitHub still retains metadata
+		// (an asset in state "new"). Attempt to delete that now since it
+		// would clutter the list of release assets.
+		vprintf("asset (id: %d) failed to upload, it's now in state %s: removing...\n", asset.Id, asset.Name)
+		if err := asset.Delete(user, repo, token); err != nil {
+			return fmt.Errorf("upload failed (%s), could not delete partially uploaded asset (ID: %d, err: %v) in order to cleanly reset GH API state, please try again", resp.Status, asset.Id, err)
 		}
+		return fmt.Errorf("could not upload, status code (%s)", resp.Status)
 	}
 
 	return nil
@@ -170,6 +208,7 @@ func uploadcmd(opt Options) error {
 
 func downloadcmd(opt Options) error {
 	user := nvls(opt.Download.User, EnvUser)
+	authUser := nvls(opt.Download.AuthUser, EnvAuthUser)
 	repo := nvls(opt.Download.Repo, EnvRepo)
 	token := nvls(opt.Download.Token, EnvToken)
 	tag := opt.Download.Tag
@@ -186,25 +225,25 @@ func downloadcmd(opt Options) error {
 	var rel *Release
 	var err error
 	if latest {
-		rel, err = LatestRelease(user, repo, token)
+		rel, err = LatestRelease(user, repo, authUser, token)
 	} else {
-		rel, err = ReleaseOfTag(user, repo, tag, token)
+		rel, err = ReleaseOfTag(user, repo, tag, authUser, token)
 	}
 	if err != nil {
 		return err
 	}
 
-	assetID := findAssetID(rel.Assets, name)
-	if assetID == -1 {
+	asset := findAsset(rel.Assets, name)
+	if asset == nil {
 		return fmt.Errorf("coud not find asset named %s", name)
 	}
 
 	var resp *http.Response
 	if token == "" {
-		// Use the regular github.com site it we don't have a token.
+		// Use the regular github.com site if we don't have a token.
 		resp, err = http.Get("https://github.com" + fmt.Sprintf("/%s/%s/releases/download/%s/%s", user, repo, tag, name))
 	} else {
-		url := nvls(EnvApiEndpoint, github.DefaultBaseURL) + fmt.Sprintf(ASSET_DOWNLOAD_URI, user, repo, assetID)
+		url := nvls(EnvApiEndpoint, github.DefaultBaseURL) + fmt.Sprintf(ASSET_URI, user, repo, asset.Id)
 		resp, err = github.DoAuthRequest("GET", url, "", token, map[string]string{
 			"Accept": "application/octet-stream",
 		}, nil)
@@ -345,6 +384,7 @@ func releasecmd(opt Options) error {
 func editcmd(opt Options) error {
 	cmdopt := opt.Edit
 	user := nvls(cmdopt.User, EnvUser)
+	authUser := nvls(cmdopt.AuthUser, EnvAuthUser)
 	repo := nvls(cmdopt.Repo, EnvRepo)
 	token := nvls(cmdopt.Token, EnvToken)
 	tag := cmdopt.Tag
@@ -359,7 +399,7 @@ func editcmd(opt Options) error {
 		return err
 	}
 
-	id, err := IdOfTag(user, repo, tag, token)
+	id, err := IdOfTag(user, repo, tag, authUser, token)
 	if err != nil {
 		return err
 	}
@@ -422,9 +462,10 @@ func deletecmd(opt Options) error {
 		nvls(opt.Delete.Repo, EnvRepo),
 		nvls(opt.Delete.Token, EnvToken),
 		opt.Delete.Tag
+	authUser := nvls(opt.Delete.AuthUser, EnvAuthUser)
 	vprintln("deleting...")
 
-	id, err := IdOfTag(user, repo, tag, token)
+	id, err := IdOfTag(user, repo, tag, authUser, token)
 	if err != nil {
 		return err
 	}

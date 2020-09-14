@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/aktau/github-release/github"
+	"github.com/github-release/github-release/github"
 )
 
 const (
@@ -22,7 +22,9 @@ func (t *Tag) String() string {
 }
 
 // Get the tags associated with a repo.
-func Tags(user, repo, token string) ([]Tag, error) {
+func Tags(user, repo, authUser, token string) ([]Tag, error) {
 	var tags []Tag
-	return tags, github.Client{Token: token, BaseURL: EnvApiEndpoint}.Get(fmt.Sprintf(TAGS_URI, user, repo), &tags)
+	client := github.NewClient(authUser, token, nil)
+	client.SetBaseURL(EnvApiEndpoint)
+	return tags, client.Get(fmt.Sprintf(TAGS_URI, user, repo), &tags)
 }

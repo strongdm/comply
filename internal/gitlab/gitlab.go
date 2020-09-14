@@ -156,10 +156,11 @@ func (g *gitlabPlugin) LinkFor(t *model.Ticket) string {
 }
 
 func (g *gitlabPlugin) Create(ticket *model.Ticket, labels []string) error {
+	l := gitlab.Labels(labels)
 	options := &gitlab.CreateIssueOptions{
 		Title:       gitlab.String(ticket.Name),
 		Description: gitlab.String(ticket.Body),
-		Labels:      labels,
+		Labels:      &l,
 	}
 	_, _, err := g.api().Issues.CreateIssue(g.reponame, options)
 	return err

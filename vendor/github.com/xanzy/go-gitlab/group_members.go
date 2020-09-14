@@ -18,8 +18,6 @@ package gitlab
 
 import (
 	"fmt"
-	"net/url"
-	"time"
 )
 
 // GroupMembersService handles communication with the group members
@@ -30,22 +28,34 @@ type GroupMembersService struct {
 	client *Client
 }
 
+// GroupMemberSAMLIdentity represents the SAML Identity link for the group member.
+//
+// GitLab API docs: https://docs.gitlab.com/ce/api/members.html#list-all-members-of-a-group-or-project
+// Gitlab MR for API change: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20357
+// Gitlab MR for API Doc change: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25652
+type GroupMemberSAMLIdentity struct {
+	ExternUID      string `json:"extern_uid"`
+	Provider       string `json:"provider"`
+	SAMLProviderID int    `json:"saml_provider_id"`
+}
+
 // GroupMember represents a GitLab group member.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/members.html
 type GroupMember struct {
-	ID          int              `json:"id"`
-	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	Name        string           `json:"name"`
-	State       string           `json:"state"`
-	CreatedAt   *time.Time       `json:"created_at"`
-	AccessLevel AccessLevelValue `json:"access_level"`
-	ExpiresAt   *ISOTime         `json:"expires_at"`
+	ID                int                      `json:"id"`
+	Username          string                   `json:"username"`
+	Name              string                   `json:"name"`
+	State             string                   `json:"state"`
+	AvatarURL         string                   `json:"avatar_url"`
+	WebURL            string                   `json:"web_url"`
+	ExpiresAt         *ISOTime                 `json:"expires_at"`
+	AccessLevel       AccessLevelValue         `json:"access_level"`
+	GroupSAMLIdentity *GroupMemberSAMLIdentity `json:"group_saml_identity"`
 }
 
-// ListGroupMembersOptions represents the available ListGroupMembers()
-// options.
+// ListGroupMembersOptions represents the available ListGroupMembers() and
+// ListAllGroupMembers() options.
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#list-all-members-of-a-group-or-project
@@ -55,7 +65,7 @@ type ListGroupMembersOptions struct {
 }
 
 // ListGroupMembers get a list of group members viewable by the authenticated
-// user.
+// user. Inherited members through ancestor groups are not included.
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#list-all-members-of-a-group-or-project
@@ -64,7 +74,33 @@ func (s *GroupsService) ListGroupMembers(gid interface{}, opt *ListGroupMembersO
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("groups/%s/members", url.QueryEscape(group))
+	u := fmt.Sprintf("groups/%s/members", pathEscape(group))
+
+	req, err := s.client.NewRequest("GET", u, opt, options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var gm []*GroupMember
+	resp, err := s.client.Do(req, &gm)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return gm, resp, err
+}
+
+// ListAllGroupMembers get a list of group members viewable by the authenticated
+// user. Returns a list including inherited members through ancestor groups.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ce/api/members.html#list-all-members-of-a-group-or-project-including-inherited-members
+func (s *GroupsService) ListAllGroupMembers(gid interface{}, opt *ListGroupMembersOptions, options ...OptionFunc) ([]*GroupMember, *Response, error) {
+	group, err := parseID(gid)
+	if err != nil {
+		return nil, nil, err
+	}
+	u := fmt.Sprintf("groups/%s/members/all", pathEscape(group))
 
 	req, err := s.client.NewRequest("GET", u, opt, options)
 	if err != nil {
@@ -99,7 +135,7 @@ func (s *GroupMembersService) GetGroupMember(gid interface{}, user int, options 
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("groups/%s/members/%d", url.QueryEscape(group), user)
+	u := fmt.Sprintf("groups/%s/members/%d", pathEscape(group), user)
 
 	req, err := s.client.NewRequest("GET", u, nil, options)
 	if err != nil {
@@ -124,7 +160,7 @@ func (s *GroupMembersService) AddGroupMember(gid interface{}, opt *AddGroupMembe
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("groups/%s/members", url.QueryEscape(group))
+	u := fmt.Sprintf("groups/%s/members", pathEscape(group))
 
 	req, err := s.client.NewRequest("POST", u, opt, options)
 	if err != nil {
@@ -159,7 +195,7 @@ func (s *GroupMembersService) EditGroupMember(gid interface{}, user int, opt *Ed
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("groups/%s/members/%d", url.QueryEscape(group), user)
+	u := fmt.Sprintf("groups/%s/members/%d", pathEscape(group), user)
 
 	req, err := s.client.NewRequest("PUT", u, opt, options)
 	if err != nil {
@@ -184,7 +220,7 @@ func (s *GroupMembersService) RemoveGroupMember(gid interface{}, user int, optio
 	if err != nil {
 		return nil, err
 	}
-	u := fmt.Sprintf("groups/%s/members/%d", url.QueryEscape(group), user)
+	u := fmt.Sprintf("groups/%s/members/%d", pathEscape(group), user)
 
 	req, err := s.client.NewRequest("DELETE", u, nil, options)
 	if err != nil {

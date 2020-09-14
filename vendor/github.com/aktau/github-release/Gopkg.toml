@@ -1,0 +1,24 @@
+# Gopkg.toml example
+#
+# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
+# for detailed Gopkg.toml documentation.
+
+[[constraint]]
+  name = "github.com/dustin/go-humanize"
+  version = "1.0.0"
+
+[[constraint]]
+  name = "github.com/kevinburke/rest"
+  version = "2.2.0"
+
+[[constraint]]
+  name = "github.com/tomnomnom/linkheader"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/voxelbrain/goptions"
+  version = "2.5.11"
+
+[prune]
+  go-tests = true
+  unused-packages = true

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aktau/github-release/github"
+	"github.com/github-release/github-release/github"
 	"github.com/dustin/go-humanize"
 )
 
@@ -67,9 +67,11 @@ type ReleaseCreate struct {
 	Prerelease      bool   `json:"prerelease"`
 }
 
-func Releases(user, repo, token string) ([]Release, error) {
+func Releases(user, repo, authUser, token string) ([]Release, error) {
 	var releases []Release
-	err := github.Client{Token: token, BaseURL: EnvApiEndpoint}.Get(fmt.Sprintf(RELEASE_LIST_URI, user, repo), &releases)
+	client := github.NewClient(authUser, token, nil)
+	client.SetBaseURL(EnvApiEndpoint)
+	err := client.Get(fmt.Sprintf(RELEASE_LIST_URI, user, repo), &releases)
 	if err != nil {
 		return nil, err
 	}
@@ -77,20 +79,22 @@ func Releases(user, repo, token string) ([]Release, error) {
 	return releases, nil
 }
 
-func latestReleaseApi(user, repo, token string) (*Release, error) {
+func latestReleaseApi(user, repo, authUser, token string) (*Release, error) {
 	var release Release
-	return &release, github.Client{Token: token, BaseURL: EnvApiEndpoint}.Get(fmt.Sprintf(RELEASE_LATEST_URI, user, repo), &release)
+	client := github.NewClient(authUser, token, nil)
+	client.SetBaseURL(EnvApiEndpoint)
+	return &release, client.Get(fmt.Sprintf(RELEASE_LATEST_URI, user, repo), &release)
 }
 
-func LatestRelease(user, repo, token string) (*Release, error) {
+func LatestRelease(user, repo, authUser, token string) (*Release, error) {
 	// If latestReleaseApi DOESN'T give an error, return the release.
-	if latestRelease, err := latestReleaseApi(user, repo, token); err == nil {
+	if latestRelease, err := latestReleaseApi(user, repo, authUser, token); err == nil {
 		return latestRelease, nil
 	}
 
 	// The enterprise api doesnt support the latest release endpoint. Get
 	// all releases and compare the published date to get the latest.
-	releases, err := Releases(user, repo, token)
+	releases, err := Releases(user, repo, authUser, token)
 	if err != nil {
 		return nil, err
 	}
@@ -111,8 +115,8 @@ func LatestRelease(user, repo, token string) (*Release, error) {
 	return &releases[latestRelIndex], nil
 }
 
-func ReleaseOfTag(user, repo, tag, token string) (*Release, error) {
-	releases, err := Releases(user, repo, token)
+func ReleaseOfTag(user, repo, tag, authUser, token string) (*Release, error) {
+	releases, err := Releases(user, repo, authUser, token)
 	if err != nil {
 		return nil, err
 	}
@@ -127,8 +131,8 @@ func ReleaseOfTag(user, repo, tag, token string) (*Release, error) {
 }
 
 /* find the release-id of the specified tag */
-func IdOfTag(user, repo, tag, token string) (int, error) {
-	release, err := ReleaseOfTag(user, repo, tag, token)
+func IdOfTag(user, repo, tag, authUser, token string) (int, error) {
+	release, err := ReleaseOfTag(user, repo, tag, authUser, token)
 	if err != nil {
 		return 0, err
 	}

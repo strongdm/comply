@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+main() {
+    apt-get update && apt-get install zip
+    git branch --set-upstream-to=origin/master release
+    set -x
+    exec /bin/bash -c "$@"
+}
+
+main "$@"

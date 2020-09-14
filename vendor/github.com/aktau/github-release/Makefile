@@ -1,6 +1,8 @@
+SHELL=/bin/bash -o pipefail
+
 LAST_TAG := $(shell git describe --abbrev=0 --tags)
 
-USER := aktau
+USER := github-release
 EXECUTABLE := github-release
 
 # only include the amd64 binaries, otherwise the github release will become
@@ -12,7 +14,7 @@ UNIX_EXECUTABLES := \
 WIN_EXECUTABLES := \
 	windows/amd64/$(EXECUTABLE).exe
 
-COMPRESSED_EXECUTABLES=$(UNIX_EXECUTABLES:%=%.tar.bz2) $(WIN_EXECUTABLES:%.exe=%.zip)
+COMPRESSED_EXECUTABLES=$(UNIX_EXECUTABLES:%=%.bz2) $(WIN_EXECUTABLES:%.exe=%.zip)
 COMPRESSED_EXECUTABLE_TARGETS=$(COMPRESSED_EXECUTABLES:%=bin/%)
 
 UPLOAD_CMD = bin/tmp/$(EXECUTABLE) upload -u $(USER) -r $(EXECUTABLE) -t $(LAST_TAG) -n $(subst /,-,$(FILE)) -f bin/$(FILE)
@@ -21,7 +23,7 @@ all: $(EXECUTABLE)
 
 # the executable used to perform the upload, dogfooding and all...
 bin/tmp/$(EXECUTABLE):
-	go build -o "$@"
+	go build -v -o "$@"
 
 # arm
 bin/linux/arm/5/$(EXECUTABLE):
@@ -49,19 +51,28 @@ bin/windows/amd64/$(EXECUTABLE).exe:
 
 # compressed artifacts, makes a huge difference (Go executable is ~9MB,
 # after compressing ~2MB)
-%.tar.bz2: %
-	tar -jcvf "$<.tar.bz2" "$<"
+%.bz2: %
+	bzip2 --keep "$<"
 %.zip: %.exe
 	zip "$@" "$<"
 
 # git tag -a v$(RELEASE) -m 'release $(RELEASE)'
 release: clean
-	$(MAKE) bin/tmp/$(EXECUTABLE) $(COMPRESSED_EXECUTABLE_TARGETS)
-	git push && git push --tags
-	git log --format=%B $(LAST_TAG) -1 | \
-		bin/tmp/$(EXECUTABLE) release -u $(USER) -r $(EXECUTABLE) \
-		-t $(LAST_TAG) -n $(LAST_TAG) -d - || true
-	$(foreach FILE,$(COMPRESSED_EXECUTABLES),$(UPLOAD_CMD);)
+ifndef GITHUB_TOKEN
+	@echo "Please set GITHUB_TOKEN in the environment to perform a release"
+	exit 1
+endif
+	docker run --rm --volume $(PWD)/var/cache:/root/.cache/go-build \
+		--env GITHUB_TOKEN=$(GITHUB_TOKEN) \
+		--volume "$(PWD)":/go/src/github.com/github-release/github-release \
+		--workdir /go/src/github.com/github-release/github-release \
+		meterup/ubuntu-golang:latest \
+		./release \
+		"$(MAKE) bin/tmp/$(EXECUTABLE) $(COMPRESSED_EXECUTABLE_TARGETS) && \
+		git log --format=%B $(LAST_TAG) -1 | \
+			bin/tmp/$(EXECUTABLE) release -u $(USER) -r $(EXECUTABLE) \
+			-t $(LAST_TAG) -n $(LAST_TAG) -d - || true && \
+		$(foreach FILE,$(COMPRESSED_EXECUTABLES),$(UPLOAD_CMD);)"
 
 # install and/or update all dependencies, run this from the project directory
 # go get -u ./...
@@ -79,5 +90,8 @@ clean:
 	rm go-app || true
 	rm $(EXECUTABLE) || true
 	rm -rf bin/
+
+test:
+	go test ./...
 
 .PHONY: clean release dep install

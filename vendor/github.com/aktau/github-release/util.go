@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-/* oracle nvl, return first non-empty string */
+/* nvls returns the first value in xs that is not empty. */
 func nvls(xs ...string) string {
 	for _, s := range xs {
 		if s != "" {

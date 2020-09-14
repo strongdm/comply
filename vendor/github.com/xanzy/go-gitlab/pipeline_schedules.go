@@ -18,7 +18,6 @@ package gitlab
 
 import (
 	"fmt"
-	"net/url"
 	"time"
 )
 
@@ -28,15 +27,6 @@ import (
 // GitLab API docs: https://docs.gitlab.com/ce/api/pipeline_schedules.html
 type PipelineSchedulesService struct {
 	client *Client
-}
-
-// PipelineVariable represents a pipeline schedule variable.
-//
-// GitLab API docs:
-// https://docs.gitlab.com/ce/api/pipeline_schedules.html#pipeline-schedule-variable
-type PipelineVariable struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
 }
 
 // PipelineSchedule represents a pipeline schedule.
@@ -56,7 +46,7 @@ type PipelineSchedule struct {
 	Owner        *User      `json:"owner"`
 	LastPipeline struct {
 		ID     int    `json:"id"`
-		Sha    string `json:"sha"`
+		SHA    string `json:"sha"`
 		Ref    string `json:"ref"`
 		Status string `json:"status"`
 	} `json:"last_pipeline"`
@@ -78,7 +68,7 @@ func (s *PipelineSchedulesService) ListPipelineSchedules(pid interface{}, opt *L
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pipeline_schedules", url.QueryEscape(project))
+	u := fmt.Sprintf("projects/%s/pipeline_schedules", pathEscape(project))
 
 	req, err := s.client.NewRequest("GET", u, opt, options)
 	if err != nil {
@@ -103,7 +93,7 @@ func (s *PipelineSchedulesService) GetPipelineSchedule(pid interface{}, schedule
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d", url.QueryEscape(project), schedule)
+	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d", pathEscape(project), schedule)
 
 	req, err := s.client.NewRequest("GET", u, nil, options)
 	if err != nil {
@@ -141,7 +131,7 @@ func (s *PipelineSchedulesService) CreatePipelineSchedule(pid interface{}, opt *
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pipeline_schedules", url.QueryEscape(project))
+	u := fmt.Sprintf("projects/%s/pipeline_schedules", pathEscape(project))
 
 	req, err := s.client.NewRequest("POST", u, opt, options)
 	if err != nil {
@@ -179,7 +169,7 @@ func (s *PipelineSchedulesService) EditPipelineSchedule(pid interface{}, schedul
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d", url.QueryEscape(project), schedule)
+	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d", pathEscape(project), schedule)
 
 	req, err := s.client.NewRequest("PUT", u, opt, options)
 	if err != nil {
@@ -205,7 +195,7 @@ func (s *PipelineSchedulesService) TakeOwnershipOfPipelineSchedule(pid interface
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d/take_ownership", url.QueryEscape(project), schedule)
+	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d/take_ownership", pathEscape(project), schedule)
 
 	req, err := s.client.NewRequest("POST", u, nil, options)
 	if err != nil {
@@ -225,25 +215,19 @@ func (s *PipelineSchedulesService) TakeOwnershipOfPipelineSchedule(pid interface
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pipeline_schedules.html#delete-a-pipeline-schedule
-func (s *PipelineSchedulesService) DeletePipelineSchedule(pid interface{}, schedule int, options ...OptionFunc) (*PipelineSchedule, *Response, error) {
+func (s *PipelineSchedulesService) DeletePipelineSchedule(pid interface{}, schedule int, options ...OptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d", url.QueryEscape(project), schedule)
+	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d", pathEscape(project), schedule)
 
 	req, err := s.client.NewRequest("DELETE", u, nil, options)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	p := new(PipelineSchedule)
-	resp, err := s.client.Do(req, p)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return p, resp, err
+	return s.client.Do(req, nil)
 }
 
 // CreatePipelineScheduleVariableOptions represents the available
@@ -252,8 +236,9 @@ func (s *PipelineSchedulesService) DeletePipelineSchedule(pid interface{}, sched
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pipeline_schedules.html#create-a-new-pipeline-schedule
 type CreatePipelineScheduleVariableOptions struct {
-	Key   *string `url:"key" json:"key"`
-	Value *string `url:"value" json:"value"`
+	Key          *string `url:"key" json:"key"`
+	Value        *string `url:"value" json:"value"`
+	VariableType *string `url:"variable_type,omitempty" json:"variable_type,omitempty"`
 }
 
 // CreatePipelineScheduleVariable creates a pipeline schedule variable.
@@ -265,7 +250,7 @@ func (s *PipelineSchedulesService) CreatePipelineScheduleVariable(pid interface{
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d/variables", url.QueryEscape(project), schedule)
+	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d/variables", pathEscape(project), schedule)
 
 	req, err := s.client.NewRequest("POST", u, opt, options)
 	if err != nil {
@@ -287,7 +272,8 @@ func (s *PipelineSchedulesService) CreatePipelineScheduleVariable(pid interface{
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pipeline_schedules.html#edit-a-pipeline-schedule-variable
 type EditPipelineScheduleVariableOptions struct {
-	Value *string `url:"value" json:"value"`
+	Value        *string `url:"value" json:"value"`
+	VariableType *string `url:"variable_type,omitempty" json:"variable_type,omitempty"`
 }
 
 // EditPipelineScheduleVariable creates a pipeline schedule variable.
@@ -299,7 +285,7 @@ func (s *PipelineSchedulesService) EditPipelineScheduleVariable(pid interface{},
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d/variables/%s", url.QueryEscape(project), schedule, key)
+	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d/variables/%s", pathEscape(project), schedule, key)
 
 	req, err := s.client.NewRequest("PUT", u, opt, options)
 	if err != nil {
@@ -324,7 +310,7 @@ func (s *PipelineSchedulesService) DeletePipelineScheduleVariable(pid interface{
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d/variables/%s", url.QueryEscape(project), schedule, key)
+	u := fmt.Sprintf("projects/%s/pipeline_schedules/%d/variables/%s", pathEscape(project), schedule, key)
 
 	req, err := s.client.NewRequest("DELETE", u, nil, options)
 	if err != nil {

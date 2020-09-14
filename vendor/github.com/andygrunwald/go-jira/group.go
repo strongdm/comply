@@ -43,12 +43,15 @@ type GroupMember struct {
 	Self         string `json:"self,omitempty"`
 	Name         string `json:"name,omitempty"`
 	Key          string `json:"key,omitempty"`
+	AccountID    string `json:"accountId,omitempty"`
 	EmailAddress string `json:"emailAddress,omitempty"`
 	DisplayName  string `json:"displayName,omitempty"`
 	Active       bool   `json:"active,omitempty"`
 	TimeZone     string `json:"timeZone,omitempty"`
+	AccountType  string `json:"accountType,omitempty"`
 }
 
+// GroupSearchOptions specifies the optional parameters for the Get Group methods
 type GroupSearchOptions struct {
 	StartAt              int
 	MaxResults           int
@@ -78,7 +81,7 @@ func (s *GroupService) Get(name string) ([]GroupMember, *Response, error) {
 	return group.Members, resp, nil
 }
 
-// Get returns a paginated list of members of the specified group and its subgroups.
+// GetWithOptions returns a paginated list of members of the specified group and its subgroups.
 // Users in the page are ordered by user names.
 // User of this resource is required to have sysadmin or admin permissions.
 //

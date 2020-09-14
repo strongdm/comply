@@ -18,7 +18,6 @@ package gitlab
 
 import (
 	"fmt"
-	"net/url"
 	"time"
 )
 
@@ -71,11 +70,11 @@ type ContributionEvent struct {
 // https://docs.gitlab.com/ce/api/events.html#get-user-contribution-events
 type ListContributionEventsOptions struct {
 	ListOptions
-	Action     *EventTypeValue       `json:"action,omitempty"`
-	TargetType *EventTargetTypeValue `json:"target_type,omitempty"`
-	Before     *ISOTime              `json:"before,omitempty"`
-	After      *ISOTime              `json:"after,omitempty"`
-	Sort       *string               `json:"sort,omitempty"`
+	Action     *EventTypeValue       `url:"action,omitempty" json:"action,omitempty"`
+	TargetType *EventTargetTypeValue `url:"target_type,omitempty" json:"target_type,omitempty"`
+	Before     *ISOTime              `url:"before,omitempty" json:"before,omitempty"`
+	After      *ISOTime              `url:"after,omitempty" json:"after,omitempty"`
+	Sort       *string               `url:"sort,omitempty" json:"sort,omitempty"`
 }
 
 // ListUserContributionEvents retrieves user contribution events
@@ -122,15 +121,15 @@ func (s *EventsService) ListCurrentUserContributionEvents(opt *ListContributionE
 	return cs, resp, err
 }
 
-// ListProjectContributionEvents gets a list currently authenticated user's events
+// ListProjectVisibleEvents gets a list of visible events for a particular project
 //
-// GitLab API docs: https://docs.gitlab.com/ce/api/events.html#list-a-project-39-s-visible-events
-func (s *EventsService) ListProjectContributionEvents(pid interface{}, opt *ListContributionEventsOptions, options ...OptionFunc) ([]*ContributionEvent, *Response, error) {
+// GitLab API docs: https://docs.gitlab.com/ee/api/events.html#list-a-project-s-visible-events
+func (s *EventsService) ListProjectVisibleEvents(pid interface{}, opt *ListContributionEventsOptions, options ...OptionFunc) ([]*ContributionEvent, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("%s/events", url.QueryEscape(project))
+	u := fmt.Sprintf("projects/%s/events", pathEscape(project))
 
 	req, err := s.client.NewRequest("GET", u, opt, options)
 	if err != nil {

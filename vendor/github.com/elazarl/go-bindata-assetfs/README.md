@@ -16,7 +16,7 @@ Install with
 Usage is identical to [go-bindata](https://github.com/go-bindata/go-bindata) usage,
 instead of running `go-bindata` run `go-bindata-assetfs`.
 
-The tool will create a `bindata.go` file, which contains the embedded data.
+The tool will create a `bindata_assetfs.go` file, which contains the embedded data.
 
 A typical use case is
 

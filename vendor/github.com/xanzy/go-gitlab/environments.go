@@ -18,7 +18,6 @@ package gitlab
 
 import (
 	"fmt"
-	"net/url"
 )
 
 // EnvironmentsService handles communication with the environment related methods
@@ -33,10 +32,13 @@ type EnvironmentsService struct {
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/environments.html
 type Environment struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Slug        string `json:"slug"`
-	ExternalURL string `json:"external_url"`
+	ID             int         `json:"id"`
+	Name           string      `json:"name"`
+	Slug           string      `json:"slug"`
+	State          string      `json:"state"`
+	ExternalURL    string      `json:"external_url"`
+	Project        *Project    `json:"project"`
+	LastDeployment *Deployment `json:"last_deployment"`
 }
 
 func (env Environment) String() string {
@@ -59,7 +61,7 @@ func (s *EnvironmentsService) ListEnvironments(pid interface{}, opts *ListEnviro
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/environments", url.QueryEscape(project))
+	u := fmt.Sprintf("projects/%s/environments", pathEscape(project))
 
 	req, err := s.client.NewRequest("GET", u, opts, options)
 	if err != nil {
@@ -75,6 +77,31 @@ func (s *EnvironmentsService) ListEnvironments(pid interface{}, opts *ListEnviro
 	return envs, resp, err
 }
 
+// GetEnvironment gets a specific environment from a project.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ee/api/environments.html#get-a-specific-environment
+func (s *EnvironmentsService) GetEnvironment(pid interface{}, environment int, options ...OptionFunc) (*Environment, *Response, error) {
+	project, err := parseID(pid)
+	if err != nil {
+		return nil, nil, err
+	}
+	u := fmt.Sprintf("projects/%s/environments/%d", pathEscape(project), environment)
+
+	req, err := s.client.NewRequest("GET", u, nil, options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	env := new(Environment)
+	resp, err := s.client.Do(req, env)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return env, resp, err
+}
+
 // CreateEnvironmentOptions represents the available CreateEnvironment() options.
 //
 // GitLab API docs:
@@ -84,7 +111,7 @@ type CreateEnvironmentOptions struct {
 	ExternalURL *string `url:"external_url,omitempty" json:"external_url,omitempty"`
 }
 
-// CreateEnvironment adds a environment to a project. This is an idempotent
+// CreateEnvironment adds an environment to a project. This is an idempotent
 // method and can be called multiple times with the same parameters. Createing
 // an environment that is already a environment does not affect the
 // existing environmentship.
@@ -96,7 +123,7 @@ func (s *EnvironmentsService) CreateEnvironment(pid interface{}, opt *CreateEnvi
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/environments", url.QueryEscape(project))
+	u := fmt.Sprintf("projects/%s/environments", pathEscape(project))
 
 	req, err := s.client.NewRequest("POST", u, opt, options)
 	if err != nil {
@@ -130,7 +157,7 @@ func (s *EnvironmentsService) EditEnvironment(pid interface{}, environment int, 
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/environments/%d", url.QueryEscape(project), environment)
+	u := fmt.Sprintf("projects/%s/environments/%d", pathEscape(project), environment)
 
 	req, err := s.client.NewRequest("PUT", u, opt, options)
 	if err != nil {
@@ -146,7 +173,7 @@ func (s *EnvironmentsService) EditEnvironment(pid interface{}, environment int, 
 	return env, resp, err
 }
 
-// DeleteEnvironment removes a environment from a project team.
+// DeleteEnvironment removes an environment from a project team.
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/environments.html#remove-a-environment-from-a-group-or-project
@@ -155,9 +182,28 @@ func (s *EnvironmentsService) DeleteEnvironment(pid interface{}, environment int
 	if err != nil {
 		return nil, err
 	}
-	u := fmt.Sprintf("projects/%s/environments/%d", url.QueryEscape(project), environment)
+	u := fmt.Sprintf("projects/%s/environments/%d", pathEscape(project), environment)
 
 	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// StopEnvironment stop an environment from a project team.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ce/api/environments.html#stop-an-environment
+func (s *EnvironmentsService) StopEnvironment(pid interface{}, environmentID int, options ...OptionFunc) (*Response, error) {
+	project, err := parseID(pid)
+	if err != nil {
+		return nil, err
+	}
+	u := fmt.Sprintf("projects/%s/environments/%d/stop", pathEscape(project), environmentID)
+
+	req, err := s.client.NewRequest("POST", u, nil, options)
 	if err != nil {
 		return nil, err
 	}

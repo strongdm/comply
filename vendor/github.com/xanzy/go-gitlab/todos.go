@@ -67,12 +67,12 @@ type TodoTarget struct {
 	Weight       int    `json:"weight"`
 
 	// Only available for type MergeRequest
-	ApprovalsBeforeMerge      bool   `json:"approvals_before_merge"`
+	ApprovalsBeforeMerge      int    `json:"approvals_before_merge"`
 	ForceRemoveSourceBranch   bool   `json:"force_remove_source_branch"`
-	MergeCommitSha            string `json:"merge_commit_sha"`
+	MergeCommitSHA            string `json:"merge_commit_sha"`
 	MergeWhenPipelineSucceeds bool   `json:"merge_when_pipeline_succeeds"`
 	MergeStatus               string `json:"merge_status"`
-	Sha                       string `json:"sha"`
+	SHA                       string `json:"sha"`
 	ShouldRemoveSourceBranch  bool   `json:"should_remove_source_branch"`
 	SourceBranch              string `json:"source_branch"`
 	SourceProjectID           int    `json:"source_project_id"`
@@ -121,6 +121,7 @@ func (t Todo) String() string {
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/todos.html#get-a-list-of-todos
 type ListTodosOptions struct {
+	ListOptions
 	Action    *TodoAction `url:"action,omitempty" json:"action,omitempty"`
 	AuthorID  *int        `url:"author_id,omitempty" json:"author_id,omitempty"`
 	ProjectID *int        `url:"project_id,omitempty" json:"project_id,omitempty"`

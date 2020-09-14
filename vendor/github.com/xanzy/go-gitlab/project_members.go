@@ -18,7 +18,6 @@ package gitlab
 
 import (
 	"fmt"
-	"net/url"
 )
 
 // ProjectMembersService handles communication with the project members
@@ -29,8 +28,8 @@ type ProjectMembersService struct {
 	client *Client
 }
 
-// ListProjectMembersOptions represents the available ListProjectMembers()
-// options.
+// ListProjectMembersOptions represents the available ListProjectMembers() and
+// ListAllProjectMembers() options.
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#list-all-members-of-a-group-or-project
@@ -39,7 +38,9 @@ type ListProjectMembersOptions struct {
 	Query *string `url:"query,omitempty" json:"query,omitempty"`
 }
 
-// ListProjectMembers gets a list of a project's team members.
+// ListProjectMembers gets a list of a project's team members viewable by the
+// authenticated user. Returns only direct members and not inherited members
+// through ancestors groups.
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#list-all-members-of-a-group-or-project
@@ -48,7 +49,34 @@ func (s *ProjectMembersService) ListProjectMembers(pid interface{}, opt *ListPro
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/members", url.QueryEscape(project))
+	u := fmt.Sprintf("projects/%s/members", pathEscape(project))
+
+	req, err := s.client.NewRequest("GET", u, opt, options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var pm []*ProjectMember
+	resp, err := s.client.Do(req, &pm)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return pm, resp, err
+}
+
+// ListAllProjectMembers gets a list of a project's team members viewable by the
+// authenticated user. Returns a list including inherited members through
+// ancestor groups.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ce/api/members.html#list-all-members-of-a-group-or-project-including-inherited-members
+func (s *ProjectMembersService) ListAllProjectMembers(pid interface{}, opt *ListProjectMembersOptions, options ...OptionFunc) ([]*ProjectMember, *Response, error) {
+	project, err := parseID(pid)
+	if err != nil {
+		return nil, nil, err
+	}
+	u := fmt.Sprintf("projects/%s/members/all", pathEscape(project))
 
 	req, err := s.client.NewRequest("GET", u, opt, options)
 	if err != nil {
@@ -73,7 +101,7 @@ func (s *ProjectMembersService) GetProjectMember(pid interface{}, user int, opti
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/members/%d", url.QueryEscape(project), user)
+	u := fmt.Sprintf("projects/%s/members/%d", pathEscape(project), user)
 
 	req, err := s.client.NewRequest("GET", u, nil, options)
 	if err != nil {
@@ -96,6 +124,7 @@ func (s *ProjectMembersService) GetProjectMember(pid interface{}, user int, opti
 type AddProjectMemberOptions struct {
 	UserID      *int              `url:"user_id,omitempty" json:"user_id,omitempty"`
 	AccessLevel *AccessLevelValue `url:"access_level,omitempty" json:"access_level,omitempty"`
+	ExpiresAt   *string           `url:"expires_at,omitempty" json:"expires_at"`
 }
 
 // AddProjectMember adds a user to a project team. This is an idempotent
@@ -110,7 +139,7 @@ func (s *ProjectMembersService) AddProjectMember(pid interface{}, opt *AddProjec
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/members", url.QueryEscape(project))
+	u := fmt.Sprintf("projects/%s/members", pathEscape(project))
 
 	req, err := s.client.NewRequest("POST", u, opt, options)
 	if err != nil {
@@ -132,6 +161,7 @@ func (s *ProjectMembersService) AddProjectMember(pid interface{}, opt *AddProjec
 // https://docs.gitlab.com/ce/api/members.html#edit-a-member-of-a-group-or-project
 type EditProjectMemberOptions struct {
 	AccessLevel *AccessLevelValue `url:"access_level,omitempty" json:"access_level,omitempty"`
+	ExpiresAt   *string           `url:"expires_at,omitempty" json:"expires_at"`
 }
 
 // EditProjectMember updates a project team member to a specified access level..
@@ -143,7 +173,7 @@ func (s *ProjectMembersService) EditProjectMember(pid interface{}, user int, opt
 	if err != nil {
 		return nil, nil, err
 	}
-	u := fmt.Sprintf("projects/%s/members/%d", url.QueryEscape(project), user)
+	u := fmt.Sprintf("projects/%s/members/%d", pathEscape(project), user)
 
 	req, err := s.client.NewRequest("PUT", u, opt, options)
 	if err != nil {
@@ -168,7 +198,7 @@ func (s *ProjectMembersService) DeleteProjectMember(pid interface{}, user int, o
 	if err != nil {
 		return nil, err
 	}
-	u := fmt.Sprintf("projects/%s/members/%d", url.QueryEscape(project), user)
+	u := fmt.Sprintf("projects/%s/members/%d", pathEscape(project), user)
 
 	req, err := s.client.NewRequest("DELETE", u, nil, options)
 	if err != nil {

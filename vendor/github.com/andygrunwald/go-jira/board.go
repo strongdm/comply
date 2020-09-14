@@ -2,6 +2,7 @@ package jira
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -34,7 +35,7 @@ type Board struct {
 type BoardListOptions struct {
 	// BoardType filters results to boards of the specified type.
 	// Valid values: scrum, kanban.
-	BoardType string `url:"boardType,omitempty"`
+	BoardType string `url:"type,omitempty"`
 	// Name filters results to boards that match or partially match the specified name.
 	Name string `url:"name,omitempty"`
 	// ProjectKeyOrID filters results to boards that are relevant to a project.
@@ -44,9 +45,21 @@ type BoardListOptions struct {
 	SearchOptions
 }
 
-// Wrapper struct for search result
-type sprintsResult struct {
-	Sprints []Sprint `json:"values" structs:"values"`
+// GetAllSprintsOptions specifies the optional parameters to the BoardService.GetList
+type GetAllSprintsOptions struct {
+	// State filters results to sprints in the specified states, comma-separate list
+	State string `url:"state,omitempty"`
+
+	SearchOptions
+}
+
+// SprintsList reflects a list of agile sprints
+type SprintsList struct {
+	MaxResults int      `json:"maxResults" structs:"maxResults"`
+	StartAt    int      `json:"startAt" structs:"startAt"`
+	Total      int      `json:"total" structs:"total"`
+	IsLast     bool     `json:"isLast" structs:"isLast"`
+	Values     []Sprint `json:"values" structs:"values"`
 }
 
 // Sprint represents a sprint on JIRA agile board
@@ -61,12 +74,65 @@ type Sprint struct {
 	State         string     `json:"state" structs:"state"`
 }
 
+// BoardConfiguration represents a boardConfiguration of a jira board
+type BoardConfiguration struct {
+	ID           int                            `json:"id"`
+	Name         string                         `json:"name"`
+	Self         string                         `json:"self"`
+	Location     BoardConfigurationLocation     `json:"location"`
+	Filter       BoardConfigurationFilter       `json:"filter"`
+	SubQuery     BoardConfigurationSubQuery     `json:"subQuery"`
+	ColumnConfig BoardConfigurationColumnConfig `json:"columnConfig"`
+}
+
+// BoardConfigurationFilter reference to the filter used by the given board.
+type BoardConfigurationFilter struct {
+	ID   string `json:"id"`
+	Self string `json:"self"`
+}
+
+// BoardConfigurationSubQuery  (Kanban only) - JQL subquery used by the given board.
+type BoardConfigurationSubQuery struct {
+	Query string `json:"query"`
+}
+
+// BoardConfigurationLocation reference to the container that the board is located in
+type BoardConfigurationLocation struct {
+	Type string `json:"type"`
+	Key  string `json:"key"`
+	ID   string `json:"id"`
+	Self string `json:"self"`
+	Name string `json:"name"`
+}
+
+// BoardConfigurationColumnConfig lists the columns for a given board in the order defined in the column configuration
+// with constrainttype (none, issueCount, issueCountExclSubs)
+type BoardConfigurationColumnConfig struct {
+	Columns        []BoardConfigurationColumn `json:"columns"`
+	ConstraintType string                     `json:"constraintType"`
+}
+
+// BoardConfigurationColumn lists the name of the board with the statuses that maps to a particular column
+type BoardConfigurationColumn struct {
+	Name   string                           `json:"name"`
+	Status []BoardConfigurationColumnStatus `json:"statuses"`
+}
+
+// BoardConfigurationColumnStatus represents a status in the column configuration
+type BoardConfigurationColumnStatus struct {
+	ID   string `json:"id"`
+	Self string `json:"self"`
+}
+
 // GetAllBoards will returns all boards. This only includes boards that the user has permission to view.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board-getAllBoards
 func (s *BoardService) GetAllBoards(opt *BoardListOptions) (*BoardsList, *Response, error) {
 	apiEndpoint := "rest/agile/1.0/board"
 	url, err := addOptions(apiEndpoint, opt)
+	if err != nil {
+		return nil, nil, err
+	}
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, nil, err
@@ -145,22 +211,65 @@ func (s *BoardService) DeleteBoard(boardID int) (*Board, *Response, error) {
 	return nil, resp, err
 }
 
-// GetAllSprints will returns all sprints from a board, for a given board Id.
+// GetAllSprints will return all sprints from a board, for a given board Id.
 // This only includes sprints that the user has permission to view.
 //
 // JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint
 func (s *BoardService) GetAllSprints(boardID string) ([]Sprint, *Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%s/sprint", boardID)
-	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	id, err := strconv.Atoi(boardID)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	result := new(sprintsResult)
+	result, response, err := s.GetAllSprintsWithOptions(id, &GetAllSprintsOptions{})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return result.Values, response, nil
+}
+
+// GetAllSprintsWithOptions will return sprints from a board, for a given board Id and filtering options
+// This only includes sprints that the user has permission to view.
+//
+// JIRA API docs: https://docs.atlassian.com/jira-software/REST/cloud/#agile/1.0/board/{boardId}/sprint
+func (s *BoardService) GetAllSprintsWithOptions(boardID int, options *GetAllSprintsOptions) (*SprintsList, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%d/sprint", boardID)
+	url, err := addOptions(apiEndpoint, options)
+	if err != nil {
+		return nil, nil, err
+	}
+	req, err := s.client.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	result := new(SprintsList)
 	resp, err := s.client.Do(req, result)
 	if err != nil {
 		err = NewJiraError(resp, err)
 	}
 
-	return result.Sprints, resp, err
+	return result, resp, err
+}
+
+// GetBoardConfiguration will return a board configuration for a given board Id
+// Jira API docs:https://developer.atlassian.com/cloud/jira/software/rest/#api-rest-agile-1-0-board-boardId-configuration-get
+func (s *BoardService) GetBoardConfiguration(boardID int) (*BoardConfiguration, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/agile/1.0/board/%d/configuration", boardID)
+
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	result := new(BoardConfiguration)
+	resp, err := s.client.Do(req, result)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
+	return result, resp, err
+
 }

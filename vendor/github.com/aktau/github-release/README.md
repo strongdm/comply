@@ -5,20 +5,17 @@ A small commandline app written in Go that allows you to easily create
 and delete releases of your projects on Github. In addition it allows
 you to attach files to those releases.
 
-It interacts with the [github releases API](http://developer.github.com/v3/repos/releases).
-Though it's entirely possibly to [do all these things with
-cURL](https://github.com/blog/1645-releases-api-preview), It's not
-really that user-friendly. For example, you need to first query the API
-to find the id of the release you want, before you can upload an
-artifact. `github-release` takes care of those little details.
+It interacts with the [github releases API][releases-api]. Though it's entirely
+possible to [do all these things with cURL][curl], it's not really that
+user-friendly. For example, you need to first query the API to find the id of
+the release you want, before you can upload an artifact. `github-release` takes
+care of those little details.
+
+[curl]: https://github.com/blog/1645-releases-api-preview
+[releases-api]: https://developer.github.com/v3/repos/releases
 
 It might still be a bit rough around the edges, pull requests are
 welcome!
-
-**NOTE**: I've been made aware of the existence of the
-[gothub](https://github.com/itchio/gothub) fork. Since I have very little
-time to work on the project and have been a really bad maintainer, I suggest
-checking it out to see if your issues have been solved there.
 
 How to install
 ==============
@@ -26,13 +23,13 @@ How to install
 If you don't have the Go toolset installed, and you don't want to, but
 still want to use the app, you can download binaries for your platform
 on the [releases
-page](https://github.com/aktau/github-release/releases/latest). Yes, that's
+page](https://github.com/github-release/github-release/releases/latest). Yes, that's
 dogfooding, check the makefile!
 
 If you have Go installed, you can just do:
 
 ```sh
-go get github.com/aktau/github-release
+go get github.com/github-release/github-release
 ```
 
 This will automatically download, compile and install the app.
@@ -43,11 +40,11 @@ After that you should have a `github-release` executable in your
 How to use
 ==========
 
-**NOTE**: for these examples I've [created a github
-token](https://help.github.com/articles/creating-an-access-token-for-command-line-use)
-and set it as the env variable `GITHUB_TOKEN`. `github-release` will
-automatically pick it up from the environment so that you don't have to
-pass it as an argument.
+**NOTE**: for these examples I've [created a github token][token] and set it as
+the env variable `GITHUB_TOKEN`. `github-release` will automatically pick it up
+from the environment so that you don't have to pass it as an argument.
+
+[token]: https://help.github.com/articles/creating-an-access-token-for-command-line-use
 
 ```sh
 # set your token
@@ -120,6 +117,7 @@ Used libraries
 | [github.com/dustin/go-humanize](https://github.com/dustin/go-humanize)     | humanize file sizes | MIT     |
 | [github.com/tomnomnom/linkheader](https://github.com/tomnomnom/linkheader) | GH API pagination   | MIT     |
 | [github.com/voxelbrain/goptions](https://github.com/voxelbrain/goptions)   | option parsing      | BSD     |
+| [github.com/kevinburke/rest](https://github.com/kevinburke/rest)   | HTTP client      | MIT     |
 
 Todo
 ====
@@ -129,4 +127,5 @@ Todo
 Copyright
 =========
 
-Copyright (c) 2014, Nicolas Hillegeer. All rights reserved.
+Copyright (c) 2014-2017, Nicolas Hillegeer. All rights reserved.
+Copyright (c) 2020, Meter, Inc. All rights reserved.
