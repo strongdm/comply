@@ -24,7 +24,7 @@ func todoAction(c *cli.Context) error {
 	}
 
 	w := tablewriter.NewWriter(os.Stdout)
-	w.SetHeader([]string{"Standard", "Control", "Satisfied?", "Name"})
+	w.SetHeader([]string{"Framework", "Control", "Satisfied?", "Name"})
 
 	type row struct {
 		standard    string
@@ -36,7 +36,7 @@ func todoAction(c *cli.Context) error {
 	satisfied := model.ControlsSatisfied(d)
 
 	var rows []row
-	for _, std := range d.Standards {
+	for _, std := range d.Frameworks {
 		for id, c := range std.Controls {
 			sat := "NO"
 			if _, ok := satisfied[id]; ok {

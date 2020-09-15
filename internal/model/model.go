@@ -1,12 +1,12 @@
 package model
 
 type Data struct {
-	Standards  []*Standard
-	Narratives []*Document
-	Policies   []*Document
-	Procedures []*Procedure
-	Tickets    []*Ticket
-	Audits     []*Audit
+	Frameworks	[]*Framework
+	Narratives 	[]*Document
+	Policies   	[]*Document
+	Procedures 	[]*Procedure
+	Tickets    	[]*Ticket
+	Audits     	[]*Audit
 }
 
 type Revision struct {

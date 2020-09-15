@@ -15,9 +15,9 @@ type File struct {
 	Info     os.FileInfo
 }
 
-// Standards lists all standard files.
-func Standards() ([]File, error) {
-	return filesFor("standards", "yml")
+// Frameworks lists all standard files.
+func Frameworks() ([]File, error) {
+	return filesFor("frameworks", "yml")
 }
 
 // Narratives lists all narrative files.

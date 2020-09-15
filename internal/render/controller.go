@@ -36,14 +36,14 @@ type renderData struct {
 	Narratives []*model.Document
 	Policies   []*model.Document
 	Procedures []*model.Procedure
-	Standards  []*model.Standard
+	Frameworks	[]*model.Framework
 	Tickets    []*model.Ticket
 	Controls   []*control
 	Links      *model.TicketLinks
 }
 
 type control struct {
-	Standard    string
+	Framework    string
 	ControlKey  string
 	Name        string
 	Description string
@@ -65,12 +65,12 @@ func load() (*model.Data, *renderData, error) {
 
 	satisfied := model.ControlsSatisfied(modelData)
 	controls := make([]*control, 0)
-	for _, standard := range modelData.Standards {
-		for key, c := range standard.Controls {
+	for _, framework := range modelData.Frameworks {
+		for key, c := range framework.Controls {
 			satisfactions, ok := satisfied[key]
 			satisfied := ok && len(satisfactions) > 0
 			controls = append(controls, &control{
-				Standard:    standard.Name,
+				Framework:    framework.Name,
 				ControlKey:  key,
 				Name:        c.Name,
 				Description: c.Description,
@@ -87,7 +87,7 @@ func load() (*model.Data, *renderData, error) {
 	rd.Narratives = modelData.Narratives
 	rd.Policies = modelData.Policies
 	rd.Procedures = modelData.Procedures
-	rd.Standards = modelData.Standards
+	rd.Frameworks = modelData.Frameworks
 	rd.Tickets = modelData.Tickets
 	rd.Links = &model.TicketLinks{}
 	rd.Project = project
@@ -123,7 +123,7 @@ func addStats(modelData *model.Data, renderData *renderData) {
 
 	satisfied := model.ControlsSatisfied(modelData)
 
-	for _, std := range renderData.Standards {
+	for _, std := range renderData.Frameworks {
 		stats.ControlsTotal += len(std.Controls)
 		for controlKey := range std.Controls {
 			if _, ok := satisfied[controlKey]; ok {

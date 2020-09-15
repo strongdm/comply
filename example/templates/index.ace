@@ -66,7 +66,7 @@ html lang=en
                   a onclick="javascript:show('procedures')" Procedures
               li.top-nav.standards
                 strong
-                  a onclick="javascript:show('standards')" Standards
+                  a onclick="javascript:show('frameworks')" Frameworks
               / li.top-nav.evidence
               /   a onclick="javascript:show('evidence')" Evidence Vault
     #overview.section.top-nav.container.content
@@ -79,7 +79,7 @@ html lang=en
             p.subtitle.is-3.has-text-centered Control Tracking
         .column.has-text-centered
           div
-            p.heading Satisfied Controls
+            p.heading Satisfied Criteria
             p.title
               {{.Stats.ControlsSatisfied}}
         .column.has-text-centered
@@ -191,8 +191,8 @@ html lang=en
       blockquote
         h3
           p
-            strong Standards
-            | specify the controls satisfied by the compliance program.
+            strong Frameworks
+            | specify the Framework Criteria satisfied by the compliance program.
       table.table.is-size-4.is-fullwidth
         thead
           tr

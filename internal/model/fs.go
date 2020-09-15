@@ -30,7 +30,7 @@ func ReadData() (*Data, error) {
 	if err != nil {
 		return nil, err
 	}
-	standards, err := ReadStandards()
+	frameworks, err := ReadFrameworks()
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func ReadData() (*Data, error) {
 		Narratives: narratives,
 		Policies:   policies,
 		Procedures: procedures,
-		Standards:  standards,
+		Frameworks: frameworks,
 	}, nil
 }
 
@@ -67,27 +67,27 @@ func tickets(rawTickets []string) ([]*Ticket, error) {
 	return tickets, nil
 }
 
-// ReadStandards loads standard definitions from the filesystem.
-func ReadStandards() ([]*Standard, error) {
-	var standards []*Standard
+// ReadFrameworks loads standard definitions from the filesystem.
+func ReadFrameworks() ([]*Framework, error) {
+	var frameworks []*Framework
 
-	files, err := path.Standards()
+	files, err := path.Frameworks()
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to enumerate paths")
 	}
 
 	for _, f := range files {
-		s := &Standard{}
+		s := &Framework{}
 		sBytes, err := ioutil.ReadFile(f.FullPath)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to read "+f.FullPath)
 		}
 
 		yaml.Unmarshal(sBytes, &s)
-		standards = append(standards, s)
+		frameworks = append(frameworks, s)
 	}
 
-	return standards, nil
+	return frameworks, nil
 }
 
 // ReadNarratives loads narrative descriptions from the filesystem.

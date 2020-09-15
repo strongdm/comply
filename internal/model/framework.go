@@ -6,7 +6,7 @@ type Control struct {
 	Description string `yaml:"description"`
 }
 
-type Standard struct {
+type Framework struct {
 	Name     string             `yaml:"name"`
 	Controls map[string]Control `yaml:",inline"`
 }

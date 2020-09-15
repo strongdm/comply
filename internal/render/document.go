@@ -114,7 +114,7 @@ func preprocessDoc(data *renderData, pol *model.Document, fullPath string) error
 		for standard, keys := range pol.Satisfies {
 			rows += fmt.Sprintf("| %s | %s |\n", standard, strings.Join(keys, ", "))
 		}
-		satisfiesTable = fmt.Sprintf("|Standard|Controls Satisfied|\n|-------+--------------------------------------------|\n%s\nTable: Control satisfaction\n", rows)
+		satisfiesTable = fmt.Sprintf("|Framework|Controls Satisfied|\n|-------+--------------------------------------------|\n%s\nTable: Control satisfaction\n", rows)
 	}
 
 	if len(pol.Revisions) > 0 {

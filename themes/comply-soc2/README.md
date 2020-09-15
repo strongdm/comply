@@ -10,7 +10,7 @@ Compliance documents are organized as follows:
 narratives/     Narratives provide an overview of the organization and the compliance environment.
 policies/       Policies govern the behavior of employees and contractors.
 procedures/     Procedures prescribe specific steps that are taken in response to key events.
-standards/      Standards specify the controls satisfied by the compliance program.
+frameworks/     Frameworks specify the control criteria targeted by the compliance program.
 templates/      Templates control the output format of the HTML Dashboard and PDF assets.
 ```
 
