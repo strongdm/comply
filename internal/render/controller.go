@@ -16,8 +16,8 @@ type project struct {
 }
 
 type stats struct {
-	ControlsTotal     int
-	ControlsSatisfied int
+	CriteriaTotal     int
+	CriteriaSatisfied int
 
 	ProcedureTotal      int
 	ProcedureOpen       int
@@ -30,21 +30,21 @@ type stats struct {
 
 type renderData struct {
 	// duplicates Project.OrganizationName
-	Name       string
-	Project    *project
-	Stats      *stats
-	Narratives []*model.Document
-	Policies   []*model.Document
-	Procedures []*model.Procedure
+	Name       	string
+	Project    	*project
+	Stats      	*stats
+	Narratives 	[]*model.Document
+	Policies   	[]*model.Document
+	Procedures 	[]*model.Procedure
 	Frameworks	[]*model.Framework
-	Tickets    []*model.Ticket
-	Controls   []*control
-	Links      *model.TicketLinks
+	Tickets    	[]*model.Ticket
+	Criteria  	[]*criterion
+	Links      	*model.TicketLinks
 }
 
-type control struct {
+type criterion struct {
 	Framework    string
-	ControlKey  string
+	CriteriaKey  string
 	Name        string
 	Description string
 	Satisfied   bool
@@ -63,15 +63,15 @@ func load() (*model.Data, *renderData, error) {
 		Name:             fmt.Sprintf("%s Compliance Program", cfg.Name),
 	}
 
-	satisfied := model.ControlsSatisfied(modelData)
-	controls := make([]*control, 0)
+	satisfied := model.CriteriaSatisfied(modelData)
+	criteria := make([]*criterion, 0)
 	for _, framework := range modelData.Frameworks {
-		for key, c := range framework.Controls {
+		for key, c := range framework.Criteria{
 			satisfactions, ok := satisfied[key]
 			satisfied := ok && len(satisfactions) > 0
-			controls = append(controls, &control{
+			criteria = append(criteria, &criterion{
 				Framework:    framework.Name,
-				ControlKey:  key,
+				CriteriaKey:  key,
 				Name:        c.Name,
 				Description: c.Description,
 				Satisfied:   satisfied,
@@ -79,8 +79,8 @@ func load() (*model.Data, *renderData, error) {
 			})
 		}
 	}
-	sort.Slice(controls, func(i, j int) bool {
-		return controls[i].ControlKey < controls[j].ControlKey
+	sort.Slice(criteria, func(i, j int) bool {
+		return criteria[i].CriteriaKey < criteria[j].CriteriaKey
 	})
 
 	rd := &renderData{}
@@ -92,7 +92,7 @@ func load() (*model.Data, *renderData, error) {
 	rd.Links = &model.TicketLinks{}
 	rd.Project = project
 	rd.Name = project.OrganizationName
-	rd.Controls = controls
+	rd.Criteria= criteria
 
 	ts, err := config.Config().TicketSystem()
 	if err != nil {
@@ -121,13 +121,13 @@ func loadWithStats() (*model.Data, *renderData, error) {
 func addStats(modelData *model.Data, renderData *renderData) {
 	stats := &stats{}
 
-	satisfied := model.ControlsSatisfied(modelData)
+	satisfied := model.CriteriaSatisfied(modelData)
 
 	for _, std := range renderData.Frameworks {
-		stats.ControlsTotal += len(std.Controls)
-		for controlKey := range std.Controls {
-			if _, ok := satisfied[controlKey]; ok {
-				stats.ControlsSatisfied++
+		stats.CriteriaTotal += len(std.Criteria)
+		for criteriaKey := range std.Criteria{
+			if _, ok := satisfied[criteriaKey]; ok {
+				stats.CriteriaSatisfied++
 			}
 		}
 	}

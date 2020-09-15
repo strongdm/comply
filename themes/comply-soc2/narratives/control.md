@@ -1,4 +1,4 @@
-name: Control Environment Narrative
+name: CriterionEnvironment Narrative
 acronym: CEN
 satisfies:
   TSC:
@@ -15,7 +15,7 @@ majorRevisions:
     comment: Initial document
 ---
 
-# Control Environment Narrative
+# CriterionEnvironment Narrative
 
 The following provides a description of the control structure of {{.Name}}.
 
@@ -34,7 +34,7 @@ The intent of this description is to enumerate the logical, policy, and procedur
 
 {{.Name}} employs several policy controls to protect confidential data and ensure normal operation of its core product. These policies include, but are not limited to:
 
-- Access Control Policy
+- Access CriterionPolicy
 - Encryption Policy
 - Office Security Policy
 - Password Policy

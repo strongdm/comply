@@ -12,7 +12,7 @@ import (
 
 var todoCommand = cli.Command{
 	Name:   "todo",
-	Usage:  "list declared vs satisfied compliance controls",
+	Usage:  "list declared vs satisfied compliance criteria",
 	Action: todoAction,
 	Before: projectMustExist,
 }
@@ -24,42 +24,42 @@ func todoAction(c *cli.Context) error {
 	}
 
 	w := tablewriter.NewWriter(os.Stdout)
-	w.SetHeader([]string{"Framework", "Control", "Satisfied?", "Name"})
+	w.SetHeader([]string{"Framework", "Criterion", "Satisfied?", "Name"})
 
 	type row struct {
-		standard    string
-		controlKey  string
+		framework    string
+		criterionKey  string
 		satisfied   string
-		controlName string
+		criterionName string
 	}
 
-	satisfied := model.ControlsSatisfied(d)
+	satisfied := model.CriteriaSatisfied(d)
 
 	var rows []row
 	for _, std := range d.Frameworks {
-		for id, c := range std.Controls {
+		for id, c := range std.Criteria{
 			sat := "NO"
 			if _, ok := satisfied[id]; ok {
 				sat = color.GreenString("YES")
 			}
 
 			rows = append(rows, row{
-				standard:    std.Name,
-				controlKey:  id,
+				framework:    std.Name,
+				criterionKey:  id,
 				satisfied:   sat,
-				controlName: c.Name,
+				criterionName: c.Name,
 			})
 		}
 	}
 
 	sort.Slice(rows, func(i, j int) bool {
-		return rows[i].controlKey < rows[j].controlKey
+		return rows[i].criterionKey < rows[j].criterionKey
 	})
 
 	w.SetAutoWrapText(false)
 
 	for _, r := range rows {
-		w.Append([]string{r.standard, r.controlKey, r.satisfied, r.controlName})
+		w.Append([]string{r.framework, r.criterionKey, r.satisfied, r.criterionName})
 	}
 
 	w.Render()

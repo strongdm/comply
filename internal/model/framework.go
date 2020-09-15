@@ -1,6 +1,6 @@
 package model
 
-type Control struct {
+type Criterion struct {
 	Family      string `yaml:"family"`
 	Name        string `yaml:"name"`
 	Description string `yaml:"description"`
@@ -8,11 +8,11 @@ type Control struct {
 
 type Framework struct {
 	Name     string             `yaml:"name"`
-	Controls map[string]Control `yaml:",inline"`
+	Criteria map[string]Criterion `yaml:",inline"`
 }
 
-// ControlsSatisfied determines the unique controls currently satisfied by all Narratives, Policies, and Procedures
-func ControlsSatisfied(data *Data) map[string][]string {
+// CriteriaSatisfied determines the unique criteria currently satisfied by all Narratives, Policies, and Procedures
+func CriteriaSatisfied(data *Data) map[string][]string {
 	satisfied := make(map[string][]string)
 
 	appendSatisfaction := func(in map[string][]string, k string, v string) []string {
@@ -25,22 +25,22 @@ func ControlsSatisfied(data *Data) map[string][]string {
 	}
 
 	for _, n := range data.Narratives {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
+		for _, criteriaKeys := range n.Satisfies {
+			for _, key := range criteriaKeys {
 				satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
 			}
 		}
 	}
 	for _, n := range data.Policies {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
+		for _, criteriaKeys := range n.Satisfies {
+			for _, key := range criteriaKeys {
 				satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
 			}
 		}
 	}
 	for _, n := range data.Procedures {
-		for _, controlKeys := range n.Satisfies {
-			for _, key := range controlKeys {
+		for _, criteriaKeys := range n.Satisfies {
+			for _, key := range criteriaKeys {
 				satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
 			}
 		}

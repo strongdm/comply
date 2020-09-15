@@ -76,17 +76,17 @@ html lang=en
       .columns.is-vcentered
         .column.is-one-third
           div
-            p.subtitle.is-3.has-text-centered Control Tracking
+            p.subtitle.is-3.has-text-centered CriterionTracking
         .column.has-text-centered
           div
             p.heading Satisfied Criteria
             p.title
-              {{.Stats.ControlsSatisfied}}
+              {{.Stats.CriteriaSatisfied}}
         .column.has-text-centered
           div
             p.heading Total Controls
             p.title
-              {{.Stats.ControlsTotal}}
+              {{.Stats.CriteriaTotal}}
       .columns.is-vcentered
         .column.is-one-third
           div
@@ -196,14 +196,14 @@ html lang=en
       table.table.is-size-4.is-fullwidth
         thead
           tr
-            th Control Key
+            th CriterionKey
             th Name
             th Satisfied?
             th Satisfied By
         tbody
-          {{range .Controls }}
+          {{range .Criteria}}
           tr
-            td {{.ControlKey}}
+            td {{.criteriaKey}}
             td
               strong {{.Name}}
               .subtitle {{.Description}}
