@@ -2,7 +2,6 @@ package render
 
 import (
 	"fmt"
-	"sort"
 	"time"
 	"html/template"
 
@@ -19,6 +18,8 @@ type project struct {
 }
 
 type stats struct {
+	ControlsTotal 		int
+
 	CriteriaTotal     int
 	CriteriaSatisfied int
 
@@ -42,7 +43,6 @@ type renderData struct {
 	Procedures 	[]*model.Procedure
 	Frameworks	[]*model.Framework
 	Tickets    	[]*model.Ticket
-	Criteria  	[]*criterion
 	Links      	*model.TicketLinks
 }
 
@@ -68,24 +68,15 @@ func load() (*model.Data, *renderData, error) {
 	}
 
 	satisfied := model.CriteriaSatisfied(modelData)
-	criteria := make([]*criterion, 0)
 	for _, framework := range modelData.Frameworks {
 		for key, c := range framework.Criteria{
 			satisfactions, ok := satisfied[key]
 			satisfied := ok && len(satisfactions) > 0
-			criteria = append(criteria, &criterion{
-				Framework:    framework.Name,
-				CriteriaKey:  key,
-				Name:        c.Name,
-				Description: c.Description,
-				Satisfied:   satisfied,
-				SatisfiedBy: satisfactions,
-			})
+			c.Satisfied = satisfied
+			c.SatisfiedBy = satisfactions
+			framework.Criteria[key] = c
 		}
 	}
-	sort.Slice(criteria, func(i, j int) bool {
-		return criteria[i].CriteriaKey < criteria[j].CriteriaKey
-	})
 
 	rd := &renderData{}
 	rd.Narratives = modelData.Narratives
@@ -97,7 +88,6 @@ func load() (*model.Data, *renderData, error) {
 	rd.Links = &model.TicketLinks{}
 	rd.Project = project
 	rd.Name = project.OrganizationName
-	rd.Criteria= criteria
 
 	ts, err := config.Config().TicketSystem()
 	if err != nil {
@@ -133,6 +123,7 @@ func addStats(modelData *model.Data, renderData *renderData) {
 	stats := &stats{}
 
 	satisfied := model.CriteriaSatisfied(modelData)
+	stats.ControlsTotal += len(renderData.Controls)
 
 	for _, std := range renderData.Frameworks {
 		stats.CriteriaTotal += len(std.Criteria)

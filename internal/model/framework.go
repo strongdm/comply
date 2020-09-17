@@ -4,6 +4,9 @@ type Criterion struct {
 	Family      string `yaml:"family"`
 	Name        string `yaml:"name"`
 	Description string `yaml:"description"`
+
+	Satisfied   bool 
+	SatisfiedBy []string
 }
 
 type Framework struct {
