@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"sort"
 	"time"
+	"html/template"
 
 	"github.com/pkg/errors"
 	"github.com/strongdm/comply/internal/config"
 	"github.com/strongdm/comply/internal/model"
+
+	"github.com/russross/blackfriday/v2"
 )
 
 type project struct {
@@ -35,6 +38,7 @@ type renderData struct {
 	Stats      	*stats
 	Narratives 	[]*model.Document
 	Policies   	[]*model.Document
+	Controls		[]*model.Control
 	Procedures 	[]*model.Procedure
 	Frameworks	[]*model.Framework
 	Tickets    	[]*model.Ticket
@@ -86,6 +90,7 @@ func load() (*model.Data, *renderData, error) {
 	rd := &renderData{}
 	rd.Narratives = modelData.Narratives
 	rd.Policies = modelData.Policies
+	rd.Controls = modelData.Controls
 	rd.Procedures = modelData.Procedures
 	rd.Frameworks = modelData.Frameworks
 	rd.Tickets = modelData.Tickets
@@ -112,6 +117,12 @@ func loadWithStats() (*model.Data, *renderData, error) {
 	modelData, renderData, err := load()
 	if err != nil {
 		return nil, nil, err
+	}
+
+	// Convert the markdown body of each control to HTML
+	for _, n := range modelData.Controls {
+		b := []byte(n.Body)
+		n.BodyHTML = template.HTML(blackfriday.Run(b))
 	}
 
 	addStats(modelData, renderData)

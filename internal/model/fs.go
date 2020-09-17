@@ -26,6 +26,10 @@ func ReadData() (*Data, error) {
 	if err != nil {
 		return nil, err
 	}
+	controls, err := ReadControls()
+	if err != nil {
+		return nil, err
+	}
 	procedures, err := ReadProcedures()
 	if err != nil {
 		return nil, err
@@ -39,6 +43,7 @@ func ReadData() (*Data, error) {
 		Tickets:    tickets,
 		Narratives: narratives,
 		Policies:   policies,
+		Controls: 	controls,
 		Procedures: procedures,
 		Frameworks: frameworks,
 	}, nil
@@ -164,6 +169,31 @@ func ReadPolicies() ([]*Document, error) {
 	}
 
 	return policies, nil
+}
+
+// ReadControls loads control documents from the filesystem
+func ReadControls() ([]*Control, error) {
+	var controls []*Control
+
+	files, err := path.Controls()
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to enumerate paths")
+	}
+
+	for _, f := range files {
+		c := &Control{}
+		mdmd := loadMDMD(f.FullPath)
+		err = yaml.Unmarshal([]byte(mdmd.yaml), &c)
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to parse "+f.FullPath)
+		}
+		c.Body = mdmd.body
+		c.FullPath = f.FullPath
+		c.ModifiedAt = f.Info.ModTime()
+		c.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, c.ID)
+		controls = append(controls, c)
+	}
+		return controls, nil
 }
 
 type metadataMarkdown struct {

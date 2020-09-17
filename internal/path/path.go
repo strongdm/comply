@@ -30,6 +30,11 @@ func Policies() ([]File, error) {
 	return filesFor("policies", "md")
 }
 
+// Controls lists all control files.
+func Controls() ([]File, error) {
+	return filesFor("controls", "md")
+}
+
 // Procedures lists all procedure files.
 func Procedures() ([]File, error) {
 	return filesFor("procedures", "md")

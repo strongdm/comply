@@ -11,6 +11,8 @@ type Framework struct {
 	Criteria map[string]Criterion `yaml:",inline"`
 }
 
+type Target map[string][]string
+
 // CriteriaSatisfied determines the unique criteria currently satisfied by all Narratives, Policies, and Procedures
 func CriteriaSatisfied(data *Data) map[string][]string {
 	satisfied := make(map[string][]string)
@@ -33,6 +35,13 @@ func CriteriaSatisfied(data *Data) map[string][]string {
 	}
 	for _, n := range data.Policies {
 		for _, criteriaKeys := range n.Satisfies {
+			for _, key := range criteriaKeys {
+				satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
+			}
+		}
+	}
+	for _, n := range data.Controls {
+		for _, criteriaKeys := range n.Targets {
 			for _, key := range criteriaKeys {
 				satisfied[key] = appendSatisfaction(satisfied, key, n.OutputFilename)
 			}

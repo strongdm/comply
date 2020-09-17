@@ -16,6 +16,7 @@ func watch(errCh chan error) {
 	b.Add("./templates/")
 	b.Add("./narratives/")
 	b.Add("./policies/")
+	b.Add("./controls/")
 	b.Add("./procedures/")
 
 	b.Add("./.comply/")

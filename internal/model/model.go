@@ -4,6 +4,7 @@ type Data struct {
 	Frameworks	[]*Framework
 	Narratives 	[]*Document
 	Policies   	[]*Document
+	Controls 		[]*Control
 	Procedures 	[]*Procedure
 	Tickets    	[]*Ticket
 	Audits     	[]*Audit
