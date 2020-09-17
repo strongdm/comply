@@ -17,7 +17,7 @@ type File struct {
 
 // Frameworks lists all standard files.
 func Frameworks() ([]File, error) {
-	return filesFor("frameworks", "yml")
+	return filesFor("frameworks", "yaml")
 }
 
 // Narratives lists all narrative files.
