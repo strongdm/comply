@@ -8,6 +8,7 @@ require (
 	github.com/aktau/github-release v0.8.1
 	github.com/andygrunwald/go-jira v1.12.0
 	github.com/containous/go-bindata v1.0.0
+	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/docker/docker v1.13.1
