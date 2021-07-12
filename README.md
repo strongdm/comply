@@ -34,7 +34,7 @@ Once `comply init` is complete, just `git init` and `git push` your project to a
 
 # Discussion
 
-Join us in [Comply Users](https://join.slack.com/t/comply-users/shared_invite/enQtMzU3MTk5MDkxNDU4LTMwYzZkMjA4YjQ2YTM5Zjc0NTAyYWY5MDBlOGMwMzRmZTk5YzBlOTRiMTVlNGRlZjY1MTY1NDE0MjY5ZjYwNWU)
+Join us in [Comply Users](https://join.slack.com/t/comply-users/shared_invite/zt-4k3f46wy-Cs1DceznNvAL~lnW9_HjIA)
 
 # Screenshots
 
