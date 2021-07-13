@@ -10,8 +10,6 @@ import (
 func pdf(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 	var pdfWG sync.WaitGroup
 
-	errOutputCh := make(chan error)
-
 	for {
 		_, data, err := loadWithStats()
 		if err != nil {
@@ -25,7 +23,7 @@ func pdf(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 			return
 		}
 		for _, policy := range policies {
-			renderToFilesystem(&pdfWG, errOutputCh, data, policy, live)
+			renderToFilesystem(&pdfWG, errCh, data, policy, live)
 		}
 
 		narratives, err := model.ReadNarratives()
@@ -35,7 +33,7 @@ func pdf(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 		}
 
 		for _, narrative := range narratives {
-			renderToFilesystem(&pdfWG, errOutputCh, data, narrative, live)
+			renderToFilesystem(&pdfWG, errCh, data, narrative, live)
 		}
 
 		pdfWG.Wait()
