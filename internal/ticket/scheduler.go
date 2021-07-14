@@ -86,7 +86,7 @@ func TriggerScheduled() error {
 				}
 
 				candidate := schedule.Next(triggeredAt)
-				// in the future? not far eonugh back yet.
+				// in the future? not far enough back yet.
 				if candidate.After(time.Now().UTC()) {
 					triggeredAt = triggeredAt.Add(-24 * time.Hour)
 					continue
