@@ -105,7 +105,24 @@ For Windows users, replace $PWD with the full path to your project directory
 - Github
 - Gitlab
 
-## Configuring Jira
+## Configuration
+
+## GitHub
+
+Ticketing integration with GitHub can be configured with the following YAML in `comply.yml`:
+
+```yaml
+tickets:
+  github:
+    repo: github.com/your-org/SOC2
+    token: <token>
+    username: org-bot-user
+```
+
+Also, `GITHUB_REPO`, `GITHUB_TOKEN`, and `GITHUB_USERNAME` can be used to override values from the YAML file.
+
+### Jira
+
 When comply creates a ticket (through `proc`, for instance), it sets the following fields.
 
 - assignee
