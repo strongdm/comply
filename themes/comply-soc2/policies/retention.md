@@ -10,14 +10,14 @@ majorRevisions:
     comment: Initial document
 ---
 
-#Appendices
+# Appendices
 Appendix A: Retention Periods
 
 # Purpose and Scope
 
 a. This data retention policy defines the objectives and requirements for data retention within the organization.
 
-a. This policy covers all data within the organization’s custody or control, irregardless of the medium the data is stored in (electronic form, paper form, etc.) Within this policy, the medium which holds data is referred to as information, no matter what form it is in.
+a. This policy covers all data within the organization’s custody or control, regardless of the medium the data is stored in (electronic form, paper form, etc.) Within this policy, the medium which holds data is referred to as information, no matter what form it is in.
 
 a. This policy applies to all users of information systems within the organization. This typically includes employees and contractors, as well as any external parties that come into contact with systems and information the organization owns or controls (hereinafter referred to as “users”). This policy must be made readily available to all users.
 

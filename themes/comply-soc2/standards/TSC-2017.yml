@@ -154,7 +154,7 @@ C1.2:
 PI1.1:
   family: PI1
   name: Processing Integrity Monitoring
-  description: The entity obtains or generates, uses, and communicates relevant, quality information regarding the objectives related to processing, including de nitions of data processed and product and service speci cations, to support the use of products and services
+  description: The entity obtains or generates, uses, and communicates relevant, quality information regarding the objectives related to processing, including definitions of data processed and product and service speci cations, to support the use of products and services
 PI1.2:
   family: PI1
   name: Processing Integrity Accuracy
@@ -166,11 +166,11 @@ PI1.3:
 PI1.4:
   family: PI1
   name: Processing Integrity Outputs
-  description: The entity implements policies and procedures to make available or deliver output completely, accurately, and timely in accordance with speci cations to meet the entity’s objectives
+  description: The entity implements policies and procedures to make available or deliver output completely, accurately, and timely in accordance with specifications to meet the entity’s objectives
 PI1.5:
   family: PI1
   name: Processing Integrity Backups
-  description: The entity implements policies and procedures to store inputs, items in processing, and outputs completely, accurately, and timely in accordance with system speci cations to meet the entity’s objectives
+  description: The entity implements policies and procedures to store inputs, items in processing, and outputs completely, accurately, and timely in accordance with system specifications to meet the entity’s objectives
 P1.1:
   family: P1
   name: Privacy Notification

@@ -66,7 +66,7 @@ a. When classifying information, the level of confidentiality is determined by:
 +-------------------+------------------+---------------------------+---------------------------+
 | Restricted        | Restricted       | Unauthorized access to    | Information is available  |
 |                   |                  | information may cause     | to a specific group of    |
-|                   |                  | considerable damage to    | employees and authhorized |
+|                   |                  | considerable damage to    | employees and authorized |
 |                   |                  | the business and/or       | third parties.            |
 |                   |                  | the organization's        |                           |
 |                   |                  | reputation.               |                           |           
