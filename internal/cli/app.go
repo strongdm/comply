@@ -135,7 +135,7 @@ func notifyVersion(c *cli.Context) error {
 }
 
 func pandocMustExist(c *cli.Context) error {
-	eitherMustExistErr := fmt.Errorf("\n\nPlease install either Docker or the pandoc package and re-run `%s`. Find OS-specific pandoc installation instructions at: [TODO]", c.Command.Name)
+	eitherMustExistErr := fmt.Errorf("\n\nPlease install either Docker or the pandoc package and re-run `%s`. Find OS-specific pandoc installation instructions at: https://pandoc.org/installing.html", c.Command.Name)
 
 	pandocExistErr, found, goodVersion, pdfLatex := pandocBinaryMustExist(c)
 	dockerExistErr, inPath, isRunning := dockerMustExist(c)
