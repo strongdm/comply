@@ -38,10 +38,7 @@ func procedureAction(c *cli.Context) error {
 
 	for _, procedure := range procedures {
 		if procedure.ID == procedureID {
-			err = tp.Create(&model.Ticket{
-				Name: procedure.Name,
-				Body: fmt.Sprintf("%s\n\n\n---\nProcedure-ID: %s", procedure.Body, procedure.ID),
-			}, []string{"comply", "comply-procedure"})
+			err = tp.Create(procedure.NewTicket(), procedure.Labels())
 			if err != nil {
 				return err
 			}
