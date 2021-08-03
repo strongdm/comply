@@ -18,6 +18,10 @@ import (
 	"github.com/strongdm/comply/internal/model"
 )
 
+// Pull array of file extensions from config
+// for each pdf passed in, iterate other extensions and pass to pandoc.
+// This way, all types will be rendered BEFORE the system deletes the markdown preprocessed file
+
 // TODO: refactor and eliminate duplication among narrative, policy renderers
 func renderToFilesystem(wg *sync.WaitGroup, errOutputCh chan error, data *renderData, doc *model.Document, live bool) {
 	// only files that have been touched
@@ -31,6 +35,7 @@ func renderToFilesystem(wg *sync.WaitGroup, errOutputCh chan error, data *render
 		defer wg.Done()
 
 		outputFilename := p.OutputFilename
+
 		// save preprocessed markdown
 		err := preprocessDoc(data, p, filepath.Join(".", "output", outputFilename+".md"))
 		if err != nil {
@@ -38,7 +43,19 @@ func renderToFilesystem(wg *sync.WaitGroup, errOutputCh chan error, data *render
 			return
 		}
 
-		pandoc(outputFilename, errOutputCh)
+		// get list of output file types from config
+		fileExtensions := config.GetFileExtensions()
+		for i := range fileExtensions {
+			// pass file extension and let pandoc handle output format
+
+			pandoc(outputFilename, fileExtensions[i], errOutputCh)
+
+			rel, err := filepath.Rel(config.ProjectRoot(), p.FullPath)
+			if err != nil {
+				rel = p.FullPath
+			}
+			fmt.Printf("%s -> %s\n", rel, filepath.Join("output", p.OutputFilename+fileExtensions[i]))
+		}
 
 		// remove preprocessed markdown
 		err = os.Remove(filepath.Join(".", "output", outputFilename+".md"))
@@ -47,11 +64,6 @@ func renderToFilesystem(wg *sync.WaitGroup, errOutputCh chan error, data *render
 			return
 		}
 
-		rel, err := filepath.Rel(config.ProjectRoot(), p.FullPath)
-		if err != nil {
-			rel = p.FullPath
-		}
-		fmt.Printf("%s -> %s\n", rel, filepath.Join("output", p.OutputFilename))
 	}(doc)
 }
 
