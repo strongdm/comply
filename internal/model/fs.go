@@ -142,7 +142,7 @@ func ReadProcedures() ([]*Procedure, error) {
 }
 
 // ReadPolicies loads policy documents from the filesystem.
-// remove pdf file ending and place that logic in ...
+// remove pdf file ending and place that logic in document.go
 func ReadPolicies() ([]*Document, error) {
 	var policies []*Document
 
