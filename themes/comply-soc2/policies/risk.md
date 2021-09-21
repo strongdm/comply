@@ -87,13 +87,13 @@ Table 3: Description of Consequence Levels and Criteria
 | Moderate        | 1               | Either existing security controls have most provided an      |     
 |                 |                 | adequate level of protection or the probability of the risk  |                    
 |                 |                 | being realized is moderate. Some minor incidents may have    |
-|                 |                 | occured. New incidents are possible, but not highly likely.  |
+|                 |                 | occurred. New incidents are possible, but not highly likely.  |
 +-----------------+-----------------+--------------------------------------------------------------+
 |                 |                 |                                                              |  
 +-----------------+-----------------+--------------------------------------------------------------+
 | High            | 2               | Either existing security controls are not in place or        |
 |                 |                 | ineffective; there is a high probability of the risk being   |                    
-|                 |                 | realized. Incidents have a high likelihood of occuring in the|
+|                 |                 | realized. Incidents have a high likelihood of occurring in the|
 |                 |                 | future.                                             |
 +-----------------+-----------------+--------------------------------------------------------------+
 |                 |                 |                                                              |  

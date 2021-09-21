@@ -75,7 +75,7 @@ TODO: Finalize these lists
 
 # Remediations
 
-{{.Name}} uses the outcomes of the aforementioned controls and procedures to identify shortcomings in the existing control environment. Once identified, these shortcomes are remediated by improving existing controls and procedures, and creating new controls and procedures as needed.
+{{.Name}} uses the outcomes of the aforementioned controls and procedures to identify shortcomings in the existing control environment. Once identified, these shortcomings are remediated by improving existing controls and procedures, and creating new controls and procedures as needed.
 
 # Communications
 
@@ -87,7 +87,7 @@ TODO: Finalize these lists
 
 - Slack
 - Email
-- Github ticketing
+- GitHub ticketing
 
 ## External
 
