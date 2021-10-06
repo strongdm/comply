@@ -46,8 +46,8 @@ func (g *gitlabPlugin) api() *gitlab.Client {
 	defer g.clientMu.Unlock()
 	if g.client == nil {
 		// get go-gitlab client
-		gl := gitlab.NewClient(nil, g.token)
-		gl.SetBaseURL(g.domain)
+		// TODO: see if it's necessary to verify the error
+		gl, _ := gitlab.NewClient(g.token, gitlab.WithBaseURL(g.domain))
 		g.client = gl
 	}
 	return g.client
@@ -160,7 +160,7 @@ func (g *gitlabPlugin) Create(ticket *model.Ticket, labels []string) error {
 	options := &gitlab.CreateIssueOptions{
 		Title:       gitlab.String(ticket.Name),
 		Description: gitlab.String(ticket.Body),
-		Labels:      &l,
+		Labels:      l,
 	}
 	_, _, err := g.api().Issues.CreateIssue(g.reponame, options)
 	return err

@@ -9,7 +9,7 @@ import (
 	"github.com/juju/ansiterm/tabwriter"
 )
 
-// NewTabWriter returns a writer that is able to set colors and styels.
+// NewTabWriter returns a writer that is able to set colors and styles.
 // The ansi escape codes are stripped for width calculations.
 func NewTabWriter(output io.Writer, minwidth, tabwidth, padding int, padchar byte, flags uint) *TabWriter {
 	return new(TabWriter).Init(output, minwidth, tabwidth, padding, padchar, flags)

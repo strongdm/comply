@@ -7,7 +7,7 @@ import (
 )
 
 func isRepoClean() (bool, error) {
-	cmd := exec.Command("git", "status", "-s")
+	cmd := exec.Command("git", "status", "--porcelain")
 	result := &bytes.Buffer{}
 	cmd.Stdout = result
 	if err := cmd.Run(); err != nil {

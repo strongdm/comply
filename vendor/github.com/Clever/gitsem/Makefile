@@ -1,8 +1,11 @@
+include golang.mk
+.DEFAULT_GOAL := test # override default goal set in library makefile
+
 SHELL := /bin/bash
-PKG = github.com/Clever/gitsem
-PKGS = $(PKG)
-VERSION := $(shell cat VERSION)
+PKG := github.com/Clever/gitsem
+PKGS := $(shell go list ./... | grep -v /vendor)
 EXECUTABLE := gitsem
+VERSION := $(shell cat VERSION)
 BUILDS := \
 	build/$(EXECUTABLE)-v$(VERSION)-darwin-amd64 \
 	build/$(EXECUTABLE)-v$(VERSION)-linux-amd64 \
@@ -10,31 +13,21 @@ BUILDS := \
 COMPRESSED_BUILDS := $(BUILDS:%=%.tar.gz)
 RELEASE_ARTIFACTS := $(COMPRESSED_BUILDS:build/%=release/%)
 
-.PHONY: test golint
+.PHONY: test golint build vendor
 
-golint:
-	@go get github.com/golang/lint/golint
+$(eval $(call golang-version-check,1.13))
 
 test: $(PKGS)
 
-$(PKGS): golint
-	@go get -d -t $@
-	@gofmt -w=true $(GOPATH)/src/$@*/**.go
-ifneq ($(NOLINT),1)
-	@echo "LINTING..."
-	@PATH=$(PATH):$(GOPATH)/bin golint $(GOPATH)/src/$@*/**.go
-	@echo ""
-endif
-ifeq ($(COVERAGE),1)
-	@go test -cover -coverprofile=$(GOPATH)/src/$@/c.out $@ -test.v
-	@go tool cover -html=$(GOPATH)/src/$@/c.out
-else
-	@echo "TESTING..."
-	@go test $@ -test.v
-endif
+$(PKGS): golang-test-all-strict-deps
+	$(call golang-test-all-strict,$@)
+
 
 run:
 	@go run main.go
+
+build:
+	go build -o bin/$(EXECUTABLE) $(PKG)
 
 build/$(EXECUTABLE)-v$(VERSION)-darwin-amd64:
 	GOARCH=amd64 GOOS=darwin go build -o "$@/$(EXECUTABLE)"
@@ -52,3 +45,7 @@ release: $(RELEASE_ARTIFACTS)
 
 clean:
 	rm -rf build release
+
+
+install_deps:
+	go mod vendor

@@ -1,7 +1,24 @@
+//
+// Copyright 2021, Sander van Harmelen
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 package gitlab
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -40,14 +57,14 @@ type ListPagesDomainsOptions ListOptions
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pages_domains.html#list-pages-domains
-func (s *PagesDomainsService) ListPagesDomains(pid interface{}, opt *ListPagesDomainsOptions, options ...OptionFunc) ([]*PagesDomain, *Response, error) {
+func (s *PagesDomainsService) ListPagesDomains(pid interface{}, opt *ListPagesDomainsOptions, options ...RequestOptionFunc) ([]*PagesDomain, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/pages/domains", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -65,8 +82,8 @@ func (s *PagesDomainsService) ListPagesDomains(pid interface{}, opt *ListPagesDo
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pages_domains.html#list-all-pages-domains
-func (s *PagesDomainsService) ListAllPagesDomains(options ...OptionFunc) ([]*PagesDomain, *Response, error) {
-	req, err := s.client.NewRequest("GET", "pages/domains", nil, options)
+func (s *PagesDomainsService) ListAllPagesDomains(options ...RequestOptionFunc) ([]*PagesDomain, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "pages/domains", nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -84,14 +101,14 @@ func (s *PagesDomainsService) ListAllPagesDomains(options ...OptionFunc) ([]*Pag
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pages_domains.html#single-pages-domain
-func (s *PagesDomainsService) GetPagesDomain(pid interface{}, domain string, options ...OptionFunc) (*PagesDomain, *Response, error) {
+func (s *PagesDomainsService) GetPagesDomain(pid interface{}, domain string, options ...RequestOptionFunc) (*PagesDomain, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/pages/domains/%s", pathEscape(project), domain)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -120,14 +137,14 @@ type CreatePagesDomainOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pages_domains.html#create-new-pages-domain
-func (s *PagesDomainsService) CreatePagesDomain(pid interface{}, opt *CreatePagesDomainOptions, options ...OptionFunc) (*PagesDomain, *Response, error) {
+func (s *PagesDomainsService) CreatePagesDomain(pid interface{}, opt *CreatePagesDomainOptions, options ...RequestOptionFunc) (*PagesDomain, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/pages/domains", pathEscape(project))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -155,14 +172,14 @@ type UpdatePagesDomainOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pages_domains.html#update-pages-domain
-func (s *PagesDomainsService) UpdatePagesDomain(pid interface{}, domain string, opt *UpdatePagesDomainOptions, options ...OptionFunc) (*PagesDomain, *Response, error) {
+func (s *PagesDomainsService) UpdatePagesDomain(pid interface{}, domain string, opt *UpdatePagesDomainOptions, options ...RequestOptionFunc) (*PagesDomain, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/pages/domains/%s", pathEscape(project), domain)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -180,14 +197,14 @@ func (s *PagesDomainsService) UpdatePagesDomain(pid interface{}, domain string, 
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/pages_domains.html#delete-pages-domain
-func (s *PagesDomainsService) DeletePagesDomain(pid interface{}, domain string, options ...OptionFunc) (*Response, error) {
+func (s *PagesDomainsService) DeletePagesDomain(pid interface{}, domain string, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/pages/domains/%s", pathEscape(project), domain)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}

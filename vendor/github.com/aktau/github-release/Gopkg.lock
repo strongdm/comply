@@ -10,44 +10,15 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
-  name = "github.com/go-stack/stack"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a"
-  version = "v1.8.0"
-
-[[projects]]
-  digest = "1:5c56664d98f37f0ee54bf572b0b189a3910c34c31052fc7d58b282c449b079fb"
-  name = "github.com/inconshreveable/log15"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "b30bc20e4fd12cec79a9aae62e91cfcf458bd253"
-  version = "v2.15"
-
-[[projects]]
-  digest = "1:de0adde670b2119824a1252b61a0e989669f8b24af874e399bec0e0538b2f928"
+  digest = "1:7462b19f7e4adb24e966b77213c693dad09c04d58ac8d29ddf449ff1b1c91d11"
   name = "github.com/kevinburke/rest"
-  packages = ["."]
+  packages = [
+    "restclient",
+    "resterror",
+  ]
   pruneopts = "UT"
-  revision = "0d2892b400f81cdfb979e2f718e6070fae17a507"
-  version = "2.2"
-
-[[projects]]
-  digest = "1:0109cf4321a15313ec895f42e723e1f76121c6975ea006abfa20012272ec0937"
-  name = "github.com/mattn/go-colorable"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "68e95eba382c972aafde02ead2cd2426a8a92480"
-  version = "v0.1.6"
-
-[[projects]]
-  digest = "1:0c58d31abe2a2ccb429c559b6292e7df89dcda675456fecc282fa90aa08273eb"
-  name = "github.com/mattn/go-isatty"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "7b513a986450394f7bbf1476909911b3aa3a55ce"
-  version = "v0.0.12"
+  revision = "22cd0577e450f2fa21313f7eaf42b41a178291c1"
+  version = "2.5"
 
 [[projects]]
   branch = "master"
@@ -65,23 +36,12 @@
   revision = "26cb8b04692384f4dc269de3b5fcf3e2ef78573e"
   version = "2.5.11"
 
-[[projects]]
-  branch = "master"
-  digest = "1:8cab10971112233c82c83683a517378038eba1c20e71b29c592b73fa212437b3"
-  name = "golang.org/x/sys"
-  packages = [
-    "internal/unsafeheader",
-    "unix",
-  ]
-  pruneopts = "UT"
-  revision = "bc7a7d42d5c30f4d0fe808715c002826ce2c624e"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
     "github.com/dustin/go-humanize",
-    "github.com/kevinburke/rest",
+    "github.com/kevinburke/rest/restclient",
     "github.com/tomnomnom/linkheader",
     "github.com/voxelbrain/goptions",
   ]

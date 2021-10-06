@@ -1,5 +1,5 @@
 //
-// Copyright 2019, Matej Velikonja
+// Copyright 2021, Matej Velikonja
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -76,14 +77,14 @@ type ManagementProject struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/project_clusters.html#list-project-clusters
-func (s *ProjectClustersService) ListClusters(pid interface{}, options ...OptionFunc) ([]*ProjectCluster, *Response, error) {
+func (s *ProjectClustersService) ListClusters(pid interface{}, options ...RequestOptionFunc) ([]*ProjectCluster, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/clusters", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -101,14 +102,14 @@ func (s *ProjectClustersService) ListClusters(pid interface{}, options ...Option
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/project_clusters.html#get-a-single-project-cluster
-func (s *ProjectClustersService) GetCluster(pid interface{}, cluster int, options ...OptionFunc) (*ProjectCluster, *Response, error) {
+func (s *ProjectClustersService) GetCluster(pid interface{}, cluster int, options ...RequestOptionFunc) (*ProjectCluster, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/clusters/%d", pathEscape(project), cluster)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -149,14 +150,14 @@ type AddPlatformKubernetesOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/project_clusters.html#add-existing-cluster-to-project
-func (s *ProjectClustersService) AddCluster(pid interface{}, opt *AddClusterOptions, options ...OptionFunc) (*ProjectCluster, *Response, error) {
+func (s *ProjectClustersService) AddCluster(pid interface{}, opt *AddClusterOptions, options ...RequestOptionFunc) (*ProjectCluster, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/clusters/user", pathEscape(project))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -194,14 +195,14 @@ type EditPlatformKubernetesOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/project_clusters.html#edit-project-cluster
-func (s *ProjectClustersService) EditCluster(pid interface{}, cluster int, opt *EditClusterOptions, options ...OptionFunc) (*ProjectCluster, *Response, error) {
+func (s *ProjectClustersService) EditCluster(pid interface{}, cluster int, opt *EditClusterOptions, options ...RequestOptionFunc) (*ProjectCluster, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/clusters/%d", pathEscape(project), cluster)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -219,14 +220,14 @@ func (s *ProjectClustersService) EditCluster(pid interface{}, cluster int, opt *
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/project_clusters.html#delete-project-cluster
-func (s *ProjectClustersService) DeleteCluster(pid interface{}, cluster int, options ...OptionFunc) (*Response, error) {
+func (s *ProjectClustersService) DeleteCluster(pid interface{}, cluster int, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/clusters/%d", pathEscape(project), cluster)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}

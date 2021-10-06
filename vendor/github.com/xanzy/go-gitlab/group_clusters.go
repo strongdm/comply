@@ -1,5 +1,5 @@
 //
-// Copyright 2019, Paul Shoemaker
+// Copyright 2021, Paul Shoemaker
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -38,6 +39,8 @@ type GroupCluster struct {
 	Name               string              `json:"name"`
 	Domain             string              `json:"domain"`
 	CreatedAt          *time.Time          `json:"created_at"`
+	Managed            bool                `json:"managed"`
+	Enabled            bool                `json:"enabled"`
 	ProviderType       string              `json:"provider_type"`
 	PlatformType       string              `json:"platform_type"`
 	EnvironmentScope   string              `json:"environment_scope"`
@@ -56,14 +59,14 @@ func (v GroupCluster) String() string {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/group_clusters.html#list-group-clusters
-func (s *GroupClustersService) ListClusters(pid interface{}, options ...OptionFunc) ([]*GroupCluster, *Response, error) {
+func (s *GroupClustersService) ListClusters(pid interface{}, options ...RequestOptionFunc) ([]*GroupCluster, *Response, error) {
 	group, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/clusters", pathEscape(group))
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -81,25 +84,25 @@ func (s *GroupClustersService) ListClusters(pid interface{}, options ...OptionFu
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/group_clusters.html#get-a-single-group-cluster
-func (s *GroupClustersService) GetCluster(pid interface{}, cluster int, options ...OptionFunc) (*GroupCluster, *Response, error) {
+func (s *GroupClustersService) GetCluster(pid interface{}, cluster int, options ...RequestOptionFunc) (*GroupCluster, *Response, error) {
 	group, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/clusters/%d", pathEscape(group), cluster)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	pc := new(GroupCluster)
-	resp, err := s.client.Do(req, &pc)
+	gc := new(GroupCluster)
+	resp, err := s.client.Do(req, &gc)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return pc, resp, err
+	return gc, resp, err
 }
 
 // AddGroupClusterOptions represents the available AddCluster() options.
@@ -129,25 +132,25 @@ type AddGroupPlatformKubernetesOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/group_clusters.html#add-existing-cluster-to-group
-func (s *GroupClustersService) AddCluster(pid interface{}, opt *AddGroupClusterOptions, options ...OptionFunc) (*GroupCluster, *Response, error) {
+func (s *GroupClustersService) AddCluster(pid interface{}, opt *AddGroupClusterOptions, options ...RequestOptionFunc) (*GroupCluster, *Response, error) {
 	group, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/clusters/user", pathEscape(group))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	pc := new(GroupCluster)
-	resp, err := s.client.Do(req, pc)
+	gc := new(GroupCluster)
+	resp, err := s.client.Do(req, gc)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return pc, resp, err
+	return gc, resp, err
 }
 
 // EditGroupClusterOptions represents the available EditCluster() options.
@@ -173,39 +176,39 @@ type EditGroupPlatformKubernetesOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/group_clusters.html#edit-group-cluster
-func (s *GroupClustersService) EditCluster(pid interface{}, cluster int, opt *EditGroupClusterOptions, options ...OptionFunc) (*GroupCluster, *Response, error) {
+func (s *GroupClustersService) EditCluster(pid interface{}, cluster int, opt *EditGroupClusterOptions, options ...RequestOptionFunc) (*GroupCluster, *Response, error) {
 	group, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/clusters/%d", pathEscape(group), cluster)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	pc := new(GroupCluster)
-	resp, err := s.client.Do(req, pc)
+	gc := new(GroupCluster)
+	resp, err := s.client.Do(req, gc)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return pc, resp, err
+	return gc, resp, err
 }
 
 // DeleteCluster deletes an existing group cluster.
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/group_clusters.html#delete-group-cluster
-func (s *GroupClustersService) DeleteCluster(pid interface{}, cluster int, options ...OptionFunc) (*Response, error) {
+func (s *GroupClustersService) DeleteCluster(pid interface{}, cluster int, options ...RequestOptionFunc) (*Response, error) {
 	group, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("groups/%s/clusters/%d", pathEscape(group), cluster)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}

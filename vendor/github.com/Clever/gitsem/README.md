@@ -32,3 +32,8 @@ In the second case, the existing version will be incremented by 1 in the specifi
 ### Options
   - `m=%s` specifies a commit message to use when bumping the version. If %s appears, it will be replaced with the new version number.
   - `tag=true` whether or not to create a tag at the version commit
+
+
+## Vendoring
+
+Please view the [dev-handbook for instructions](https://github.com/Clever/dev-handbook/blob/master/golang/godep.md).
