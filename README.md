@@ -135,7 +135,9 @@ When comply creates a ticket (through `proc`, for instance), it sets the followi
 
 Please make sure that the default *Create Screen* has all of those fields enabled. Additionally, make sure that there are no other required fields for the issue type you choose.
 
+---
 
+About authentication, you need to create a [API Token](https://id.atlassian.com/manage-profile/security/api-tokens) to use instead your password.
 
 
 ## Forking and local development
