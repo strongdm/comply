@@ -87,6 +87,8 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 		errOutputCh <- errors.Wrap(err, "output not generated; verify your Docker image is up to date")
 		return
 	}
+
+	errOutputCh <- nil
 }
 
 // 🐼
