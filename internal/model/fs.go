@@ -101,7 +101,7 @@ func ReadNarratives() ([]*Document, error) {
 
 	for _, f := range files {
 		n := &Document{}
-		mdmd := loadMDMD(f.FullPath)
+		mdmd, err := loadMDMD(f.FullPath)
 		err = yaml.Unmarshal([]byte(mdmd.yaml), &n)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to parse "+f.FullPath)
@@ -126,7 +126,10 @@ func ReadProcedures() ([]*Procedure, error) {
 
 	for _, f := range files {
 		p := &Procedure{}
-		mdmd := loadMDMD(f.FullPath)
+		mdmd, err := loadMDMD(f.FullPath)
+		if err != nil {
+			return nil, err
+		}
 		err = yaml.Unmarshal([]byte(mdmd.yaml), &p)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to parse "+f.FullPath)
@@ -151,7 +154,10 @@ func ReadPolicies() ([]*Document, error) {
 
 	for _, f := range files {
 		p := &Document{}
-		mdmd := loadMDMD(f.FullPath)
+		mdmd, err := loadMDMD(f.FullPath)
+		if err != nil {
+			return nil, err
+		}
 		err = yaml.Unmarshal([]byte(mdmd.yaml), &p)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to parse "+f.FullPath)
@@ -171,7 +177,7 @@ type metadataMarkdown struct {
 	body string
 }
 
-func loadMDMD(path string) metadataMarkdown {
+func loadMDMD(path string) (*metadataMarkdown, error) {
 	bytes, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err)
@@ -183,9 +189,9 @@ func loadMDMD(path string) metadataMarkdown {
 		components = components[1:]
 	}
 	if len(components) == 1 {
-		panic(fmt.Sprintf("Malformed metadata markdown in %s, must be of the form: YAML\\n---\\nmarkdown content", path))
+		return nil, errors.New(fmt.Sprintf("Malformed metadata markdown in %s, must be of the form: YAML\\n---\\nmarkdown content", path))
 	}
 	yaml := components[0]
 	body := strings.Join(components[1:], "---")
-	return metadataMarkdown{yaml, body}
+	return &metadataMarkdown{yaml, body}, nil
 }
