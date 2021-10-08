@@ -102,6 +102,9 @@ func ReadNarratives() ([]*Document, error) {
 	for _, f := range files {
 		n := &Document{}
 		mdmd, err := loadMDMD(f.FullPath)
+		if err != nil {
+			return nil, err
+		}
 		err = yaml.Unmarshal([]byte(mdmd.yaml), &n)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to parse "+f.FullPath)
@@ -155,7 +158,9 @@ func ReadPolicies() ([]*Document, error) {
 	for _, f := range files {
 		p := &Document{}
 		mdmd, err := loadMDMD(f.FullPath)
-
+		if err != nil {
+			return nil, err
+		}
 		err = yaml.Unmarshal([]byte(mdmd.yaml), &p)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to parse "+f.FullPath)
