@@ -1,5 +1,5 @@
 //
-// Copyright 2017, Sander van Harmelen
+// Copyright 2021, Sander van Harmelen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,10 +18,8 @@
 package gitlab
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -31,6 +29,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -59,270 +58,9 @@ type authType int
 // GitLab API docs: https://docs.gitlab.com/ce/api/
 const (
 	basicAuth authType = iota
+	jobToken
 	oAuthToken
 	privateToken
-)
-
-// AccessLevelValue represents a permission level within GitLab.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/permissions/permissions.html
-type AccessLevelValue int
-
-// List of available access levels
-//
-// GitLab API docs: https://docs.gitlab.com/ce/permissions/permissions.html
-const (
-	NoPermissions         AccessLevelValue = 0
-	GuestPermissions      AccessLevelValue = 10
-	ReporterPermissions   AccessLevelValue = 20
-	DeveloperPermissions  AccessLevelValue = 30
-	MaintainerPermissions AccessLevelValue = 40
-	OwnerPermissions      AccessLevelValue = 50
-
-	// These are deprecated and should be removed in a future version
-	MasterPermissions AccessLevelValue = 40
-	OwnerPermission   AccessLevelValue = 50
-)
-
-// BuildStateValue represents a GitLab build state.
-type BuildStateValue string
-
-// These constants represent all valid build states.
-const (
-	Pending  BuildStateValue = "pending"
-	Created  BuildStateValue = "created"
-	Running  BuildStateValue = "running"
-	Success  BuildStateValue = "success"
-	Failed   BuildStateValue = "failed"
-	Canceled BuildStateValue = "canceled"
-	Skipped  BuildStateValue = "skipped"
-	Manual   BuildStateValue = "manual"
-)
-
-// DeploymentStatusValue represents a Gitlab deployment status.
-type DeploymentStatusValue string
-
-// These constants represent all valid deployment statuses.
-const (
-	DeploymentStatusCreated  DeploymentStatusValue = "created"
-	DeploymentStatusRunning  DeploymentStatusValue = "running"
-	DeploymentStatusSuccess  DeploymentStatusValue = "success"
-	DeploymentStatusFailed   DeploymentStatusValue = "failed"
-	DeploymentStatusCanceled DeploymentStatusValue = "canceled"
-)
-
-// ISOTime represents an ISO 8601 formatted date
-type ISOTime time.Time
-
-// ISO 8601 date format
-const iso8601 = "2006-01-02"
-
-// MarshalJSON implements the json.Marshaler interface
-func (t ISOTime) MarshalJSON() ([]byte, error) {
-	if y := time.Time(t).Year(); y < 0 || y >= 10000 {
-		// ISO 8901 uses 4 digits for the years
-		return nil, errors.New("json: ISOTime year outside of range [0,9999]")
-	}
-
-	b := make([]byte, 0, len(iso8601)+2)
-	b = append(b, '"')
-	b = time.Time(t).AppendFormat(b, iso8601)
-	b = append(b, '"')
-
-	return b, nil
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface
-func (t *ISOTime) UnmarshalJSON(data []byte) error {
-	// Ignore null, like in the main JSON package
-	if string(data) == "null" {
-		return nil
-	}
-
-	isotime, err := time.Parse(`"`+iso8601+`"`, string(data))
-	*t = ISOTime(isotime)
-
-	return err
-}
-
-// EncodeValues implements the query.Encoder interface
-func (t *ISOTime) EncodeValues(key string, v *url.Values) error {
-	if t == nil || (time.Time(*t)).IsZero() {
-		return nil
-	}
-	v.Add(key, t.String())
-	return nil
-}
-
-// String implements the Stringer interface
-func (t ISOTime) String() string {
-	return time.Time(t).Format(iso8601)
-}
-
-// NotificationLevelValue represents a notification level.
-type NotificationLevelValue int
-
-// String implements the fmt.Stringer interface.
-func (l NotificationLevelValue) String() string {
-	return notificationLevelNames[l]
-}
-
-// MarshalJSON implements the json.Marshaler interface.
-func (l NotificationLevelValue) MarshalJSON() ([]byte, error) {
-	return json.Marshal(l.String())
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface.
-func (l *NotificationLevelValue) UnmarshalJSON(data []byte) error {
-	var raw interface{}
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-
-	switch raw := raw.(type) {
-	case float64:
-		*l = NotificationLevelValue(raw)
-	case string:
-		*l = notificationLevelTypes[raw]
-	case nil:
-		// No action needed.
-	default:
-		return fmt.Errorf("json: cannot unmarshal %T into Go value of type %T", raw, *l)
-	}
-
-	return nil
-}
-
-// List of valid notification levels.
-const (
-	DisabledNotificationLevel NotificationLevelValue = iota
-	ParticipatingNotificationLevel
-	WatchNotificationLevel
-	GlobalNotificationLevel
-	MentionNotificationLevel
-	CustomNotificationLevel
-)
-
-var notificationLevelNames = [...]string{
-	"disabled",
-	"participating",
-	"watch",
-	"global",
-	"mention",
-	"custom",
-}
-
-var notificationLevelTypes = map[string]NotificationLevelValue{
-	"disabled":      DisabledNotificationLevel,
-	"participating": ParticipatingNotificationLevel,
-	"watch":         WatchNotificationLevel,
-	"global":        GlobalNotificationLevel,
-	"mention":       MentionNotificationLevel,
-	"custom":        CustomNotificationLevel,
-}
-
-// VisibilityValue represents a visibility level within GitLab.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/
-type VisibilityValue string
-
-// List of available visibility levels.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/
-const (
-	PrivateVisibility  VisibilityValue = "private"
-	InternalVisibility VisibilityValue = "internal"
-	PublicVisibility   VisibilityValue = "public"
-)
-
-// ProjectCreationLevelValue represents a project creation level within GitLab.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/
-type ProjectCreationLevelValue string
-
-// List of available project creation levels.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/
-const (
-	NoOneProjectCreation      ProjectCreationLevelValue = "noone"
-	MaintainerProjectCreation ProjectCreationLevelValue = "maintainer"
-	DeveloperProjectCreation  ProjectCreationLevelValue = "developer"
-)
-
-// SubGroupCreationLevelValue represents a sub group creation level within GitLab.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/
-type SubGroupCreationLevelValue string
-
-// List of available sub group creation levels.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/
-const (
-	OwnerSubGroupCreationLevelValue      SubGroupCreationLevelValue = "owner"
-	MaintainerSubGroupCreationLevelValue SubGroupCreationLevelValue = "maintainer"
-)
-
-// VariableTypeValue represents a variable type within GitLab.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/
-type VariableTypeValue string
-
-// List of available variable types.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/
-const (
-	EnvVariableType  VariableTypeValue = "env_var"
-	FileVariableType VariableTypeValue = "file"
-)
-
-// MergeMethodValue represents a project merge type within GitLab.
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/projects.html#project-merge-method
-type MergeMethodValue string
-
-// List of available merge type
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/projects.html#project-merge-method
-const (
-	NoFastForwardMerge MergeMethodValue = "merge"
-	FastForwardMerge   MergeMethodValue = "ff"
-	RebaseMerge        MergeMethodValue = "rebase_merge"
-)
-
-// EventTypeValue represents actions type for contribution events
-type EventTypeValue string
-
-// List of available action type
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/events.html#action-types
-const (
-	CreatedEventType   EventTypeValue = "created"
-	UpdatedEventType   EventTypeValue = "updated"
-	ClosedEventType    EventTypeValue = "closed"
-	ReopenedEventType  EventTypeValue = "reopened"
-	PushedEventType    EventTypeValue = "pushed"
-	CommentedEventType EventTypeValue = "commented"
-	MergedEventType    EventTypeValue = "merged"
-	JoinedEventType    EventTypeValue = "joined"
-	LeftEventType      EventTypeValue = "left"
-	DestroyedEventType EventTypeValue = "destroyed"
-	ExpiredEventType   EventTypeValue = "expired"
-)
-
-// EventTargetTypeValue represents actions type value for contribution events
-type EventTargetTypeValue string
-
-// List of available action type
-//
-// GitLab API docs: https://docs.gitlab.com/ce/api/events.html#target-types
-const (
-	IssueEventTargetType        EventTargetTypeValue = "issue"
-	MilestoneEventTargetType    EventTargetTypeValue = "milestone"
-	MergeRequestEventTargetType EventTargetTypeValue = "merge_request"
-	NoteEventTargetType         EventTargetTypeValue = "note"
-	ProjectEventTargetType      EventTargetTypeValue = "project"
-	SnippetEventTargetType      EventTargetTypeValue = "snippet"
-	UserEventTargetType         EventTargetTypeValue = "user"
 )
 
 // A Client manages communication with the GitLab API.
@@ -335,8 +73,15 @@ type Client struct {
 	// should always be specified with a trailing slash.
 	baseURL *url.URL
 
+	// disableRetries is used to disable the default retry logic.
+	disableRetries bool
+
+	// configureLimiterOnce is used to make sure the limiter is configured exactly
+	// once and block all other calls until the initial (one) call is done.
+	configureLimiterOnce sync.Once
+
 	// Limiter is used to limit API calls and prevent 429 responses.
-	limiter *rate.Limiter
+	limiter RateLimiter
 
 	// Token type used to make authenticated API calls.
 	authType authType
@@ -347,12 +92,17 @@ type Client struct {
 	// Token used to make authenticated API calls.
 	token string
 
+	// Protects the token field from concurrent read/write accesses.
+	tokenLock sync.RWMutex
+
 	// User agent used when communicating with the GitLab API.
 	UserAgent string
 
 	// Services used for talking to different parts of the GitLab API.
 	AccessRequests        *AccessRequestsService
 	Applications          *ApplicationsService
+	AuditEvents           *AuditEventsService
+	Avatar                *AvatarRequestsService
 	AwardEmoji            *AwardEmojiService
 	Boards                *IssueBoardsService
 	Branches              *BranchesService
@@ -366,49 +116,64 @@ type Client struct {
 	Deployments           *DeploymentsService
 	Discussions           *DiscussionsService
 	Environments          *EnvironmentsService
+	EpicIssues            *EpicIssuesService
 	Epics                 *EpicsService
 	Events                *EventsService
 	Features              *FeaturesService
+	FreezePeriods         *FreezePeriodsService
 	GitIgnoreTemplates    *GitIgnoreTemplatesService
 	GroupBadges           *GroupBadgesService
 	GroupCluster          *GroupClustersService
+	GroupImportExport     *GroupImportExportService
 	GroupIssueBoards      *GroupIssueBoardsService
 	GroupLabels           *GroupLabelsService
 	GroupMembers          *GroupMembersService
 	GroupMilestones       *GroupMilestonesService
 	GroupVariables        *GroupVariablesService
+	GroupWikis            *GroupWikisService
 	Groups                *GroupsService
+	InstanceCluster       *InstanceClustersService
+	InstanceVariables     *InstanceVariablesService
+	Invites               *InvitesService
 	IssueLinks            *IssueLinksService
 	Issues                *IssuesService
+	IssuesStatistics      *IssuesStatisticsService
 	Jobs                  *JobsService
 	Keys                  *KeysService
 	Labels                *LabelsService
 	License               *LicenseService
 	LicenseTemplates      *LicenseTemplatesService
+	ManagedLicenses       *ManagedLicensesService
 	MergeRequestApprovals *MergeRequestApprovalsService
 	MergeRequests         *MergeRequestsService
 	Milestones            *MilestonesService
 	Namespaces            *NamespacesService
 	Notes                 *NotesService
 	NotificationSettings  *NotificationSettingsService
+	Packages              *PackagesService
+	Pages                 *PagesService
 	PagesDomains          *PagesDomainsService
 	PipelineSchedules     *PipelineSchedulesService
 	PipelineTriggers      *PipelineTriggersService
 	Pipelines             *PipelinesService
 	ProjectBadges         *ProjectBadgesService
+	ProjectAccessTokens   *ProjectAccessTokensService
 	ProjectCluster        *ProjectClustersService
 	ProjectImportExport   *ProjectImportExportService
 	ProjectMembers        *ProjectMembersService
+	ProjectMirrors        *ProjectMirrorService
 	ProjectSnippets       *ProjectSnippetsService
 	ProjectVariables      *ProjectVariablesService
 	Projects              *ProjectsService
 	ProtectedBranches     *ProtectedBranchesService
+	ProtectedEnvironments *ProtectedEnvironmentsService
 	ProtectedTags         *ProtectedTagsService
 	ReleaseLinks          *ReleaseLinksService
 	Releases              *ReleasesService
 	Repositories          *RepositoriesService
 	RepositoryFiles       *RepositoryFilesService
 	ResourceLabelEvents   *ResourceLabelEventsService
+	ResourceStateEvents   *ResourceStateEventsService
 	Runners               *RunnersService
 	Search                *SearchService
 	Services              *ServicesService
@@ -434,65 +199,63 @@ type ListOptions struct {
 	PerPage int `url:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
-// NewClient returns a new GitLab API client. If a nil httpClient is
-// provided, http.DefaultClient will be used. To use API methods which require
-// authentication, provide a valid private or personal token.
-func NewClient(httpClient *http.Client, token string) *Client {
-	client := newClient(httpClient)
-	client.authType = privateToken
-	client.token = token
-	return client
+// RateLimiter describes the interface that all (custom) rate limiters must implement.
+type RateLimiter interface {
+	Wait(context.Context) error
 }
 
-// NewBasicAuthClient returns a new GitLab API client. If a nil httpClient is
-// provided, http.DefaultClient will be used. To use API methods which require
-// authentication, provide a valid username and password.
-func NewBasicAuthClient(httpClient *http.Client, endpoint, username, password string) (*Client, error) {
-	client := newClient(httpClient)
-	client.authType = basicAuth
-	client.username = username
-	client.password = password
-	client.SetBaseURL(endpoint)
+// NewClient returns a new GitLab API client. To use API methods which require
+// authentication, provide a valid private or personal token.
+func NewClient(token string, options ...ClientOptionFunc) (*Client, error) {
+	client, err := newClient(options...)
+	if err != nil {
+		return nil, err
+	}
+	client.authType = privateToken
+	client.token = token
+	return client, nil
+}
 
-	err := client.requestOAuthToken(context.TODO())
+// NewBasicAuthClient returns a new GitLab API client. To use API methods which
+// require authentication, provide a valid username and password.
+func NewBasicAuthClient(username, password string, options ...ClientOptionFunc) (*Client, error) {
+	client, err := newClient(options...)
 	if err != nil {
 		return nil, err
 	}
 
+	client.authType = basicAuth
+	client.username = username
+	client.password = password
+
 	return client, nil
 }
 
-func (c *Client) requestOAuthToken(ctx context.Context) error {
-	config := &oauth2.Config{
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  fmt.Sprintf("%s://%s/oauth/authorize", c.BaseURL().Scheme, c.BaseURL().Host),
-			TokenURL: fmt.Sprintf("%s://%s/oauth/token", c.BaseURL().Scheme, c.BaseURL().Host),
-		},
-	}
-	ctx = context.WithValue(ctx, oauth2.HTTPClient, c.client)
-	t, err := config.PasswordCredentialsToken(ctx, c.username, c.password)
+// NewJobClient returns a new GitLab API client. To use API methods which require
+// authentication, provide a valid job token.
+func NewJobClient(token string, options ...ClientOptionFunc) (*Client, error) {
+	client, err := newClient(options...)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	c.token = t.AccessToken
-	return nil
+	client.authType = jobToken
+	client.token = token
+	return client, nil
 }
 
-// NewOAuthClient returns a new GitLab API client. If a nil httpClient is
-// provided, http.DefaultClient will be used. To use API methods which require
-// authentication, provide a valid oauth token.
-func NewOAuthClient(httpClient *http.Client, token string) *Client {
-	client := newClient(httpClient)
+// NewOAuthClient returns a new GitLab API client. To use API methods which
+// require authentication, provide a valid oauth token.
+func NewOAuthClient(token string, options ...ClientOptionFunc) (*Client, error) {
+	client, err := newClient(options...)
+	if err != nil {
+		return nil, err
+	}
 	client.authType = oAuthToken
 	client.token = token
-	return client
+	return client, nil
 }
 
-func newClient(httpClient *http.Client) *Client {
-	if httpClient == nil {
-		httpClient = cleanhttp.DefaultPooledClient()
-	}
-
+func newClient(options ...ClientOptionFunc) (*Client, error) {
 	c := &Client{UserAgent: userAgent}
 
 	// Configure the HTTP client.
@@ -500,14 +263,24 @@ func newClient(httpClient *http.Client) *Client {
 		Backoff:      c.retryHTTPBackoff,
 		CheckRetry:   c.retryHTTPCheck,
 		ErrorHandler: retryablehttp.PassthroughErrorHandler,
-		HTTPClient:   httpClient,
+		HTTPClient:   cleanhttp.DefaultPooledClient(),
 		RetryWaitMin: 100 * time.Millisecond,
 		RetryWaitMax: 400 * time.Millisecond,
-		RetryMax:     30,
+		RetryMax:     5,
 	}
 
 	// Set the default base URL.
-	_ = c.SetBaseURL(defaultBaseURL)
+	c.setBaseURL(defaultBaseURL)
+
+	// Apply any given client options.
+	for _, fn := range options {
+		if fn == nil {
+			continue
+		}
+		if err := fn(c); err != nil {
+			return nil, err
+		}
+	}
 
 	// Create the internal timeStats service.
 	timeStats := &timeStatsService{client: c}
@@ -515,6 +288,8 @@ func newClient(httpClient *http.Client) *Client {
 	// Create all the public services.
 	c.AccessRequests = &AccessRequestsService{client: c}
 	c.Applications = &ApplicationsService{client: c}
+	c.AuditEvents = &AuditEventsService{client: c}
+	c.Avatar = &AvatarRequestsService{client: c}
 	c.AwardEmoji = &AwardEmojiService{client: c}
 	c.Boards = &IssueBoardsService{client: c}
 	c.Branches = &BranchesService{client: c}
@@ -528,49 +303,64 @@ func newClient(httpClient *http.Client) *Client {
 	c.Deployments = &DeploymentsService{client: c}
 	c.Discussions = &DiscussionsService{client: c}
 	c.Environments = &EnvironmentsService{client: c}
+	c.EpicIssues = &EpicIssuesService{client: c}
 	c.Epics = &EpicsService{client: c}
 	c.Events = &EventsService{client: c}
 	c.Features = &FeaturesService{client: c}
+	c.FreezePeriods = &FreezePeriodsService{client: c}
 	c.GitIgnoreTemplates = &GitIgnoreTemplatesService{client: c}
 	c.GroupBadges = &GroupBadgesService{client: c}
 	c.GroupCluster = &GroupClustersService{client: c}
+	c.GroupImportExport = &GroupImportExportService{client: c}
 	c.GroupIssueBoards = &GroupIssueBoardsService{client: c}
 	c.GroupLabels = &GroupLabelsService{client: c}
 	c.GroupMembers = &GroupMembersService{client: c}
 	c.GroupMilestones = &GroupMilestonesService{client: c}
 	c.GroupVariables = &GroupVariablesService{client: c}
+	c.GroupWikis = &GroupWikisService{client: c}
 	c.Groups = &GroupsService{client: c}
+	c.InstanceCluster = &InstanceClustersService{client: c}
+	c.InstanceVariables = &InstanceVariablesService{client: c}
+	c.Invites = &InvitesService{client: c}
 	c.IssueLinks = &IssueLinksService{client: c}
 	c.Issues = &IssuesService{client: c, timeStats: timeStats}
+	c.IssuesStatistics = &IssuesStatisticsService{client: c}
 	c.Jobs = &JobsService{client: c}
 	c.Keys = &KeysService{client: c}
 	c.Labels = &LabelsService{client: c}
 	c.License = &LicenseService{client: c}
 	c.LicenseTemplates = &LicenseTemplatesService{client: c}
+	c.ManagedLicenses = &ManagedLicensesService{client: c}
 	c.MergeRequestApprovals = &MergeRequestApprovalsService{client: c}
 	c.MergeRequests = &MergeRequestsService{client: c, timeStats: timeStats}
 	c.Milestones = &MilestonesService{client: c}
 	c.Namespaces = &NamespacesService{client: c}
 	c.Notes = &NotesService{client: c}
 	c.NotificationSettings = &NotificationSettingsService{client: c}
+	c.Packages = &PackagesService{client: c}
+	c.Pages = &PagesService{client: c}
 	c.PagesDomains = &PagesDomainsService{client: c}
 	c.PipelineSchedules = &PipelineSchedulesService{client: c}
 	c.PipelineTriggers = &PipelineTriggersService{client: c}
 	c.Pipelines = &PipelinesService{client: c}
 	c.ProjectBadges = &ProjectBadgesService{client: c}
+	c.ProjectAccessTokens = &ProjectAccessTokensService{client: c}
 	c.ProjectCluster = &ProjectClustersService{client: c}
 	c.ProjectImportExport = &ProjectImportExportService{client: c}
 	c.ProjectMembers = &ProjectMembersService{client: c}
+	c.ProjectMirrors = &ProjectMirrorService{client: c}
 	c.ProjectSnippets = &ProjectSnippetsService{client: c}
 	c.ProjectVariables = &ProjectVariablesService{client: c}
 	c.Projects = &ProjectsService{client: c}
 	c.ProtectedBranches = &ProtectedBranchesService{client: c}
+	c.ProtectedEnvironments = &ProtectedEnvironmentsService{client: c}
 	c.ProtectedTags = &ProtectedTagsService{client: c}
 	c.ReleaseLinks = &ReleaseLinksService{client: c}
 	c.Releases = &ReleasesService{client: c}
 	c.Repositories = &RepositoriesService{client: c}
 	c.RepositoryFiles = &RepositoryFilesService{client: c}
 	c.ResourceLabelEvents = &ResourceLabelEventsService{client: c}
+	c.ResourceStateEvents = &ResourceStateEventsService{client: c}
 	c.Runners = &RunnersService{client: c}
 	c.Search = &SearchService{client: c}
 	c.Services = &ServicesService{client: c}
@@ -585,7 +375,7 @@ func newClient(httpClient *http.Client) *Client {
 	c.Version = &VersionService{client: c}
 	c.Wikis = &WikisService{client: c}
 
-	return c
+	return c, nil
 }
 
 // retryHTTPCheck provides a callback for Client.CheckRetry which
@@ -597,7 +387,7 @@ func (c *Client) retryHTTPCheck(ctx context.Context, resp *http.Response, err er
 	if err != nil {
 		return false, err
 	}
-	if resp.StatusCode == 429 || resp.StatusCode >= 500 {
+	if !c.disableRetries && (resp.StatusCode == 429 || resp.StatusCode >= 500) {
 		return true, nil
 	}
 	return false, nil
@@ -646,15 +436,56 @@ func rateLimitBackoff(min, max time.Duration, attemptNum int, resp *http.Respons
 	return min + jitter
 }
 
+// configureLimiter configures the rate limiter.
+func (c *Client) configureLimiter(ctx context.Context) error {
+	// Set default values for when rate limiting is disabled.
+	limit := rate.Inf
+	burst := 0
+
+	defer func() {
+		// Create a new limiter using the calculated values.
+		c.limiter = rate.NewLimiter(limit, burst)
+	}()
+
+	// Create a new request.
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL.String(), nil)
+	if err != nil {
+		return err
+	}
+
+	// Make a single request to retrieve the rate limit headers.
+	resp, err := c.client.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+	resp.Body.Close()
+
+	if v := resp.Header.Get(headerRateLimit); v != "" {
+		if rateLimit, _ := strconv.ParseFloat(v, 64); rateLimit > 0 {
+			// The rate limit is based on requests per minute, so for our limiter to
+			// work correctly we divide the limit by 60 to get the limit per second.
+			rateLimit /= 60
+			// Configure the limit and burst using a split of 2/3 for the limit and
+			// 1/3 for the burst. This enables clients to burst 1/3 of the allowed
+			// calls before the limiter kicks in. The remaining calls will then be
+			// spread out evenly using intervals of time.Second / limit which should
+			// prevent hitting the rate limit.
+			limit = rate.Limit(rateLimit * 0.66)
+			burst = int(rateLimit * 0.33)
+		}
+	}
+
+	return nil
+}
+
 // BaseURL return a copy of the baseURL.
 func (c *Client) BaseURL() *url.URL {
 	u := *c.baseURL
 	return &u
 }
 
-// SetBaseURL sets the base URL for API requests to a custom endpoint. urlStr
-// should always be specified with a trailing slash.
-func (c *Client) SetBaseURL(urlStr string) error {
+// setBaseURL sets the base URL for API requests to a custom endpoint.
+func (c *Client) setBaseURL(urlStr string) error {
 	// Make sure the given URL end with a slash
 	if !strings.HasSuffix(urlStr, "/") {
 		urlStr += "/"
@@ -672,58 +503,15 @@ func (c *Client) SetBaseURL(urlStr string) error {
 	// Update the base URL of the client.
 	c.baseURL = baseURL
 
-	// Reconfigure the rate limiter.
-	return c.configureLimiter()
-}
-
-// configureLimiter configures the rate limiter.
-func (c *Client) configureLimiter() error {
-	// Set default values for when rate limiting is disabled.
-	limit := rate.Inf
-	burst := 0
-
-	defer func() {
-		// Create a new limiter using the calculated values.
-		c.limiter = rate.NewLimiter(limit, burst)
-	}()
-
-	// Create a new request.
-	req, err := http.NewRequest("GET", c.baseURL.String(), nil)
-	if err != nil {
-		return err
-	}
-
-	// Make a single request to retrieve the rate limit headers.
-	resp, err := c.client.HTTPClient.Do(req)
-	if err != nil {
-		return err
-	}
-	resp.Body.Close()
-
-	if v := resp.Header.Get(headerRateLimit); v != "" {
-		if rateLimit, _ := strconv.ParseFloat(v, 64); rateLimit > 0 {
-			// The rate limit is based on requests per minute, so for our limiter to
-			// work correctly we devide the limit by 60 to get the limit per second.
-			rateLimit /= 60
-			// Configure the limit and burst using a split of 2/3 for the limit and
-			// 1/3 for the burst. This enables clients to burst 1/3 of the allowed
-			// calls before the limiter kicks in. The remaining calls will then be
-			// spread out evenly using intervals of time.Second / limit which should
-			// prevent hitting the rate limit.
-			limit = rate.Limit(rateLimit * 0.66)
-			burst = int(rateLimit * 0.33)
-		}
-	}
-
 	return nil
 }
 
 // NewRequest creates an API request. A relative URL path can be provided in
-// urlStr, in which case it is resolved relative to the base URL of the Client.
+// path, in which case it is resolved relative to the base URL of the Client.
 // Relative URL paths should always be specified without a preceding slash. If
 // specified, the value pointed to by body is JSON encoded and included as the
 // request body.
-func (c *Client) NewRequest(method, path string, opt interface{}, options []OptionFunc) (*retryablehttp.Request, error) {
+func (c *Client) NewRequest(method, path string, opt interface{}, options []RequestOptionFunc) (*retryablehttp.Request, error) {
 	u := *c.baseURL
 	unescaped, err := url.PathUnescape(path)
 	if err != nil {
@@ -734,40 +522,31 @@ func (c *Client) NewRequest(method, path string, opt interface{}, options []Opti
 	u.RawPath = c.baseURL.Path + path
 	u.Path = c.baseURL.Path + unescaped
 
-	if opt != nil {
-		q, err := query.Values(opt)
-		if err != nil {
-			return nil, err
-		}
-		u.RawQuery = q.Encode()
-	}
 	// Create a request specific headers map.
 	reqHeaders := make(http.Header)
 	reqHeaders.Set("Accept", "application/json")
-
-	switch c.authType {
-	case basicAuth, oAuthToken:
-		reqHeaders.Set("Authorization", "Bearer "+c.token)
-	case privateToken:
-		reqHeaders.Set("PRIVATE-TOKEN", c.token)
-	}
 
 	if c.UserAgent != "" {
 		reqHeaders.Set("User-Agent", c.UserAgent)
 	}
 
 	var body interface{}
-	if method == "POST" || method == "PUT" {
-		u.RawQuery = ""
+	switch {
+	case method == http.MethodPost || method == http.MethodPut:
 		reqHeaders.Set("Content-Type", "application/json")
 
 		if opt != nil {
-			bodyBytes, err := json.Marshal(opt)
+			body, err = json.Marshal(opt)
 			if err != nil {
 				return nil, err
 			}
-			body = bytes.NewReader(bodyBytes)
 		}
+	case opt != nil:
+		q, err := query.Values(opt)
+		if err != nil {
+			return nil, err
+		}
+		u.RawQuery = q.Encode()
 	}
 
 	req, err := retryablehttp.NewRequest(method, u.String(), body)
@@ -779,7 +558,6 @@ func (c *Client) NewRequest(method, path string, opt interface{}, options []Opti
 		if fn == nil {
 			continue
 		}
-
 		if err := fn(req); err != nil {
 			return nil, err
 		}
@@ -856,24 +634,54 @@ func (r *Response) populatePageValues() {
 // interface, the raw response body will be written to v, without attempting to
 // first decode it.
 func (c *Client) Do(req *retryablehttp.Request, v interface{}) (*Response, error) {
+	// If not yet configured, try to configure the rate limiter. Fail
+	// silently as the limiter will be disabled in case of an error.
+	c.configureLimiterOnce.Do(func() { c.configureLimiter(req.Context()) })
+
 	// Wait will block until the limiter can obtain a new token.
-	if err := c.limiter.Wait(req.Context()); err != nil {
+	err := c.limiter.Wait(req.Context())
+	if err != nil {
 		return nil, err
+	}
+
+	// Set the correct authentication header. If using basic auth, then check
+	// if we already have a token and if not first authenticate and get one.
+	var basicAuthToken string
+	switch c.authType {
+	case basicAuth:
+		c.tokenLock.RLock()
+		basicAuthToken = c.token
+		c.tokenLock.RUnlock()
+		if basicAuthToken == "" {
+			// If we don't have a token yet, we first need to request one.
+			basicAuthToken, err = c.requestOAuthToken(req.Context(), basicAuthToken)
+			if err != nil {
+				return nil, err
+			}
+		}
+		req.Header.Set("Authorization", "Bearer "+basicAuthToken)
+	case jobToken:
+		req.Header.Set("JOB-TOKEN", c.token)
+	case oAuthToken:
+		req.Header.Set("Authorization", "Bearer "+c.token)
+	case privateToken:
+		req.Header.Set("PRIVATE-TOKEN", c.token)
 	}
 
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusUnauthorized && c.authType == basicAuth {
-		err = c.requestOAuthToken(req.Context())
-		if err != nil {
+		resp.Body.Close()
+		// The token most likely expired, so we need to request a new one and try again.
+		if _, err := c.requestOAuthToken(req.Context(), basicAuthToken); err != nil {
 			return nil, err
 		}
 		return c.Do(req, v)
 	}
+	defer resp.Body.Close()
 
 	response := newResponse(resp)
 
@@ -893,6 +701,32 @@ func (c *Client) Do(req *retryablehttp.Request, v interface{}) (*Response, error
 	}
 
 	return response, err
+}
+
+func (c *Client) requestOAuthToken(ctx context.Context, token string) (string, error) {
+	c.tokenLock.Lock()
+	defer c.tokenLock.Unlock()
+
+	// Return early if the token was updated while waiting for the lock.
+	if c.token != token {
+		return c.token, nil
+	}
+
+	config := &oauth2.Config{
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  strings.TrimSuffix(c.baseURL.String(), apiVersionPath) + "oauth/authorize",
+			TokenURL: strings.TrimSuffix(c.baseURL.String(), apiVersionPath) + "oauth/token",
+		},
+	}
+
+	ctx = context.WithValue(ctx, oauth2.HTTPClient, c.client.HTTPClient)
+	t, err := config.PasswordCredentialsToken(ctx, c.username, c.password)
+	if err != nil {
+		return "", err
+	}
+	c.token = t.AccessToken
+
+	return c.token, nil
 }
 
 // Helper function to accept and format both the project ID or name as project
@@ -992,157 +826,5 @@ func parseError(raw interface{}) string {
 
 	default:
 		return fmt.Sprintf("failed to parse unexpected error type: %T", raw)
-	}
-}
-
-// OptionFunc can be passed to all API requests to make the API call as if you were
-// another user, provided your private token is from an administrator account.
-//
-// GitLab docs: https://docs.gitlab.com/ce/api/README.html#sudo
-type OptionFunc func(*retryablehttp.Request) error
-
-// WithSudo takes either a username or user ID and sets the SUDO request header
-func WithSudo(uid interface{}) OptionFunc {
-	return func(req *retryablehttp.Request) error {
-		user, err := parseID(uid)
-		if err != nil {
-			return err
-		}
-		req.Header.Set("SUDO", user)
-		return nil
-	}
-}
-
-// WithContext runs the request with the provided context
-func WithContext(ctx context.Context) OptionFunc {
-	return func(req *retryablehttp.Request) error {
-		*req = *req.WithContext(ctx)
-		return nil
-	}
-}
-
-// Bool is a helper routine that allocates a new bool value
-// to store v and returns a pointer to it.
-func Bool(v bool) *bool {
-	p := new(bool)
-	*p = v
-	return p
-}
-
-// Int is a helper routine that allocates a new int32 value
-// to store v and returns a pointer to it, but unlike Int32
-// its argument value is an int.
-func Int(v int) *int {
-	p := new(int)
-	*p = v
-	return p
-}
-
-// String is a helper routine that allocates a new string value
-// to store v and returns a pointer to it.
-func String(v string) *string {
-	p := new(string)
-	*p = v
-	return p
-}
-
-// Time is a helper routine that allocates a new time.Time value
-// to store v and returns a pointer to it.
-func Time(v time.Time) *time.Time {
-	p := new(time.Time)
-	*p = v
-	return p
-}
-
-// AccessLevel is a helper routine that allocates a new AccessLevelValue
-// to store v and returns a pointer to it.
-func AccessLevel(v AccessLevelValue) *AccessLevelValue {
-	p := new(AccessLevelValue)
-	*p = v
-	return p
-}
-
-// BuildState is a helper routine that allocates a new BuildStateValue
-// to store v and returns a pointer to it.
-func BuildState(v BuildStateValue) *BuildStateValue {
-	p := new(BuildStateValue)
-	*p = v
-	return p
-}
-
-// DeploymentStatus is a helper routine that allocates a new
-// DeploymentStatusValue to store v and returns a pointer to it.
-func DeploymentStatus(v DeploymentStatusValue) *DeploymentStatusValue {
-	p := new(DeploymentStatusValue)
-	*p = v
-	return p
-}
-
-// NotificationLevel is a helper routine that allocates a new NotificationLevelValue
-// to store v and returns a pointer to it.
-func NotificationLevel(v NotificationLevelValue) *NotificationLevelValue {
-	p := new(NotificationLevelValue)
-	*p = v
-	return p
-}
-
-// VariableType is a helper routine that allocates a new VariableTypeValue
-// to store v and returns a pointer to it.
-func VariableType(v VariableTypeValue) *VariableTypeValue {
-	p := new(VariableTypeValue)
-	*p = v
-	return p
-}
-
-// Visibility is a helper routine that allocates a new VisibilityValue
-// to store v and returns a pointer to it.
-func Visibility(v VisibilityValue) *VisibilityValue {
-	p := new(VisibilityValue)
-	*p = v
-	return p
-}
-
-// ProjectCreationLevel is a helper routine that allocates a new ProjectCreationLevelValue
-// to store v and returns a pointer to it.
-func ProjectCreationLevel(v ProjectCreationLevelValue) *ProjectCreationLevelValue {
-	p := new(ProjectCreationLevelValue)
-	*p = v
-	return p
-}
-
-// SubGroupCreationLevel is a helper routine that allocates a new SubGroupCreationLevelValue
-// to store v and returns a pointer to it.
-func SubGroupCreationLevel(v SubGroupCreationLevelValue) *SubGroupCreationLevelValue {
-	p := new(SubGroupCreationLevelValue)
-	*p = v
-	return p
-}
-
-// MergeMethod is a helper routine that allocates a new MergeMethod
-// to sotre v and returns a pointer to it.
-func MergeMethod(v MergeMethodValue) *MergeMethodValue {
-	p := new(MergeMethodValue)
-	*p = v
-	return p
-}
-
-// BoolValue is a boolean value with advanced json unmarshaling features.
-type BoolValue bool
-
-// UnmarshalJSON allows 1 and 0 to be considered as boolean values
-// Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/50122
-func (t *BoolValue) UnmarshalJSON(b []byte) error {
-	switch string(b) {
-	case `"1"`:
-		*t = true
-		return nil
-	case `"0"`:
-		*t = false
-		return nil
-	default:
-		var v bool
-		err := json.Unmarshal(b, &v)
-		*t = BoolValue(v)
-		return err
 	}
 }

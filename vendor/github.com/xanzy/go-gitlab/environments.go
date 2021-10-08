@@ -1,5 +1,5 @@
 //
-// Copyright 2017, Sander van Harmelen
+// Copyright 2021, Sander van Harmelen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/http"
 )
 
 // EnvironmentsService handles communication with the environment related methods
@@ -49,21 +50,26 @@ func (env Environment) String() string {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/environments.html#list-environments
-type ListEnvironmentsOptions ListOptions
+type ListEnvironmentsOptions struct {
+	ListOptions
+	Name   *string `url:"name,omitempty" json:"name,omitempty"`
+	Search *string `url:"search,omitempty" json:"search,omitempty"`
+	States *string `url:"states,omitempty" json:"states,omitempty"`
+}
 
 // ListEnvironments gets a list of environments from a project, sorted by name
 // alphabetically.
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/environments.html#list-environments
-func (s *EnvironmentsService) ListEnvironments(pid interface{}, opts *ListEnvironmentsOptions, options ...OptionFunc) ([]*Environment, *Response, error) {
+func (s *EnvironmentsService) ListEnvironments(pid interface{}, opts *ListEnvironmentsOptions, options ...RequestOptionFunc) ([]*Environment, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/environments", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opts, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opts, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -81,14 +87,14 @@ func (s *EnvironmentsService) ListEnvironments(pid interface{}, opts *ListEnviro
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/environments.html#get-a-specific-environment
-func (s *EnvironmentsService) GetEnvironment(pid interface{}, environment int, options ...OptionFunc) (*Environment, *Response, error) {
+func (s *EnvironmentsService) GetEnvironment(pid interface{}, environment int, options ...RequestOptionFunc) (*Environment, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/environments/%d", pathEscape(project), environment)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -118,14 +124,14 @@ type CreateEnvironmentOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/environments.html#create-a-new-environment
-func (s *EnvironmentsService) CreateEnvironment(pid interface{}, opt *CreateEnvironmentOptions, options ...OptionFunc) (*Environment, *Response, error) {
+func (s *EnvironmentsService) CreateEnvironment(pid interface{}, opt *CreateEnvironmentOptions, options ...RequestOptionFunc) (*Environment, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/environments", pathEscape(project))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -152,14 +158,14 @@ type EditEnvironmentOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/environments.html#edit-an-existing-environment
-func (s *EnvironmentsService) EditEnvironment(pid interface{}, environment int, opt *EditEnvironmentOptions, options ...OptionFunc) (*Environment, *Response, error) {
+func (s *EnvironmentsService) EditEnvironment(pid interface{}, environment int, opt *EditEnvironmentOptions, options ...RequestOptionFunc) (*Environment, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/environments/%d", pathEscape(project), environment)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -177,14 +183,14 @@ func (s *EnvironmentsService) EditEnvironment(pid interface{}, environment int, 
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/environments.html#remove-a-environment-from-a-group-or-project
-func (s *EnvironmentsService) DeleteEnvironment(pid interface{}, environment int, options ...OptionFunc) (*Response, error) {
+func (s *EnvironmentsService) DeleteEnvironment(pid interface{}, environment int, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/environments/%d", pathEscape(project), environment)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -196,14 +202,14 @@ func (s *EnvironmentsService) DeleteEnvironment(pid interface{}, environment int
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/environments.html#stop-an-environment
-func (s *EnvironmentsService) StopEnvironment(pid interface{}, environmentID int, options ...OptionFunc) (*Response, error) {
+func (s *EnvironmentsService) StopEnvironment(pid interface{}, environmentID int, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/environments/%d/stop", pathEscape(project), environmentID)
 
-	req, err := s.client.NewRequest("POST", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, nil, options)
 	if err != nil {
 		return nil, err
 	}

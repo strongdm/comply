@@ -1,5 +1,5 @@
 //
-// Copyright 2017, Sander van Harmelen
+// Copyright 2021, Sander van Harmelen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"net/http"
 	"net/url"
 )
 
@@ -61,14 +62,14 @@ type ListTreeOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/repositories.html#list-repository-tree
-func (s *RepositoriesService) ListTree(pid interface{}, opt *ListTreeOptions, options ...OptionFunc) ([]*TreeNode, *Response, error) {
+func (s *RepositoriesService) ListTree(pid interface{}, opt *ListTreeOptions, options ...RequestOptionFunc) ([]*TreeNode, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/tree", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -87,14 +88,14 @@ func (s *RepositoriesService) ListTree(pid interface{}, opt *ListTreeOptions, op
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/repositories.html#get-a-blob-from-repository
-func (s *RepositoriesService) Blob(pid interface{}, sha string, options ...OptionFunc) ([]byte, *Response, error) {
+func (s *RepositoriesService) Blob(pid interface{}, sha string, options ...RequestOptionFunc) ([]byte, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/blobs/%s", pathEscape(project), url.PathEscape(sha))
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -112,14 +113,14 @@ func (s *RepositoriesService) Blob(pid interface{}, sha string, options ...Optio
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/repositories.html#raw-blob-content
-func (s *RepositoriesService) RawBlobContent(pid interface{}, sha string, options ...OptionFunc) ([]byte, *Response, error) {
+func (s *RepositoriesService) RawBlobContent(pid interface{}, sha string, options ...RequestOptionFunc) ([]byte, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/blobs/%s/raw", pathEscape(project), url.PathEscape(sha))
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -146,7 +147,7 @@ type ArchiveOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/repositories.html#get-file-archive
-func (s *RepositoriesService) Archive(pid interface{}, opt *ArchiveOptions, options ...OptionFunc) ([]byte, *Response, error) {
+func (s *RepositoriesService) Archive(pid interface{}, opt *ArchiveOptions, options ...RequestOptionFunc) ([]byte, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
@@ -158,7 +159,7 @@ func (s *RepositoriesService) Archive(pid interface{}, opt *ArchiveOptions, opti
 		u = fmt.Sprintf("%s.%s", u, *opt.Format)
 	}
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -177,7 +178,7 @@ func (s *RepositoriesService) Archive(pid interface{}, opt *ArchiveOptions, opti
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/repositories.html#get-file-archive
-func (s *RepositoriesService) StreamArchive(pid interface{}, w io.Writer, opt *ArchiveOptions, options ...OptionFunc) (*Response, error) {
+func (s *RepositoriesService) StreamArchive(pid interface{}, w io.Writer, opt *ArchiveOptions, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
@@ -189,7 +190,7 @@ func (s *RepositoriesService) StreamArchive(pid interface{}, w io.Writer, opt *A
 		u = fmt.Sprintf("%s.%s", u, *opt.Format)
 	}
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, err
 	}
@@ -227,14 +228,14 @@ type CompareOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/repositories.html#compare-branches-tags-or-commits
-func (s *RepositoriesService) Compare(pid interface{}, opt *CompareOptions, options ...OptionFunc) (*Compare, *Response, error) {
+func (s *RepositoriesService) Compare(pid interface{}, opt *CompareOptions, options ...RequestOptionFunc) (*Compare, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/compare", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -275,14 +276,14 @@ type ListContributorsOptions struct {
 // Contributors gets the repository contributors list.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/repositories.html#contributors
-func (s *RepositoriesService) Contributors(pid interface{}, opt *ListContributorsOptions, options ...OptionFunc) ([]*Contributor, *Response, error) {
+func (s *RepositoriesService) Contributors(pid interface{}, opt *ListContributorsOptions, options ...RequestOptionFunc) ([]*Contributor, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/contributors", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -309,14 +310,14 @@ type MergeBaseOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/repositories.html#merge-base
-func (s *RepositoriesService) MergeBase(pid interface{}, opt *MergeBaseOptions, options ...OptionFunc) (*Commit, *Response, error) {
+func (s *RepositoriesService) MergeBase(pid interface{}, opt *MergeBaseOptions, options ...RequestOptionFunc) (*Commit, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/merge_base", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -1,5 +1,5 @@
 //
-// Copyright 2020, Eric Stevens
+// Copyright 2021, Eric Stevens
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -38,6 +39,8 @@ type GroupHook struct {
 	JobEvents                bool       `json:"job_events"`
 	PipelineEvents           bool       `json:"pipeline_events"`
 	WikiPageEvents           bool       `json:"wiki_page_events"`
+	DeploymentEvents         bool       `json:"deployment_events"`
+	ReleasesEvents           bool       `json:"releases_events"`
 	EnableSSLVerification    bool       `json:"enable_ssl_verification"`
 	CreatedAt                *time.Time `json:"created_at"`
 }
@@ -52,7 +55,7 @@ func (s *GroupsService) ListGroupHooks(gid interface{}) ([]*GroupHook, *Response
 	}
 	u := fmt.Sprintf("groups/%s/hooks", pathEscape(group))
 
-	req, err := s.client.NewRequest("GET", u, nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -69,14 +72,14 @@ func (s *GroupsService) ListGroupHooks(gid interface{}) ([]*GroupHook, *Response
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/groups.html#get-group-hook
-func (s *GroupsService) GetGroupHook(pid interface{}, hook int, options ...OptionFunc) (*GroupHook, *Response, error) {
+func (s *GroupsService) GetGroupHook(pid interface{}, hook int, options ...RequestOptionFunc) (*GroupHook, *Response, error) {
 	group, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/hooks/%d", pathEscape(group), hook)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -105,6 +108,8 @@ type AddGroupHookOptions struct {
 	JobEvents                *bool   `url:"job_events,omitempty"  json:"job_events,omitempty"`
 	PipelineEvents           *bool   `url:"pipeline_events,omitempty"  json:"pipeline_events,omitempty"`
 	WikiPageEvents           *bool   `url:"wiki_page_events,omitempty"  json:"wiki_page_events,omitempty"`
+	DeploymentEvents         *bool   `url:"deployment_events,omitempty" json:"deployment_events,omitempty"`
+	ReleasesEvents           *bool   `url:"releases_events,omitempty" json:"releases_events,omitempty"`
 	EnableSSLVerification    *bool   `url:"enable_ssl_verification,omitempty"  json:"enable_ssl_verification,omitempty"`
 	Token                    *string `url:"token,omitempty" json:"token,omitempty"`
 }
@@ -112,14 +117,14 @@ type AddGroupHookOptions struct {
 // AddGroupHook create a new group scoped webhook.
 //
 // GitLab API docs: https://docs.gitlab.com/ee/api/groups.html#add-group-hook
-func (s *GroupsService) AddGroupHook(gid interface{}, opt *AddGroupHookOptions, options ...OptionFunc) (*GroupHook, *Response, error) {
+func (s *GroupsService) AddGroupHook(gid interface{}, opt *AddGroupHookOptions, options ...RequestOptionFunc) (*GroupHook, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/hooks", pathEscape(group))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -149,6 +154,8 @@ type EditGroupHookOptions struct {
 	JobEvents                *bool   `url:"job_events,omitempty" json:"job_events,omitempty"`
 	PipelineEvents           *bool   `url:"pipeline_events,omitempty" json:"pipeline_events,omitempty"`
 	WikiPageEvents           *bool   `url:"wiki_page_events,omitempty" json:"wiki_page_events,omitempty"`
+	DeploymentEvents         *bool   `url:"deployment_events,omitempty" json:"deployment_events,omitempty"`
+	ReleasesEvents           *bool   `url:"releases_events,omitempty" json:"releases_events,omitempty"`
 	EnableSSLVerification    *bool   `url:"enable_ssl_verification,omitempty" json:"enable_ssl_verification,omitempty"`
 	Token                    *string `url:"token,omitempty" json:"token,omitempty"`
 }
@@ -157,14 +164,14 @@ type EditGroupHookOptions struct {
 //
 // Gitlab API docs:
 // https://docs.gitlab.com/ce/api/groups.html#edit-group-hook
-func (s *GroupsService) EditGroupHook(pid interface{}, hook int, opt *EditGroupHookOptions, options ...OptionFunc) (*GroupHook, *Response, error) {
+func (s *GroupsService) EditGroupHook(pid interface{}, hook int, opt *EditGroupHookOptions, options ...RequestOptionFunc) (*GroupHook, *Response, error) {
 	group, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/hooks/%d", pathEscape(group), hook)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -183,14 +190,14 @@ func (s *GroupsService) EditGroupHook(pid interface{}, hook int, opt *EditGroupH
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/groups.html#delete-group-hook
-func (s *GroupsService) DeleteGroupHook(pid interface{}, hook int, options ...OptionFunc) (*Response, error) {
+func (s *GroupsService) DeleteGroupHook(pid interface{}, hook int, options ...RequestOptionFunc) (*Response, error) {
 	group, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("groups/%s/hooks/%d", pathEscape(group), hook)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}

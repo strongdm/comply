@@ -1,5 +1,5 @@
 //
-// Copyright 2017, Arkbriar
+// Copyright 2021, Arkbriar
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/http"
 )
 
 // IssueLinksService handles communication with the issue relations related methods
@@ -34,6 +35,7 @@ type IssueLinksService struct {
 type IssueLink struct {
 	SourceIssue *Issue `json:"source_issue"`
 	TargetIssue *Issue `json:"target_issue"`
+	LinkType    string `json:"link_type"`
 }
 
 // ListIssueRelations gets a list of related issues of a given issue,
@@ -43,14 +45,14 @@ type IssueLink struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/issue_links.html#list-issue-relations
-func (s *IssueLinksService) ListIssueRelations(pid interface{}, issueIID int, options ...OptionFunc) ([]*Issue, *Response, error) {
+func (s *IssueLinksService) ListIssueRelations(pid interface{}, issueIID int, options ...RequestOptionFunc) ([]*Issue, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/issues/%d/links", pathEscape(project), issueIID)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -70,6 +72,7 @@ func (s *IssueLinksService) ListIssueRelations(pid interface{}, issueIID int, op
 type CreateIssueLinkOptions struct {
 	TargetProjectID *string `json:"target_project_id"`
 	TargetIssueIID  *string `json:"target_issue_iid"`
+	LinkType        *string `json:"link_type"`
 }
 
 // CreateIssueLink creates a two-way relation between two issues.
@@ -77,14 +80,14 @@ type CreateIssueLinkOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/issue_links.html#create-an-issue-link
-func (s *IssueLinksService) CreateIssueLink(pid interface{}, issueIID int, opt *CreateIssueLinkOptions, options ...OptionFunc) (*IssueLink, *Response, error) {
+func (s *IssueLinksService) CreateIssueLink(pid interface{}, issueIID int, opt *CreateIssueLinkOptions, options ...RequestOptionFunc) (*IssueLink, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/issues/%d/links", pathEscape(project), issueIID)
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -102,7 +105,7 @@ func (s *IssueLinksService) CreateIssueLink(pid interface{}, issueIID int, opt *
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ee/api/issue_links.html#delete-an-issue-link
-func (s *IssueLinksService) DeleteIssueLink(pid interface{}, issueIID, issueLinkID int, options ...OptionFunc) (*IssueLink, *Response, error) {
+func (s *IssueLinksService) DeleteIssueLink(pid interface{}, issueIID, issueLinkID int, options ...RequestOptionFunc) (*IssueLink, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
@@ -112,7 +115,7 @@ func (s *IssueLinksService) DeleteIssueLink(pid interface{}, issueIID, issueLink
 		issueIID,
 		issueLinkID)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}

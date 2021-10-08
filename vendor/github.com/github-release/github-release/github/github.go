@@ -11,7 +11,7 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/kevinburke/rest"
+	"github.com/kevinburke/rest/restclient"
 	"github.com/tomnomnom/linkheader"
 )
 
@@ -42,14 +42,14 @@ func DoAuthRequest(method, url, mime, token string, headers map[string]string, b
 // API, such as authorization tokens. Methods called on Client will supply
 // these options when calling the API.
 type Client struct {
-	client *rest.Client
+	client *restclient.Client
 }
 
 // NewClient creates a new Client for use with the Github API.
-func NewClient(username, token string, client *rest.Client) Client {
+func NewClient(username, token string, client *restclient.Client) Client {
 	c := Client{}
 	if client == nil {
-		c.client = rest.NewClient(username, token, DefaultBaseURL)
+		c.client = restclient.New(username, token, DefaultBaseURL)
 	} else {
 		c.client = client
 	}
@@ -153,12 +153,12 @@ var defaultHttpClient *http.Client
 
 func init() {
 	defaultHttpClient = &http.Client{
-		Transport: rest.DefaultTransport,
+		Transport: restclient.DefaultTransport,
 	}
 }
 
 // Caller is responsible for reading and closing the response body.
-func (c Client) do(r *http.Request) (*http.Response, error) {
+func (c Client) Do(r *http.Request) (*http.Response, error) {
 	// Pulled this out of client.go:Do because we need to read the response
 	// headers.
 	var res *http.Response
@@ -176,7 +176,7 @@ func (c Client) do(r *http.Request) (*http.Response, error) {
 		if c.client.ErrorParser != nil {
 			return nil, c.client.ErrorParser(res)
 		}
-		return nil, rest.DefaultErrorParser(res)
+		return nil, restclient.DefaultErrorParser(res)
 	}
 	return res, nil
 }
@@ -217,7 +217,7 @@ func (c Client) getPaginated(uri string) (io.ReadCloser, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.do(req)
+	resp, err := c.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -251,7 +251,7 @@ func (c Client) getPaginated(uri string) (io.ReadCloser, error) {
 				w.CloseWithError(err)
 				return
 			}
-			resp, err := c.do(req)
+			resp, err := c.Do(req)
 			if err != nil {
 				w.CloseWithError(err)
 				return
@@ -283,7 +283,7 @@ func (c Client) getPaginated(uri string) (io.ReadCloser, error) {
 		for resp := range responses {
 			if resp.StatusCode != http.StatusOK {
 				resp.Body.Close()
-				w.CloseWithError(fmt.Errorf("expected '200 OK' but received '%v' (url: %s)", resp.Status, resp.Request.URL))
+				w.CloseWithError(fmt.Errorf("expected '200 OK' but received '%v' (%s to %s)", resp.Status, resp.Request.Method, resp.Request.URL.Path))
 				return
 			}
 			_, err := io.Copy(w, resp.Body)

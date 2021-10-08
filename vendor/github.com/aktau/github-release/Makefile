@@ -91,6 +91,9 @@ clean:
 	rm $(EXECUTABLE) || true
 	rm -rf bin/
 
+lint:
+	go vet ./...
+
 test:
 	go test ./...
 

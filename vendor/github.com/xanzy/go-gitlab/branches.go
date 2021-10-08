@@ -1,5 +1,5 @@
 //
-// Copyright 2017, Sander van Harmelen
+// Copyright 2021, Sander van Harmelen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 )
 
@@ -38,8 +39,10 @@ type Branch struct {
 	Protected          bool    `json:"protected"`
 	Merged             bool    `json:"merged"`
 	Default            bool    `json:"default"`
+	CanPush            bool    `json:"can_push"`
 	DevelopersCanPush  bool    `json:"developers_can_push"`
 	DevelopersCanMerge bool    `json:"developers_can_merge"`
+	WebURL             string  `json:"web_url"`
 }
 
 func (b Branch) String() string {
@@ -60,14 +63,14 @@ type ListBranchesOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/branches.html#list-repository-branches
-func (s *BranchesService) ListBranches(pid interface{}, opts *ListBranchesOptions, options ...OptionFunc) ([]*Branch, *Response, error) {
+func (s *BranchesService) ListBranches(pid interface{}, opts *ListBranchesOptions, options ...RequestOptionFunc) ([]*Branch, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/branches", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opts, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opts, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -85,14 +88,14 @@ func (s *BranchesService) ListBranches(pid interface{}, opts *ListBranchesOption
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/branches.html#get-single-repository-branch
-func (s *BranchesService) GetBranch(pid interface{}, branch string, options ...OptionFunc) (*Branch, *Response, error) {
+func (s *BranchesService) GetBranch(pid interface{}, branch string, options ...RequestOptionFunc) (*Branch, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/branches/%s", pathEscape(project), url.PathEscape(branch))
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -121,14 +124,14 @@ type ProtectBranchOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/branches.html#protect-repository-branch
-func (s *BranchesService) ProtectBranch(pid interface{}, branch string, opts *ProtectBranchOptions, options ...OptionFunc) (*Branch, *Response, error) {
+func (s *BranchesService) ProtectBranch(pid interface{}, branch string, opts *ProtectBranchOptions, options ...RequestOptionFunc) (*Branch, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/branches/%s/protect", pathEscape(project), url.PathEscape(branch))
 
-	req, err := s.client.NewRequest("PUT", u, opts, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opts, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -148,14 +151,14 @@ func (s *BranchesService) ProtectBranch(pid interface{}, branch string, opts *Pr
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/branches.html#unprotect-repository-branch
-func (s *BranchesService) UnprotectBranch(pid interface{}, branch string, options ...OptionFunc) (*Branch, *Response, error) {
+func (s *BranchesService) UnprotectBranch(pid interface{}, branch string, options ...RequestOptionFunc) (*Branch, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/branches/%s/unprotect", pathEscape(project), url.PathEscape(branch))
 
-	req, err := s.client.NewRequest("PUT", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -182,14 +185,14 @@ type CreateBranchOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/branches.html#create-repository-branch
-func (s *BranchesService) CreateBranch(pid interface{}, opt *CreateBranchOptions, options ...OptionFunc) (*Branch, *Response, error) {
+func (s *BranchesService) CreateBranch(pid interface{}, opt *CreateBranchOptions, options ...RequestOptionFunc) (*Branch, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/branches", pathEscape(project))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -207,14 +210,14 @@ func (s *BranchesService) CreateBranch(pid interface{}, opt *CreateBranchOptions
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/branches.html#delete-repository-branch
-func (s *BranchesService) DeleteBranch(pid interface{}, branch string, options ...OptionFunc) (*Response, error) {
+func (s *BranchesService) DeleteBranch(pid interface{}, branch string, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/branches/%s", pathEscape(project), url.PathEscape(branch))
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -226,14 +229,14 @@ func (s *BranchesService) DeleteBranch(pid interface{}, branch string, options .
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/branches.html#delete-merged-branches
-func (s *BranchesService) DeleteMergedBranches(pid interface{}, options ...OptionFunc) (*Response, error) {
+func (s *BranchesService) DeleteMergedBranches(pid interface{}, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/repository/merged_branches", pathEscape(project))
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}

@@ -49,7 +49,7 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
 		Image: "strongdm/pandoc",
 		Cmd:   pandocCmd},
-		hc, nil, "")
+		hc, nil, nil, "")
 
 	if err != nil {
 		errOutputCh <- errors.Wrap(err, "unable to create Docker container")
@@ -71,9 +71,12 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 		return
 	}
 
-	_, err = cli.ContainerWait(ctx, resp.ID)
-	if err != nil {
-		errOutputCh <- errors.Wrap(err, "error awaiting Docker container")
+	chanResult, chanErr := cli.ContainerWait(ctx, resp.ID, "not-running")
+	resultValue := <-chanResult
+
+	if resultValue.StatusCode != 0 {
+		err = <-chanErr
+		errOutputCh <-errors.Wrap(err, "error awaiting Docker container")
 		return
 	}
 

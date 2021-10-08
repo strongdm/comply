@@ -101,6 +101,13 @@ $ github-release delete \
     --tag v0.1.0
 ```
 
+Errata
+======
+
+The `release` command does not have an `--auth-user` flag because in practice,
+Github ignores the `--auth-user` flag when validating releases. The only thing
+that matters is passing a token that has permission to create the release.
+
 GitHub Enterprise Support
 =========================
 You can point to a different GitHub API endpoint via the environment variable ```GITHUB_API```:

@@ -1,5 +1,5 @@
 //
-// Copyright 2017, Sander van Harmelen
+// Copyright 2021, Sander van Harmelen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package gitlab
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -54,39 +55,43 @@ type BasicUser struct {
 //
 // GitLab API docs: https://docs.gitlab.com/ee/api/users.html
 type User struct {
-	ID                        int                `json:"id"`
-	Username                  string             `json:"username"`
-	Email                     string             `json:"email"`
-	Name                      string             `json:"name"`
-	State                     string             `json:"state"`
-	CreatedAt                 *time.Time         `json:"created_at"`
-	Bio                       string             `json:"bio"`
-	Location                  string             `json:"location"`
-	PublicEmail               string             `json:"public_email"`
-	Skype                     string             `json:"skype"`
-	Linkedin                  string             `json:"linkedin"`
-	Twitter                   string             `json:"twitter"`
-	WebsiteURL                string             `json:"website_url"`
-	Organization              string             `json:"organization"`
-	ExternUID                 string             `json:"extern_uid"`
-	Provider                  string             `json:"provider"`
-	ThemeID                   int                `json:"theme_id"`
-	LastActivityOn            *ISOTime           `json:"last_activity_on"`
-	ColorSchemeID             int                `json:"color_scheme_id"`
-	IsAdmin                   bool               `json:"is_admin"`
-	AvatarURL                 string             `json:"avatar_url"`
-	CanCreateGroup            bool               `json:"can_create_group"`
-	CanCreateProject          bool               `json:"can_create_project"`
-	ProjectsLimit             int                `json:"projects_limit"`
-	CurrentSignInAt           *time.Time         `json:"current_sign_in_at"`
-	LastSignInAt              *time.Time         `json:"last_sign_in_at"`
-	ConfirmedAt               *time.Time         `json:"confirmed_at"`
-	TwoFactorEnabled          bool               `json:"two_factor_enabled"`
-	Identities                []*UserIdentity    `json:"identities"`
-	External                  bool               `json:"external"`
-	PrivateProfile            bool               `json:"private_profile"`
-	SharedRunnersMinutesLimit int                `json:"shared_runners_minutes_limit"`
-	CustomAttributes          []*CustomAttribute `json:"custom_attributes"`
+	ID                             int                `json:"id"`
+	Username                       string             `json:"username"`
+	Email                          string             `json:"email"`
+	Name                           string             `json:"name"`
+	State                          string             `json:"state"`
+	WebURL                         string             `json:"web_url"`
+	CreatedAt                      *time.Time         `json:"created_at"`
+	Bio                            string             `json:"bio"`
+	Location                       string             `json:"location"`
+	PublicEmail                    string             `json:"public_email"`
+	Skype                          string             `json:"skype"`
+	Linkedin                       string             `json:"linkedin"`
+	Twitter                        string             `json:"twitter"`
+	WebsiteURL                     string             `json:"website_url"`
+	Organization                   string             `json:"organization"`
+	ExternUID                      string             `json:"extern_uid"`
+	Provider                       string             `json:"provider"`
+	ThemeID                        int                `json:"theme_id"`
+	LastActivityOn                 *ISOTime           `json:"last_activity_on"`
+	ColorSchemeID                  int                `json:"color_scheme_id"`
+	IsAdmin                        bool               `json:"is_admin"`
+	AvatarURL                      string             `json:"avatar_url"`
+	CanCreateGroup                 bool               `json:"can_create_group"`
+	CanCreateProject               bool               `json:"can_create_project"`
+	ProjectsLimit                  int                `json:"projects_limit"`
+	CurrentSignInAt                *time.Time         `json:"current_sign_in_at"`
+	LastSignInAt                   *time.Time         `json:"last_sign_in_at"`
+	ConfirmedAt                    *time.Time         `json:"confirmed_at"`
+	TwoFactorEnabled               bool               `json:"two_factor_enabled"`
+	Note                           string             `json:"note"`
+	Identities                     []*UserIdentity    `json:"identities"`
+	External                       bool               `json:"external"`
+	PrivateProfile                 bool               `json:"private_profile"`
+	SharedRunnersMinutesLimit      int                `json:"shared_runners_minutes_limit"`
+	ExtraSharedRunnersMinutesLimit int                `json:"extra_shared_runners_minutes_limit"`
+	UsingLicenseSeat               bool               `json:"using_license_seat"`
+	CustomAttributes               []*CustomAttribute `json:"custom_attributes"`
 }
 
 // UserIdentity represents a user identity.
@@ -100,8 +105,9 @@ type UserIdentity struct {
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#list-users
 type ListUsersOptions struct {
 	ListOptions
-	Active  *bool `url:"active,omitempty" json:"active,omitempty"`
-	Blocked *bool `url:"blocked,omitempty" json:"blocked,omitempty"`
+	Active          *bool `url:"active,omitempty" json:"active,omitempty"`
+	Blocked         *bool `url:"blocked,omitempty" json:"blocked,omitempty"`
+	ExcludeInternal *bool `url:"exclude_internal,omitempty" json:"exclude_internal,omitempty"`
 
 	// The options below are only available for admins.
 	Search               *string    `url:"search,omitempty" json:"search,omitempty"`
@@ -112,14 +118,18 @@ type ListUsersOptions struct {
 	CreatedAfter         *time.Time `url:"created_after,omitempty" json:"created_after,omitempty"`
 	OrderBy              *string    `url:"order_by,omitempty" json:"order_by,omitempty"`
 	Sort                 *string    `url:"sort,omitempty" json:"sort,omitempty"`
+	TwoFactor            *string    `url:"two_factor,omitempty" json:"two_factor,omitempty"`
+	Admins               *bool      `url:"admins,omitempty" json:"admins,omitempty"`
+	External             *bool      `url:"external,omitempty" json:"external,omitempty"`
+	WithoutProjects      *bool      `url:"without_projects,omitempty" json:"without_projects,omitempty"`
 	WithCustomAttributes *bool      `url:"with_custom_attributes,omitempty" json:"with_custom_attributes,omitempty"`
 }
 
 // ListUsers gets a list of users.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#list-users
-func (s *UsersService) ListUsers(opt *ListUsersOptions, options ...OptionFunc) ([]*User, *Response, error) {
-	req, err := s.client.NewRequest("GET", "users", opt, options)
+func (s *UsersService) ListUsers(opt *ListUsersOptions, options ...RequestOptionFunc) ([]*User, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "users", opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -133,13 +143,20 @@ func (s *UsersService) ListUsers(opt *ListUsersOptions, options ...OptionFunc) (
 	return usr, resp, err
 }
 
+// GetUsersOptions represents the available GetUser() options.
+//
+// GitLab API docs: https://docs.gitlab.com/ce/api/users.html#single-user
+type GetUsersOptions struct {
+	WithCustomAttributes *bool `url:"with_custom_attributes,omitempty" json:"with_custom_attributes,omitempty"`
+}
+
 // GetUser gets a single user.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#single-user
-func (s *UsersService) GetUser(user int, options ...OptionFunc) (*User, *Response, error) {
+func (s *UsersService) GetUser(user int, opt GetUsersOptions, options ...RequestOptionFunc) (*User, *Response, error) {
 	u := fmt.Sprintf("users/%d", user)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -178,13 +195,14 @@ type CreateUserOptions struct {
 	SkipConfirmation    *bool   `url:"skip_confirmation,omitempty" json:"skip_confirmation,omitempty"`
 	External            *bool   `url:"external,omitempty" json:"external,omitempty"`
 	PrivateProfile      *bool   `url:"private_profile,omitempty" json:"private_profile,omitempty"`
+	Note                *string `url:"note,omitempty" json:"note,omitempty"`
 }
 
 // CreateUser creates a new user. Note only administrators can create new users.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#user-creation
-func (s *UsersService) CreateUser(opt *CreateUserOptions, options ...OptionFunc) (*User, *Response, error) {
-	req, err := s.client.NewRequest("POST", "users", opt, options)
+func (s *UsersService) CreateUser(opt *CreateUserOptions, options ...RequestOptionFunc) (*User, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "users", opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -221,16 +239,17 @@ type ModifyUserOptions struct {
 	SkipReconfirmation *bool   `url:"skip_reconfirmation,omitempty" json:"skip_reconfirmation,omitempty"`
 	External           *bool   `url:"external,omitempty" json:"external,omitempty"`
 	PrivateProfile     *bool   `url:"private_profile,omitempty" json:"private_profile,omitempty"`
+	Note               *string `url:"note,omitempty" json:"note,omitempty"`
 }
 
 // ModifyUser modifies an existing user. Only administrators can change attributes
 // of a user.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#user-modification
-func (s *UsersService) ModifyUser(user int, opt *ModifyUserOptions, options ...OptionFunc) (*User, *Response, error) {
+func (s *UsersService) ModifyUser(user int, opt *ModifyUserOptions, options ...RequestOptionFunc) (*User, *Response, error) {
 	u := fmt.Sprintf("users/%d", user)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -251,10 +270,10 @@ func (s *UsersService) ModifyUser(user int, opt *ModifyUserOptions, options ...O
 // latter not.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#user-deletion
-func (s *UsersService) DeleteUser(user int, options ...OptionFunc) (*Response, error) {
+func (s *UsersService) DeleteUser(user int, options ...RequestOptionFunc) (*Response, error) {
 	u := fmt.Sprintf("users/%d", user)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -265,8 +284,8 @@ func (s *UsersService) DeleteUser(user int, options ...OptionFunc) (*Response, e
 // CurrentUser gets currently authenticated user.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#current-user
-func (s *UsersService) CurrentUser(options ...OptionFunc) (*User, *Response, error) {
-	req, err := s.client.NewRequest("GET", "user", nil, options)
+func (s *UsersService) CurrentUser(options ...RequestOptionFunc) (*User, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "user", nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -293,8 +312,8 @@ type SSHKey struct {
 // ListSSHKeys gets a list of currently authenticated user's SSH keys.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#list-ssh-keys
-func (s *UsersService) ListSSHKeys(options ...OptionFunc) ([]*SSHKey, *Response, error) {
-	req, err := s.client.NewRequest("GET", "user/keys", nil, options)
+func (s *UsersService) ListSSHKeys(options ...RequestOptionFunc) ([]*SSHKey, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "user/keys", nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -319,10 +338,10 @@ type ListSSHKeysForUserOptions ListOptions
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#list-ssh-keys-for-user
-func (s *UsersService) ListSSHKeysForUser(user int, opt *ListSSHKeysForUserOptions, options ...OptionFunc) ([]*SSHKey, *Response, error) {
+func (s *UsersService) ListSSHKeysForUser(user int, opt *ListSSHKeysForUserOptions, options ...RequestOptionFunc) ([]*SSHKey, *Response, error) {
 	u := fmt.Sprintf("users/%d/keys", user)
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -339,10 +358,10 @@ func (s *UsersService) ListSSHKeysForUser(user int, opt *ListSSHKeysForUserOptio
 // GetSSHKey gets a single key.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#single-ssh-key
-func (s *UsersService) GetSSHKey(key int, options ...OptionFunc) (*SSHKey, *Response, error) {
+func (s *UsersService) GetSSHKey(key int, options ...RequestOptionFunc) (*SSHKey, *Response, error) {
 	u := fmt.Sprintf("user/keys/%d", key)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -360,15 +379,16 @@ func (s *UsersService) GetSSHKey(key int, options ...OptionFunc) (*SSHKey, *Resp
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/projects.html#add-ssh-key
 type AddSSHKeyOptions struct {
-	Title *string `url:"title,omitempty" json:"title,omitempty"`
-	Key   *string `url:"key,omitempty" json:"key,omitempty"`
+	Title     *string  `url:"title,omitempty" json:"title,omitempty"`
+	Key       *string  `url:"key,omitempty" json:"key,omitempty"`
+	ExpiresAt *ISOTime `url:"expires_at,omitempty" json:"expires_at,omitempty"`
 }
 
 // AddSSHKey creates a new key owned by the currently authenticated user.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#add-ssh-key
-func (s *UsersService) AddSSHKey(opt *AddSSHKeyOptions, options ...OptionFunc) (*SSHKey, *Response, error) {
-	req, err := s.client.NewRequest("POST", "user/keys", opt, options)
+func (s *UsersService) AddSSHKey(opt *AddSSHKeyOptions, options ...RequestOptionFunc) (*SSHKey, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "user/keys", opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -386,10 +406,10 @@ func (s *UsersService) AddSSHKey(opt *AddSSHKeyOptions, options ...OptionFunc) (
 // admin.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#add-ssh-key-for-user
-func (s *UsersService) AddSSHKeyForUser(user int, opt *AddSSHKeyOptions, options ...OptionFunc) (*SSHKey, *Response, error) {
+func (s *UsersService) AddSSHKeyForUser(user int, opt *AddSSHKeyOptions, options ...RequestOptionFunc) (*SSHKey, *Response, error) {
 	u := fmt.Sprintf("users/%d/keys", user)
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -409,10 +429,10 @@ func (s *UsersService) AddSSHKeyForUser(user int, opt *AddSSHKeyOptions, options
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#delete-ssh-key-for-current-owner
-func (s *UsersService) DeleteSSHKey(key int, options ...OptionFunc) (*Response, error) {
+func (s *UsersService) DeleteSSHKey(key int, options ...RequestOptionFunc) (*Response, error) {
 	u := fmt.Sprintf("user/keys/%d", key)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -425,10 +445,10 @@ func (s *UsersService) DeleteSSHKey(key int, options ...OptionFunc) (*Response, 
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#delete-ssh-key-for-given-user
-func (s *UsersService) DeleteSSHKeyForUser(user, key int, options ...OptionFunc) (*Response, error) {
+func (s *UsersService) DeleteSSHKeyForUser(user, key int, options ...RequestOptionFunc) (*Response, error) {
 	u := fmt.Sprintf("users/%d/keys/%d", user, key)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -439,10 +459,10 @@ func (s *UsersService) DeleteSSHKeyForUser(user, key int, options ...OptionFunc)
 // BlockUser blocks the specified user. Available only for admin.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#block-user
-func (s *UsersService) BlockUser(user int, options ...OptionFunc) error {
+func (s *UsersService) BlockUser(user int, options ...RequestOptionFunc) error {
 	u := fmt.Sprintf("users/%d/block", user)
 
-	req, err := s.client.NewRequest("POST", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, nil, options)
 	if err != nil {
 		return err
 	}
@@ -467,10 +487,10 @@ func (s *UsersService) BlockUser(user int, options ...OptionFunc) error {
 // UnblockUser unblocks the specified user. Available only for admin.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#unblock-user
-func (s *UsersService) UnblockUser(user int, options ...OptionFunc) error {
+func (s *UsersService) UnblockUser(user int, options ...RequestOptionFunc) error {
 	u := fmt.Sprintf("users/%d/unblock", user)
 
-	req, err := s.client.NewRequest("POST", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, nil, options)
 	if err != nil {
 		return err
 	}
@@ -495,10 +515,10 @@ func (s *UsersService) UnblockUser(user int, options ...OptionFunc) error {
 // DeactivateUser deactivate the specified user. Available only for admin.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#deactivate-user
-func (s *UsersService) DeactivateUser(user int, options ...OptionFunc) error {
+func (s *UsersService) DeactivateUser(user int, options ...RequestOptionFunc) error {
 	u := fmt.Sprintf("users/%d/deactivate", user)
 
-	req, err := s.client.NewRequest("POST", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, nil, options)
 	if err != nil {
 		return err
 	}
@@ -523,10 +543,10 @@ func (s *UsersService) DeactivateUser(user int, options ...OptionFunc) error {
 // ActivateUser activate the specified user. Available only for admin.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#activate-user
-func (s *UsersService) ActivateUser(user int, options ...OptionFunc) error {
+func (s *UsersService) ActivateUser(user int, options ...RequestOptionFunc) error {
 	u := fmt.Sprintf("users/%d/activate", user)
 
-	req, err := s.client.NewRequest("POST", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, nil, options)
 	if err != nil {
 		return err
 	}
@@ -559,8 +579,8 @@ type Email struct {
 // ListEmails gets a list of currently authenticated user's Emails.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#list-emails
-func (s *UsersService) ListEmails(options ...OptionFunc) ([]*Email, *Response, error) {
-	req, err := s.client.NewRequest("GET", "user/emails", nil, options)
+func (s *UsersService) ListEmails(options ...RequestOptionFunc) ([]*Email, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "user/emails", nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -585,10 +605,10 @@ type ListEmailsForUserOptions ListOptions
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#list-emails-for-user
-func (s *UsersService) ListEmailsForUser(user int, opt *ListEmailsForUserOptions, options ...OptionFunc) ([]*Email, *Response, error) {
+func (s *UsersService) ListEmailsForUser(user int, opt *ListEmailsForUserOptions, options ...RequestOptionFunc) ([]*Email, *Response, error) {
 	u := fmt.Sprintf("users/%d/emails", user)
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -605,10 +625,10 @@ func (s *UsersService) ListEmailsForUser(user int, opt *ListEmailsForUserOptions
 // GetEmail gets a single email.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#single-email
-func (s *UsersService) GetEmail(email int, options ...OptionFunc) (*Email, *Response, error) {
+func (s *UsersService) GetEmail(email int, options ...RequestOptionFunc) (*Email, *Response, error) {
 	u := fmt.Sprintf("user/emails/%d", email)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -632,8 +652,8 @@ type AddEmailOptions struct {
 // AddEmail creates a new email owned by the currently authenticated user.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#add-email
-func (s *UsersService) AddEmail(opt *AddEmailOptions, options ...OptionFunc) (*Email, *Response, error) {
-	req, err := s.client.NewRequest("POST", "user/emails", opt, options)
+func (s *UsersService) AddEmail(opt *AddEmailOptions, options ...RequestOptionFunc) (*Email, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "user/emails", opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -651,10 +671,10 @@ func (s *UsersService) AddEmail(opt *AddEmailOptions, options ...OptionFunc) (*E
 // admin.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/users.html#add-email-for-user
-func (s *UsersService) AddEmailForUser(user int, opt *AddEmailOptions, options ...OptionFunc) (*Email, *Response, error) {
+func (s *UsersService) AddEmailForUser(user int, opt *AddEmailOptions, options ...RequestOptionFunc) (*Email, *Response, error) {
 	u := fmt.Sprintf("users/%d/emails", user)
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -674,10 +694,10 @@ func (s *UsersService) AddEmailForUser(user int, opt *AddEmailOptions, options .
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#delete-email-for-current-owner
-func (s *UsersService) DeleteEmail(email int, options ...OptionFunc) (*Response, error) {
+func (s *UsersService) DeleteEmail(email int, options ...RequestOptionFunc) (*Response, error) {
 	u := fmt.Sprintf("user/emails/%d", email)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -690,10 +710,10 @@ func (s *UsersService) DeleteEmail(email int, options ...OptionFunc) (*Response,
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#delete-email-for-given-user
-func (s *UsersService) DeleteEmailForUser(user, email int, options ...OptionFunc) (*Response, error) {
+func (s *UsersService) DeleteEmailForUser(user, email int, options ...RequestOptionFunc) (*Response, error) {
 	u := fmt.Sprintf("users/%d/emails/%d", user, email)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -730,10 +750,10 @@ type GetAllImpersonationTokensOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#get-all-impersonation-tokens-of-a-user
-func (s *UsersService) GetAllImpersonationTokens(user int, opt *GetAllImpersonationTokensOptions, options ...OptionFunc) ([]*ImpersonationToken, *Response, error) {
+func (s *UsersService) GetAllImpersonationTokens(user int, opt *GetAllImpersonationTokensOptions, options ...RequestOptionFunc) ([]*ImpersonationToken, *Response, error) {
 	u := fmt.Sprintf("users/%d/impersonation_tokens", user)
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -751,10 +771,10 @@ func (s *UsersService) GetAllImpersonationTokens(user int, opt *GetAllImpersonat
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#get-an-impersonation-token-of-a-user
-func (s *UsersService) GetImpersonationToken(user, token int, options ...OptionFunc) (*ImpersonationToken, *Response, error) {
+func (s *UsersService) GetImpersonationToken(user, token int, options ...RequestOptionFunc) (*ImpersonationToken, *Response, error) {
 	u := fmt.Sprintf("users/%d/impersonation_tokens/%d", user, token)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -783,10 +803,10 @@ type CreateImpersonationTokenOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#create-an-impersonation-token
-func (s *UsersService) CreateImpersonationToken(user int, opt *CreateImpersonationTokenOptions, options ...OptionFunc) (*ImpersonationToken, *Response, error) {
+func (s *UsersService) CreateImpersonationToken(user int, opt *CreateImpersonationTokenOptions, options ...RequestOptionFunc) (*ImpersonationToken, *Response, error) {
 	u := fmt.Sprintf("users/%d/impersonation_tokens", user)
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -804,15 +824,63 @@ func (s *UsersService) CreateImpersonationToken(user int, opt *CreateImpersonati
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#revoke-an-impersonation-token
-func (s *UsersService) RevokeImpersonationToken(user, token int, options ...OptionFunc) (*Response, error) {
+func (s *UsersService) RevokeImpersonationToken(user, token int, options ...RequestOptionFunc) (*Response, error) {
 	u := fmt.Sprintf("users/%d/impersonation_tokens/%d", user, token)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
 
 	return s.client.Do(req, nil)
+}
+
+// PersonalAccessToken represents a personal access token.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ee/api/users.html#create-a-personal-access-token
+type PersonalAccessToken struct {
+	ID        int        `json:"id"`
+	Name      string     `json:"name"`
+	Revoked   bool       `json:"revoked"`
+	CreatedAt *time.Time `json:"created_at"`
+	Scopes    []string   `json:"scopes"`
+	UserID    int        `json:"user_id"`
+	Active    bool       `json:"active"`
+	ExpiresAt *ISOTime   `json:"expires_at"`
+	Token     string     `json:"token"`
+}
+
+// CreatePersonalAccessTokenOptions represents the available
+// CreatePersonalAccessToken() options.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ee/api/users.html#create-a-personal-access-token
+type CreatePersonalAccessTokenOptions struct {
+	Name      *string  `url:"name,omitempty" json:"name,omitempty"`
+	ExpiresAt *ISOTime `url:"expires_at,omitempty" json:"expires_at,omitempty"`
+	Scopes    []string `url:"scopes,omitempty" json:"scopes,omitempty"`
+}
+
+// CreatePersonalAccessToken creates a personal access token.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ee/api/users.html#create-a-personal-access-token
+func (s *UsersService) CreatePersonalAccessToken(user int, opt *CreatePersonalAccessTokenOptions, options ...RequestOptionFunc) (*PersonalAccessToken, *Response, error) {
+	u := fmt.Sprintf("users/%d/personal_access_tokens", user)
+
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	t := new(PersonalAccessToken)
+	resp, err := s.client.Do(req, &t)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return t, resp, err
 }
 
 // UserActivity represents an entry in the user/activities response
@@ -829,6 +897,7 @@ type UserActivity struct {
 // GitLap API docs:
 // https://docs.gitlab.com/ce/api/users.html#get-user-activities-admin-only
 type GetUserActivitiesOptions struct {
+	ListOptions
 	From *ISOTime `url:"from,omitempty" json:"from,omitempty"`
 }
 
@@ -836,8 +905,8 @@ type GetUserActivitiesOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#get-user-activities-admin-only
-func (s *UsersService) GetUserActivities(opt *GetUserActivitiesOptions, options ...OptionFunc) ([]*UserActivity, *Response, error) {
-	req, err := s.client.NewRequest("GET", "user/activities", opt, options)
+func (s *UsersService) GetUserActivities(opt *GetUserActivitiesOptions, options ...RequestOptionFunc) ([]*UserActivity, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "user/activities", opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -856,17 +925,18 @@ func (s *UsersService) GetUserActivities(opt *GetUserActivitiesOptions, options 
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#user-status
 type UserStatus struct {
-	Emoji       string `json:"emoji"`
-	Message     string `json:"message"`
-	MessageHTML string `json:"message_html"`
+	Emoji        string            `json:"emoji"`
+	Availability AvailabilityValue `json:"availability"`
+	Message      string            `json:"message"`
+	MessageHTML  string            `json:"message_html"`
 }
 
 // CurrentUserStatus retrieves the user status
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#user-status
-func (s *UsersService) CurrentUserStatus(options ...OptionFunc) (*UserStatus, *Response, error) {
-	req, err := s.client.NewRequest("GET", "user/status", nil, options)
+func (s *UsersService) CurrentUserStatus(options ...RequestOptionFunc) (*UserStatus, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "user/status", nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -884,10 +954,10 @@ func (s *UsersService) CurrentUserStatus(options ...OptionFunc) (*UserStatus, *R
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#get-the-status-of-a-user
-func (s *UsersService) GetUserStatus(user int, options ...OptionFunc) (*UserStatus, *Response, error) {
+func (s *UsersService) GetUserStatus(user int, options ...RequestOptionFunc) (*UserStatus, *Response, error) {
 	u := fmt.Sprintf("users/%d/status", user)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -906,16 +976,17 @@ func (s *UsersService) GetUserStatus(user int, options ...OptionFunc) (*UserStat
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#set-user-status
 type UserStatusOptions struct {
-	Emoji   *string `url:"emoji,omitempty" json:"emoji,omitempty"`
-	Message *string `url:"message,omitempty" json:"message,omitempty"`
+	Emoji        *string            `url:"emoji,omitempty" json:"emoji,omitempty"`
+	Availability *AvailabilityValue `url:"availability,omitempty" json:"availability,omitempty"`
+	Message      *string            `url:"message,omitempty" json:"message,omitempty"`
 }
 
 // SetUserStatus sets the user's status
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/users.html#set-user-status
-func (s *UsersService) SetUserStatus(opt *UserStatusOptions, options ...OptionFunc) (*UserStatus, *Response, error) {
-	req, err := s.client.NewRequest("PUT", "user/status", opt, options)
+func (s *UsersService) SetUserStatus(opt *UserStatusOptions, options ...RequestOptionFunc) (*UserStatus, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPut, "user/status", opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -927,4 +998,45 @@ func (s *UsersService) SetUserStatus(opt *UserStatusOptions, options ...OptionFu
 	}
 
 	return status, resp, err
+}
+
+// UserMembership represents a membership of the user in a namespace or project.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ee/api/users.html#user-memberships-admin-only
+type UserMembership struct {
+	SourceID    int              `json:"source_id"`
+	SourceName  string           `json:"source_name"`
+	SourceType  string           `json:"source_type"`
+	AccessLevel AccessLevelValue `json:"access_level"`
+}
+
+// GetUserMembershipOptions represents the options available to query user memberships.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ee/api/users.html#user-memberships-admin-only
+type GetUserMembershipOptions struct {
+	ListOptions
+	Type *string `url:"type,omitempty" json:"type,omitempty"`
+}
+
+// GetUserMemberships retrieves a list of the user's memberships.
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ee/api/users.html#user-memberships-admin-only
+func (s *UsersService) GetUserMemberships(user int, opt *GetUserMembershipOptions, options ...RequestOptionFunc) ([]*UserMembership, *Response, error) {
+	u := fmt.Sprintf("users/%d/memberships", user)
+
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var m []*UserMembership
+	resp, err := s.client.Do(req, &m)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return m, resp, err
 }
