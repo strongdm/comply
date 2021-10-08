@@ -354,10 +354,17 @@ func releasecmd(opt Options) error {
 	}
 	reader := bytes.NewReader(payload)
 
-	URL := nvls(EnvApiEndpoint, github.DefaultBaseURL) + fmt.Sprintf("/repos/%s/%s/releases", user, repo)
-	resp, err := github.DoAuthRequest("POST", URL, "application/json", token, nil, reader)
+	// NB: Github appears to ignore the user here - the only thing that seems to
+	// matter is that the token is valid.
+	client := github.NewClient(user, token, nil)
+	client.SetBaseURL(EnvApiEndpoint)
+	req, err := client.NewRequest("POST", fmt.Sprintf("/repos/%s/%s/releases", user, repo), reader)
 	if err != nil {
-		return fmt.Errorf("while submitting %v, %v", string(payload), err)
+		return fmt.Errorf("while submitting %v: %w", string(payload), err)
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("while submitting %v: %w", string(payload), err)
 	}
 	defer resp.Body.Close()
 

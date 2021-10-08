@@ -3,3 +3,4 @@ output
 dist
 .envrc
 bindata.go
+.idea/

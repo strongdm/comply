@@ -1,7 +1,24 @@
+//
+// Copyright 2021, Sander van Harmelen
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 package gitlab
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -31,8 +48,8 @@ func (k DeployToken) String() string {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/deploy_tokens.html#list-all-deploy-tokens
-func (s *DeployTokensService) ListAllDeployTokens(options ...OptionFunc) ([]*DeployToken, *Response, error) {
-	req, err := s.client.NewRequest("GET", "deploy_tokens", nil, options)
+func (s *DeployTokensService) ListAllDeployTokens(options ...RequestOptionFunc) ([]*DeployToken, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "deploy_tokens", nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -57,14 +74,14 @@ type ListProjectDeployTokensOptions ListOptions
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/deploy_tokens.html#list-project-deploy-tokens
-func (s *DeployTokensService) ListProjectDeployTokens(pid interface{}, opt *ListProjectDeployTokensOptions, options ...OptionFunc) ([]*DeployToken, *Response, error) {
+func (s *DeployTokensService) ListProjectDeployTokens(pid interface{}, opt *ListProjectDeployTokensOptions, options ...RequestOptionFunc) ([]*DeployToken, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/deploy_tokens", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -93,14 +110,14 @@ type CreateProjectDeployTokenOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/deploy_tokens.html#create-a-project-deploy-token
-func (s *DeployTokensService) CreateProjectDeployToken(pid interface{}, opt *CreateProjectDeployTokenOptions, options ...OptionFunc) (*DeployToken, *Response, error) {
+func (s *DeployTokensService) CreateProjectDeployToken(pid interface{}, opt *CreateProjectDeployTokenOptions, options ...RequestOptionFunc) (*DeployToken, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/deploy_tokens", pathEscape(project))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -118,14 +135,14 @@ func (s *DeployTokensService) CreateProjectDeployToken(pid interface{}, opt *Cre
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/deploy_tokens.html#delete-a-project-deploy-token
-func (s *DeployTokensService) DeleteProjectDeployToken(pid interface{}, deployToken int, options ...OptionFunc) (*Response, error) {
+func (s *DeployTokensService) DeleteProjectDeployToken(pid interface{}, deployToken int, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/deploy_tokens/%d", pathEscape(project), deployToken)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -144,14 +161,14 @@ type ListGroupDeployTokensOptions ListOptions
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/deploy_tokens.html#list-project-deploy-tokens
-func (s *DeployTokensService) ListGroupDeployTokens(gid interface{}, opt *ListGroupDeployTokensOptions, options ...OptionFunc) ([]*DeployToken, *Response, error) {
+func (s *DeployTokensService) ListGroupDeployTokens(gid interface{}, opt *ListGroupDeployTokensOptions, options ...RequestOptionFunc) ([]*DeployToken, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/deploy_tokens", pathEscape(group))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -180,14 +197,14 @@ type CreateGroupDeployTokenOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/deploy_tokens.html#create-a-group-deploy-token
-func (s *DeployTokensService) CreateGroupDeployToken(gid interface{}, opt *CreateGroupDeployTokenOptions, options ...OptionFunc) (*DeployToken, *Response, error) {
+func (s *DeployTokensService) CreateGroupDeployToken(gid interface{}, opt *CreateGroupDeployTokenOptions, options ...RequestOptionFunc) (*DeployToken, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/deploy_tokens", pathEscape(group))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -205,14 +222,14 @@ func (s *DeployTokensService) CreateGroupDeployToken(gid interface{}, opt *Creat
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/deploy_tokens.html#delete-a-group-deploy-token
-func (s *DeployTokensService) DeleteGroupDeployToken(gid interface{}, deployToken int, options ...OptionFunc) (*Response, error) {
+func (s *DeployTokensService) DeleteGroupDeployToken(gid interface{}, deployToken int, options ...RequestOptionFunc) (*Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("groups/%s/deploy_tokens/%d", pathEscape(group), deployToken)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}

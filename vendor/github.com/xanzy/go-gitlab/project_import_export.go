@@ -1,8 +1,25 @@
+//
+// Copyright 2021, Sander van Harmelen
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 package gitlab
 
 import (
 	"bytes"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -74,14 +91,14 @@ type ScheduleExportOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_import_export.html#schedule-an-export
-func (s *ProjectImportExportService) ScheduleExport(pid interface{}, opt *ScheduleExportOptions, options ...OptionFunc) (*Response, error) {
+func (s *ProjectImportExportService) ScheduleExport(pid interface{}, opt *ScheduleExportOptions, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/export", pathEscape(project))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, err
 	}
@@ -93,14 +110,14 @@ func (s *ProjectImportExportService) ScheduleExport(pid interface{}, opt *Schedu
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_import_export.html#export-status
-func (s *ProjectImportExportService) ExportStatus(pid interface{}, options ...OptionFunc) (*ExportStatus, *Response, error) {
+func (s *ProjectImportExportService) ExportStatus(pid interface{}, options ...RequestOptionFunc) (*ExportStatus, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/export", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -118,14 +135,14 @@ func (s *ProjectImportExportService) ExportStatus(pid interface{}, options ...Op
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_import_export.html#export-download
-func (s *ProjectImportExportService) ExportDownload(pid interface{}, options ...OptionFunc) ([]byte, *Response, error) {
+func (s *ProjectImportExportService) ExportDownload(pid interface{}, options ...RequestOptionFunc) ([]byte, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/export/download", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -155,8 +172,8 @@ type ImportFileOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_import_export.html#import-a-file
-func (s *ProjectImportExportService) ImportFile(opt *ImportFileOptions, options ...OptionFunc) (*ImportStatus, *Response, error) {
-	req, err := s.client.NewRequest("POST", "projects/import", opt, options)
+func (s *ProjectImportExportService) ImportFile(opt *ImportFileOptions, options ...RequestOptionFunc) (*ImportStatus, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "projects/import", opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -174,14 +191,14 @@ func (s *ProjectImportExportService) ImportFile(opt *ImportFileOptions, options 
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_import_export.html#import-status
-func (s *ProjectImportExportService) ImportStatus(pid interface{}, options ...OptionFunc) (*ImportStatus, *Response, error) {
+func (s *ProjectImportExportService) ImportStatus(pid interface{}, options ...RequestOptionFunc) (*ImportStatus, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/import", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}

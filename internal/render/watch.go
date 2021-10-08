@@ -8,7 +8,8 @@ import (
 )
 
 func watch(errCh chan error) {
-	b, err := watcher.New(300 * time.Millisecond)
+	// TODO: study about the poll duration
+	b, err := watcher.New(300 * time.Millisecond, 0, false)
 	if err != nil {
 		errCh <- err
 		return
@@ -25,7 +26,7 @@ func watch(errCh chan error) {
 	go func() {
 		for {
 			select {
-			case e := <-b.Errors:
+			case e := <-b.Errors():
 				errCh <- e
 			case <-b.Events:
 				broadcast()

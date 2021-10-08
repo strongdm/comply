@@ -20,6 +20,18 @@ func colorEnabledWriter(w io.Writer) (io.Writer, bool) {
 	if !ok {
 		return w, false
 	}
+
+	// NO_COLOR is a relatively new standard for preventing color enabled
+	// writers rather than using the TERM env.
+	//
+	// "...should check for the presence of a NO_COLOR environment variable
+	//  that, when present (regardless of its value), prevents the addition of
+	//  ANSI color."
+	// See: https://no-color.org/
+	if _, ok := os.LookupEnv("NO_COLOR"); ok {
+		return w, false
+	}
+
 	// Check the TERM environment variable specifically
 	// to check for "dumb" terminals.
 	if os.Getenv("TERM") == "dumb" {

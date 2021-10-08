@@ -1,5 +1,5 @@
 //
-// Copyright 2017, Sander van Harmelen
+// Copyright 2021, Sander van Harmelen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package gitlab
 import (
 	"bytes"
 	"fmt"
+	"net/http"
 )
 
 // ProjectSnippetsService handles communication with the project snippets
@@ -37,14 +38,14 @@ type ListProjectSnippetsOptions ListOptions
 // ListSnippets gets a list of project snippets.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/project_snippets.html#list-snippets
-func (s *ProjectSnippetsService) ListSnippets(pid interface{}, opt *ListProjectSnippetsOptions, options ...OptionFunc) ([]*Snippet, *Response, error) {
+func (s *ProjectSnippetsService) ListSnippets(pid interface{}, opt *ListProjectSnippetsOptions, options ...RequestOptionFunc) ([]*Snippet, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/snippets", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -62,14 +63,14 @@ func (s *ProjectSnippetsService) ListSnippets(pid interface{}, opt *ListProjectS
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_snippets.html#single-snippet
-func (s *ProjectSnippetsService) GetSnippet(pid interface{}, snippet int, options ...OptionFunc) (*Snippet, *Response, error) {
+func (s *ProjectSnippetsService) GetSnippet(pid interface{}, snippet int, options ...RequestOptionFunc) (*Snippet, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/snippets/%d", pathEscape(project), snippet)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -91,7 +92,7 @@ type CreateProjectSnippetOptions struct {
 	Title       *string          `url:"title,omitempty" json:"title,omitempty"`
 	FileName    *string          `url:"file_name,omitempty" json:"file_name,omitempty"`
 	Description *string          `url:"description,omitempty" json:"description,omitempty"`
-	Code        *string          `url:"code,omitempty" json:"code,omitempty"`
+	Content     *string          `url:"content,omitempty" json:"content,omitempty"`
 	Visibility  *VisibilityValue `url:"visibility,omitempty" json:"visibility,omitempty"`
 }
 
@@ -100,14 +101,14 @@ type CreateProjectSnippetOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_snippets.html#create-new-snippet
-func (s *ProjectSnippetsService) CreateSnippet(pid interface{}, opt *CreateProjectSnippetOptions, options ...OptionFunc) (*Snippet, *Response, error) {
+func (s *ProjectSnippetsService) CreateSnippet(pid interface{}, opt *CreateProjectSnippetOptions, options ...RequestOptionFunc) (*Snippet, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/snippets", pathEscape(project))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -129,7 +130,7 @@ type UpdateProjectSnippetOptions struct {
 	Title       *string          `url:"title,omitempty" json:"title,omitempty"`
 	FileName    *string          `url:"file_name,omitempty" json:"file_name,omitempty"`
 	Description *string          `url:"description,omitempty" json:"description,omitempty"`
-	Code        *string          `url:"code,omitempty" json:"code,omitempty"`
+	Content     *string          `url:"content,omitempty" json:"content,omitempty"`
 	Visibility  *VisibilityValue `url:"visibility,omitempty" json:"visibility,omitempty"`
 }
 
@@ -138,14 +139,14 @@ type UpdateProjectSnippetOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_snippets.html#update-snippet
-func (s *ProjectSnippetsService) UpdateSnippet(pid interface{}, snippet int, opt *UpdateProjectSnippetOptions, options ...OptionFunc) (*Snippet, *Response, error) {
+func (s *ProjectSnippetsService) UpdateSnippet(pid interface{}, snippet int, opt *UpdateProjectSnippetOptions, options ...RequestOptionFunc) (*Snippet, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/snippets/%d", pathEscape(project), snippet)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -165,14 +166,14 @@ func (s *ProjectSnippetsService) UpdateSnippet(pid interface{}, snippet int, opt
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_snippets.html#delete-snippet
-func (s *ProjectSnippetsService) DeleteSnippet(pid interface{}, snippet int, options ...OptionFunc) (*Response, error) {
+func (s *ProjectSnippetsService) DeleteSnippet(pid interface{}, snippet int, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/snippets/%d", pathEscape(project), snippet)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -184,14 +185,14 @@ func (s *ProjectSnippetsService) DeleteSnippet(pid interface{}, snippet int, opt
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/project_snippets.html#snippet-content
-func (s *ProjectSnippetsService) SnippetContent(pid interface{}, snippet int, options ...OptionFunc) ([]byte, *Response, error) {
+func (s *ProjectSnippetsService) SnippetContent(pid interface{}, snippet int, options ...RequestOptionFunc) ([]byte, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/snippets/%d/raw", pathEscape(project), snippet)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}

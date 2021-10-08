@@ -1,5 +1,5 @@
 //
-// Copyright 2018, Patrick Webster
+// Copyright 2021, Patrick Webster
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/http"
 )
 
 // GroupIssueBoardsService handles communication with the group issue board
@@ -56,14 +57,14 @@ type ListGroupIssueBoardsOptions ListOptions
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/group_boards.html#group-board
-func (s *GroupIssueBoardsService) ListGroupIssueBoards(gid interface{}, opt *ListGroupIssueBoardsOptions, options ...OptionFunc) ([]*GroupIssueBoard, *Response, error) {
+func (s *GroupIssueBoardsService) ListGroupIssueBoards(gid interface{}, opt *ListGroupIssueBoardsOptions, options ...RequestOptionFunc) ([]*GroupIssueBoard, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/boards", pathEscape(group))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -90,14 +91,14 @@ type CreateGroupIssueBoardOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/group_boards.html#create-a-group-issue-board-premium
-func (s *GroupIssueBoardsService) CreateGroupIssueBoard(gid interface{}, opt *CreateGroupIssueBoardOptions, options ...OptionFunc) (*GroupIssueBoard, *Response, error) {
+func (s *GroupIssueBoardsService) CreateGroupIssueBoard(gid interface{}, opt *CreateGroupIssueBoardOptions, options ...RequestOptionFunc) (*GroupIssueBoard, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/boards", pathEscape(group))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -115,14 +116,14 @@ func (s *GroupIssueBoardsService) CreateGroupIssueBoard(gid interface{}, opt *Cr
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/group_boards.html#single-board
-func (s *GroupIssueBoardsService) GetGroupIssueBoard(gid interface{}, board int, options ...OptionFunc) (*GroupIssueBoard, *Response, error) {
+func (s *GroupIssueBoardsService) GetGroupIssueBoard(gid interface{}, board int, options ...RequestOptionFunc) (*GroupIssueBoard, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/boards/%d", pathEscape(group), board)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -144,7 +145,7 @@ type UpdateGroupIssueBoardOptions struct {
 	Name        *string `url:"name,omitempty" json:"name,omitempty"`
 	AssigneeID  *int    `url:"assignee_id,omitempty" json:"assignee_id,omitempty"`
 	MilestoneID *int    `url:"milestone_id,omitempty" json:"milestone_id,omitempty"`
-	Labels      *Labels `url:"labels,omitempty" json:"labels,omitempty"`
+	Labels      Labels  `url:"labels,omitempty" json:"labels,omitempty"`
 	Weight      *int    `url:"weight,omitempty" json:"weight,omitempty"`
 }
 
@@ -152,14 +153,14 @@ type UpdateGroupIssueBoardOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/group_boards.html#update-a-group-issue-board-premium
-func (s *GroupIssueBoardsService) UpdateIssueBoard(gid interface{}, board int, opt *UpdateGroupIssueBoardOptions, options ...OptionFunc) (*GroupIssueBoard, *Response, error) {
+func (s *GroupIssueBoardsService) UpdateIssueBoard(gid interface{}, board int, opt *UpdateGroupIssueBoardOptions, options ...RequestOptionFunc) (*GroupIssueBoard, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/boards/%d", pathEscape(group), board)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -177,14 +178,14 @@ func (s *GroupIssueBoardsService) UpdateIssueBoard(gid interface{}, board int, o
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/group_boards.html#delete-a-group-issue-board-premium
-func (s *GroupIssueBoardsService) DeleteIssueBoard(gid interface{}, board int, options ...OptionFunc) (*Response, error) {
+func (s *GroupIssueBoardsService) DeleteIssueBoard(gid interface{}, board int, options ...RequestOptionFunc) (*Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("groups/%s/boards/%d", pathEscape(group), board)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -203,14 +204,14 @@ type ListGroupIssueBoardListsOptions ListOptions
 // backlog and closed lists.
 //
 // GitLab API docs: https://docs.gitlab.com/ce/api/group_boards.html#list-board-lists
-func (s *GroupIssueBoardsService) ListGroupIssueBoardLists(gid interface{}, board int, opt *ListGroupIssueBoardListsOptions, options ...OptionFunc) ([]*BoardList, *Response, error) {
+func (s *GroupIssueBoardsService) ListGroupIssueBoardLists(gid interface{}, board int, opt *ListGroupIssueBoardListsOptions, options ...RequestOptionFunc) ([]*BoardList, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/boards/%d/lists", pathEscape(group), board)
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -228,7 +229,7 @@ func (s *GroupIssueBoardsService) ListGroupIssueBoardLists(gid interface{}, boar
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/group_boards.html#single-board-list
-func (s *GroupIssueBoardsService) GetGroupIssueBoardList(gid interface{}, board, list int, options ...OptionFunc) (*BoardList, *Response, error) {
+func (s *GroupIssueBoardsService) GetGroupIssueBoardList(gid interface{}, board, list int, options ...RequestOptionFunc) (*BoardList, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
@@ -239,7 +240,7 @@ func (s *GroupIssueBoardsService) GetGroupIssueBoardList(gid interface{}, board,
 		list,
 	)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -266,14 +267,14 @@ type CreateGroupIssueBoardListOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/group_boards.html#new-board-list
-func (s *GroupIssueBoardsService) CreateGroupIssueBoardList(gid interface{}, board int, opt *CreateGroupIssueBoardListOptions, options ...OptionFunc) (*BoardList, *Response, error) {
+func (s *GroupIssueBoardsService) CreateGroupIssueBoardList(gid interface{}, board int, opt *CreateGroupIssueBoardListOptions, options ...RequestOptionFunc) (*BoardList, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("groups/%s/boards/%d/lists", pathEscape(group), board)
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -301,7 +302,7 @@ type UpdateGroupIssueBoardListOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/group_boards.html#edit-board-list
-func (s *GroupIssueBoardsService) UpdateIssueBoardList(gid interface{}, board, list int, opt *UpdateGroupIssueBoardListOptions, options ...OptionFunc) ([]*BoardList, *Response, error) {
+func (s *GroupIssueBoardsService) UpdateIssueBoardList(gid interface{}, board, list int, opt *UpdateGroupIssueBoardListOptions, options ...RequestOptionFunc) ([]*BoardList, *Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, nil, err
@@ -312,7 +313,7 @@ func (s *GroupIssueBoardsService) UpdateIssueBoardList(gid interface{}, board, l
 		list,
 	)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -331,7 +332,7 @@ func (s *GroupIssueBoardsService) UpdateIssueBoardList(gid interface{}, board, l
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/group_boards.html#delete-a-board-list
-func (s *GroupIssueBoardsService) DeleteGroupIssueBoardList(gid interface{}, board, list int, options ...OptionFunc) (*Response, error) {
+func (s *GroupIssueBoardsService) DeleteGroupIssueBoardList(gid interface{}, board, list int, options ...RequestOptionFunc) (*Response, error) {
 	group, err := parseID(gid)
 	if err != nil {
 		return nil, err
@@ -342,7 +343,7 @@ func (s *GroupIssueBoardsService) DeleteGroupIssueBoardList(gid interface{}, boa
 		list,
 	)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}

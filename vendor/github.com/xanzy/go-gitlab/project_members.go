@@ -1,5 +1,5 @@
 //
-// Copyright 2017, Sander van Harmelen
+// Copyright 2021, Sander van Harmelen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/http"
 )
 
 // ProjectMembersService handles communication with the project members
@@ -44,14 +45,14 @@ type ListProjectMembersOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#list-all-members-of-a-group-or-project
-func (s *ProjectMembersService) ListProjectMembers(pid interface{}, opt *ListProjectMembersOptions, options ...OptionFunc) ([]*ProjectMember, *Response, error) {
+func (s *ProjectMembersService) ListProjectMembers(pid interface{}, opt *ListProjectMembersOptions, options ...RequestOptionFunc) ([]*ProjectMember, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/members", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -71,14 +72,14 @@ func (s *ProjectMembersService) ListProjectMembers(pid interface{}, opt *ListPro
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#list-all-members-of-a-group-or-project-including-inherited-members
-func (s *ProjectMembersService) ListAllProjectMembers(pid interface{}, opt *ListProjectMembersOptions, options ...OptionFunc) ([]*ProjectMember, *Response, error) {
+func (s *ProjectMembersService) ListAllProjectMembers(pid interface{}, opt *ListProjectMembersOptions, options ...RequestOptionFunc) ([]*ProjectMember, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/members/all", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -96,14 +97,39 @@ func (s *ProjectMembersService) ListAllProjectMembers(pid interface{}, opt *List
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#get-a-member-of-a-group-or-project
-func (s *ProjectMembersService) GetProjectMember(pid interface{}, user int, options ...OptionFunc) (*ProjectMember, *Response, error) {
+func (s *ProjectMembersService) GetProjectMember(pid interface{}, user int, options ...RequestOptionFunc) (*ProjectMember, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/members/%d", pathEscape(project), user)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	pm := new(ProjectMember)
+	resp, err := s.client.Do(req, pm)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return pm, resp, err
+}
+
+// GetInheritedProjectMember gets a project team member, including inherited
+//
+// GitLab API docs:
+// https://docs.gitlab.com/ce/api/members.html#get-a-member-of-a-group-or-project-including-inherited-members
+func (s *ProjectMembersService) GetInheritedProjectMember(pid interface{}, user int, options ...RequestOptionFunc) (*ProjectMember, *Response, error) {
+	project, err := parseID(pid)
+	if err != nil {
+		return nil, nil, err
+	}
+	u := fmt.Sprintf("projects/%s/members/all/%d", pathEscape(project), user)
+
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -122,7 +148,7 @@ func (s *ProjectMembersService) GetProjectMember(pid interface{}, user int, opti
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#add-a-member-to-a-group-or-project
 type AddProjectMemberOptions struct {
-	UserID      *int              `url:"user_id,omitempty" json:"user_id,omitempty"`
+	UserID      interface{}       `url:"user_id,omitempty" json:"user_id,omitempty"`
 	AccessLevel *AccessLevelValue `url:"access_level,omitempty" json:"access_level,omitempty"`
 	ExpiresAt   *string           `url:"expires_at,omitempty" json:"expires_at"`
 }
@@ -134,14 +160,14 @@ type AddProjectMemberOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#add-a-member-to-a-group-or-project
-func (s *ProjectMembersService) AddProjectMember(pid interface{}, opt *AddProjectMemberOptions, options ...OptionFunc) (*ProjectMember, *Response, error) {
+func (s *ProjectMembersService) AddProjectMember(pid interface{}, opt *AddProjectMemberOptions, options ...RequestOptionFunc) (*ProjectMember, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/members", pathEscape(project))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -168,14 +194,14 @@ type EditProjectMemberOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#edit-a-member-of-a-group-or-project
-func (s *ProjectMembersService) EditProjectMember(pid interface{}, user int, opt *EditProjectMemberOptions, options ...OptionFunc) (*ProjectMember, *Response, error) {
+func (s *ProjectMembersService) EditProjectMember(pid interface{}, user int, opt *EditProjectMemberOptions, options ...RequestOptionFunc) (*ProjectMember, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/members/%d", pathEscape(project), user)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -193,14 +219,14 @@ func (s *ProjectMembersService) EditProjectMember(pid interface{}, user int, opt
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/members.html#remove-a-member-from-a-group-or-project
-func (s *ProjectMembersService) DeleteProjectMember(pid interface{}, user int, options ...OptionFunc) (*Response, error) {
+func (s *ProjectMembersService) DeleteProjectMember(pid interface{}, user int, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/members/%d", pathEscape(project), user)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}

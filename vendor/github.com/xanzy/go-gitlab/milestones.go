@@ -1,5 +1,5 @@
 //
-// Copyright 2017, Sander van Harmelen
+// Copyright 2021, Sander van Harmelen
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -41,8 +42,10 @@ type Milestone struct {
 	StartDate   *ISOTime   `json:"start_date"`
 	DueDate     *ISOTime   `json:"due_date"`
 	State       string     `json:"state"`
+	WebURL      string     `json:"web_url"`
 	UpdatedAt   *time.Time `json:"updated_at"`
 	CreatedAt   *time.Time `json:"created_at"`
+	Expired     *bool      `json:"expired"`
 }
 
 func (m Milestone) String() string {
@@ -55,7 +58,7 @@ func (m Milestone) String() string {
 // https://docs.gitlab.com/ce/api/milestones.html#list-project-milestones
 type ListMilestonesOptions struct {
 	ListOptions
-	IIDs   []int   `url:"iids,omitempty" json:"iids,omitempty"`
+	IIDs   []int   `url:"iids[],omitempty" json:"iids,omitempty"`
 	Title  *string `url:"title,omitempty" json:"title,omitempty"`
 	State  *string `url:"state,omitempty" json:"state,omitempty"`
 	Search *string `url:"search,omitempty" json:"search,omitempty"`
@@ -65,14 +68,14 @@ type ListMilestonesOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/milestones.html#list-project-milestones
-func (s *MilestonesService) ListMilestones(pid interface{}, opt *ListMilestonesOptions, options ...OptionFunc) ([]*Milestone, *Response, error) {
+func (s *MilestonesService) ListMilestones(pid interface{}, opt *ListMilestonesOptions, options ...RequestOptionFunc) ([]*Milestone, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/milestones", pathEscape(project))
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -90,14 +93,14 @@ func (s *MilestonesService) ListMilestones(pid interface{}, opt *ListMilestonesO
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/milestones.html#get-single-milestone
-func (s *MilestonesService) GetMilestone(pid interface{}, milestone int, options ...OptionFunc) (*Milestone, *Response, error) {
+func (s *MilestonesService) GetMilestone(pid interface{}, milestone int, options ...RequestOptionFunc) (*Milestone, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/milestones/%d", pathEscape(project), milestone)
 
-	req, err := s.client.NewRequest("GET", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, nil, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -126,14 +129,14 @@ type CreateMilestoneOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/milestones.html#create-new-milestone
-func (s *MilestonesService) CreateMilestone(pid interface{}, opt *CreateMilestoneOptions, options ...OptionFunc) (*Milestone, *Response, error) {
+func (s *MilestonesService) CreateMilestone(pid interface{}, opt *CreateMilestoneOptions, options ...RequestOptionFunc) (*Milestone, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/milestones", pathEscape(project))
 
-	req, err := s.client.NewRequest("POST", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPost, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -163,14 +166,14 @@ type UpdateMilestoneOptions struct {
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/milestones.html#edit-milestone
-func (s *MilestonesService) UpdateMilestone(pid interface{}, milestone int, opt *UpdateMilestoneOptions, options ...OptionFunc) (*Milestone, *Response, error) {
+func (s *MilestonesService) UpdateMilestone(pid interface{}, milestone int, opt *UpdateMilestoneOptions, options ...RequestOptionFunc) (*Milestone, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/milestones/%d", pathEscape(project), milestone)
 
-	req, err := s.client.NewRequest("PUT", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodPut, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -188,14 +191,14 @@ func (s *MilestonesService) UpdateMilestone(pid interface{}, milestone int, opt 
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/milestones.html#delete-project-milestone
-func (s *MilestonesService) DeleteMilestone(pid interface{}, milestone int, options ...OptionFunc) (*Response, error) {
+func (s *MilestonesService) DeleteMilestone(pid interface{}, milestone int, options ...RequestOptionFunc) (*Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, err
 	}
 	u := fmt.Sprintf("projects/%s/milestones/%d", pathEscape(project), milestone)
 
-	req, err := s.client.NewRequest("DELETE", u, nil, options)
+	req, err := s.client.NewRequest(http.MethodDelete, u, nil, options)
 	if err != nil {
 		return nil, err
 	}
@@ -212,14 +215,14 @@ type GetMilestoneIssuesOptions ListOptions
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/milestones.html#get-all-issues-assigned-to-a-single-milestone
-func (s *MilestonesService) GetMilestoneIssues(pid interface{}, milestone int, opt *GetMilestoneIssuesOptions, options ...OptionFunc) ([]*Issue, *Response, error) {
+func (s *MilestonesService) GetMilestoneIssues(pid interface{}, milestone int, opt *GetMilestoneIssuesOptions, options ...RequestOptionFunc) ([]*Issue, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/milestones/%d/issues", pathEscape(project), milestone)
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -245,14 +248,14 @@ type GetMilestoneMergeRequestsOptions ListOptions
 //
 // GitLab API docs:
 // https://docs.gitlab.com/ce/api/milestones.html#get-all-merge-requests-assigned-to-a-single-milestone
-func (s *MilestonesService) GetMilestoneMergeRequests(pid interface{}, milestone int, opt *GetMilestoneMergeRequestsOptions, options ...OptionFunc) ([]*MergeRequest, *Response, error) {
+func (s *MilestonesService) GetMilestoneMergeRequests(pid interface{}, milestone int, opt *GetMilestoneMergeRequestsOptions, options ...RequestOptionFunc) ([]*MergeRequest, *Response, error) {
 	project, err := parseID(pid)
 	if err != nil {
 		return nil, nil, err
 	}
 	u := fmt.Sprintf("projects/%s/milestones/%d/merge_requests", pathEscape(project), milestone)
 
-	req, err := s.client.NewRequest("GET", u, opt, options)
+	req, err := s.client.NewRequest(http.MethodGet, u, opt, options)
 	if err != nil {
 		return nil, nil, err
 	}
