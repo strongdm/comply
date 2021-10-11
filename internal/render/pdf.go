@@ -42,6 +42,12 @@ func pdf(output string, live bool, errCh chan error, wg *sync.WaitGroup) {
 
 		for _, narrative := range narratives {
 			renderToFilesystem(&pdfWG, errOutputCh, data, narrative, live)
+			err = <-errOutputCh
+			if err != nil {
+				errCh <- err
+				wg.Done()
+				return
+			}
 		}
 
 		pdfWG.Wait()

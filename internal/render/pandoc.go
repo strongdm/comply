@@ -64,9 +64,11 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 			errOutputCh <- errors.Wrap(err, "unable to remove container")
 			return
 		}
+		errOutputCh <-nil
 	}()
 
-	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+	err = cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{})
+	if err != nil {
 		errOutputCh <- errors.Wrap(err, "unable to start Docker container")
 		return
 	}
@@ -90,8 +92,6 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 		errOutputCh <- errors.Wrap(err, "output not generated; verify your Docker image is up to date")
 		return
 	}
-
-	errOutputCh <- nil
 }
 
 // 🐼
