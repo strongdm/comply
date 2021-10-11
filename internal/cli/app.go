@@ -164,7 +164,8 @@ func pandocMustExist(c *cli.Context) error {
 	}
 
 	// if we don't have pandoc, but we do have docker, execute a pull
-	if (pandocExistErr != nil && dockerExistErr == nil) || config.WhichPandoc() == config.UseDocker {
+	if !pandocImageExists(context.Background()) && ((pandocBinaryExistErr != nil && dockerExistErr == nil) || config.WhichPandoc() == config.UseDocker) {
+		fmt.Println("Pulling docker image")
 		dockerPull(c)
 	}
 
@@ -256,11 +257,31 @@ func dockerMustExist(c *cli.Context) (e error, inPath, isRunning bool) {
 	return nil, inPath, isRunning
 }
 
+func pandocImageExists(ctx context.Context) bool {
+	cli, err := client.NewEnvClient()
+	if err != nil {
+		return false
+	}
+	options := types.ImageListOptions{All: true}
+	imageList, err := cli.ImageList(ctx, options)
+	if err != nil {
+		return false
+	}
+	for _, image := range imageList {
+		if strings.Contains(image.RepoTags[0], "strongdm/pandoc") {
+			return true
+		}
+	}
+
+	return false
+}
+
 func dockerPull(c *cli.Context) error {
 	dockerErr := fmt.Errorf("Docker must be available in order to run `%s`", c.Command.Name)
 
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
+
 	if err != nil {
 		return dockerErr
 	}
