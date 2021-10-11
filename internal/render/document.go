@@ -49,7 +49,7 @@ func renderToFilesystem(wg *sync.WaitGroup, errOutputCh chan error, data *render
 
 		rel, err := filepath.Rel(config.ProjectRoot(), p.FullPath)
 		if err != nil {
-			rel = p.FullPat
+			rel = p.FullPath
 		}
 		fmt.Printf("%s -> %s\n", rel, filepath.Join("output", p.OutputFilename))
 	}(doc)
