@@ -3,6 +3,14 @@ package cli
 import (
 	"context"
 	"fmt"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
+	"github.com/pkg/errors"
+	"github.com/strongdm/comply/internal/config"
+	"github.com/strongdm/comply/internal/gitlab"
+	"github.com/strongdm/comply/internal/jira"
+	"github.com/strongdm/comply/internal/plugin/github"
+	"github.com/urfave/cli"
 	"io"
 	"io/ioutil"
 	"log"
@@ -17,15 +25,6 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
-
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
-	"github.com/pkg/errors"
-	"github.com/strongdm/comply/internal/config"
-	"github.com/strongdm/comply/internal/gitlab"
-	"github.com/strongdm/comply/internal/jira"
-	"github.com/strongdm/comply/internal/plugin/github"
-	"github.com/urfave/cli"
 )
 
 // Version is set by the build system.
@@ -137,10 +136,10 @@ func notifyVersion(c *cli.Context) error {
 func pandocMustExist(c *cli.Context) error {
 	eitherMustExistErr := fmt.Errorf("\n\nPlease install either Docker or the pandoc package and re-run `%s`. Find OS-specific pandoc installation instructions at: https://pandoc.org/installing.html", c.Command.Name)
 
-	pandocExistErr, found, goodVersion, pdfLatex := pandocBinaryMustExist(c)
+	pandocBinaryExistErr, found, goodVersion, pdfLatex := pandocBinaryMustExist(c)
 	dockerExistErr, inPath, isRunning := dockerMustExist(c)
 
-	config.SetPandoc(pandocExistErr == nil, dockerExistErr == nil)
+	config.SetPandoc(pandocBinaryExistErr == nil, dockerExistErr == nil)
 	check := func(b bool) string {
 		if b {
 			return "✔"
@@ -150,7 +149,7 @@ func pandocMustExist(c *cli.Context) error {
 
 	}
 
-	if pandocExistErr != nil && dockerExistErr != nil {
+	if pandocBinaryExistErr != nil && dockerExistErr != nil {
 
 		fmt.Printf(`
 [%s] pandoc binary installed and in PATH
