@@ -16,17 +16,23 @@ import (
 // TestReadNarratives calls model.ReadNarratives checking for a valid return value.
 func TestReadNarratives(t *testing.T) {
 	mockConfig()
+	filePath := fmt.Sprintf("%s/narratives/control.md", getRootPath())
+	fileInfo, _ := os.Lstat(filePath)
 	path.Narratives = func() ([]path.File, error) {
-		filePath := fmt.Sprintf("%s/narratives/control.md", getRootPath())
-		fileInfo, _ := os.Lstat(filePath)
 		return []path.File{
 			{FullPath: filePath, Info: fileInfo},
 		}, nil
 	}
 
-	_, err := ReadNarratives()
+	documents, err := ReadNarratives()
 	if err != nil {
 		t.Fatalf(`ReadNarratives() returned an error %v`, err)
+	}
+	if len(documents) != 1 {
+		t.Fatal(`Invalid number of documents`)
+	}
+	if documents[0].FullPath != filePath {
+		t.Fatalf(`Invalid document path %s`, documents[0].FullPath)
 	}
 }
 
@@ -38,9 +44,12 @@ func TestReadNarrativesWhenThereAreNoNarratives(t *testing.T) {
 		return []path.File{}, nil
 	}
 
-	_, err := ReadNarratives()
+	documents, err := ReadNarratives()
 	if err != nil {
 		t.Fatalf(`ReadNarratives() returned an error %v`, err)
+	}
+	if len(documents) != 0 {
+		t.Fatal(`Invalid number of documents`)
 	}
 }
 
