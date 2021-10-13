@@ -83,7 +83,10 @@ func ReadStandards() ([]*Standard, error) {
 			return nil, errors.Wrap(err, "unable to read "+f.FullPath)
 		}
 
-		yaml.Unmarshal(sBytes, &s)
+		err = yaml.Unmarshal(sBytes, &s)
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to parse "+f.FullPath)
+		}
 		standards = append(standards, s)
 	}
 
@@ -123,6 +126,7 @@ func ReadNarratives() ([]*Document, error) {
 func ReadProcedures() ([]*Procedure, error) {
 	var procedures []*Procedure
 	files, err := path.Procedures()
+
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to enumerate paths")
 	}
@@ -194,7 +198,7 @@ func loadMDMD(path string) (*metadataMarkdown, error) {
 	if len(components) == 1 {
 		return nil, errors.New(fmt.Sprintf("Malformed metadata markdown in %s, must be of the form: YAML\\n---\\nmarkdown content", path))
 	}
-	yaml := components[0]
+	item := components[0]
 	body := strings.Join(components[1:], "---")
-	return &metadataMarkdown{yaml, body}, nil
+	return &metadataMarkdown{item, body}, nil
 }
