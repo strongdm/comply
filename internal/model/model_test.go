@@ -9,22 +9,22 @@ import (
 func TestMarshal(t *testing.T) {
 	d := Data{
 		Tickets: []*Ticket{
-			&Ticket{
+			{
 				ID: "t1",
 			},
 		},
 		Audits: []*Audit{
-			&Audit{
+			{
 				ID: "a1",
 			},
 		},
 		Procedures: []*Procedure{
-			&Procedure{
-				Code: "pro1",
+			{
+				ID: "pro1",
 			},
 		},
-		Policies: []*Policy{
-			&Policy{
+		Policies: []*Document{
+			{
 				Name: "pol1",
 			},
 		},
@@ -40,5 +40,4 @@ func TestMarshal(t *testing.T) {
 		!strings.Contains(encoded, "pol1") {
 		t.Error("identifier not found in marshalled string")
 	}
-
 }
