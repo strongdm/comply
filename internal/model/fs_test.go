@@ -246,10 +246,7 @@ func mockConfig() {
 	config.Config = func() *config.Project {
 		p := config.Project{}
 		cfgBytes, _ := ioutil.ReadFile(filepath.Join(getRootPath(), "comply.yml.example"))
-		err := yaml.Unmarshal(cfgBytes, &p)
-		if err != nil {
-			return nil
-		}
+		yaml.Unmarshal(cfgBytes, &p)
 		return &p
 	}
 }
