@@ -13,6 +13,8 @@ import (
 	"github.com/yosssi/ace"
 )
 
+const BindAddress = "0.0.0.0"
+
 var ServePort int
 
 var upgrader = websocket.Upgrader{
@@ -94,13 +96,13 @@ func Build(output string, live bool) error {
 
 		go func() {
 			http.Handle("/", http.FileServer(http.Dir(filepath.Join(".", "output"))))
-			err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", ServePort), nil)
+			err := http.ListenAndServe(fmt.Sprintf("%s:%d", BindAddress, ServePort), nil)
 			if err != nil {
 				panic(err)
 			}
 		}()
 
-		fmt.Printf("Serving content of output/ at http://127.0.0.1:%d (ctrl-c to quit)\n", ServePort)
+		fmt.Printf("Serving content of output/ at http://%s:%d (ctrl-c to quit)\n", BindAddress, ServePort)
 	}
 	// PDF
 	wg.Add(1)
