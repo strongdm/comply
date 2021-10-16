@@ -38,6 +38,20 @@ type Project struct {
 	FilePrefix     string                 `yaml:"filePrefix"`
 	Tickets        map[string]interface{} `yaml:"tickets"`
 	ApprovedBranch string                 `yaml:"approvedBranch"`
+	DocOutputs     []string               `yaml:"outputs"`
+}
+
+// Get outputfile extensions from yaml but set default as pdf for backwards
+// compatibility with legacy yaml files
+func GetFileExtensions() []string {
+	fileExtensions := Config().DocOutputs
+
+	if len(fileExtensions) == 0 {
+		fileExtensions = append(fileExtensions, "pdf")
+		return fileExtensions
+	} else {
+		return fileExtensions
+	}
 }
 
 // SetPandoc records pandoc availability during initialization

@@ -94,6 +94,7 @@ func ReadStandards() ([]*Standard, error) {
 }
 
 // ReadNarratives loads narrative descriptions from the filesystem.
+// remove pdf file ending and place that logic in document.go
 func ReadNarratives() ([]*Document, error) {
 	var narratives []*Document
 
@@ -115,7 +116,7 @@ func ReadNarratives() ([]*Document, error) {
 		n.Body = mdmd.body
 		n.FullPath = f.FullPath
 		n.ModifiedAt = f.Info.ModTime()
-		n.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, n.Acronym)
+		n.OutputFilename = fmt.Sprintf("%s-%s.", config.Config().FilePrefix, n.Acronym)
 		narratives = append(narratives, n)
 	}
 
@@ -151,6 +152,7 @@ func ReadProcedures() ([]*Procedure, error) {
 }
 
 // ReadPolicies loads policy documents from the filesystem.
+// remove pdf file ending and place that logic in document.go
 func ReadPolicies() ([]*Document, error) {
 	var policies []*Document
 
@@ -172,7 +174,7 @@ func ReadPolicies() ([]*Document, error) {
 		p.Body = mdmd.body
 		p.FullPath = f.FullPath
 		p.ModifiedAt = f.Info.ModTime()
-		p.OutputFilename = fmt.Sprintf("%s-%s.pdf", config.Config().FilePrefix, p.Acronym)
+		p.OutputFilename = fmt.Sprintf("%s-%s.", config.Config().FilePrefix, p.Acronym)
 		policies = append(policies, p)
 	}
 

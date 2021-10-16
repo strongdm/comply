@@ -16,18 +16,18 @@ import (
 
 var pandocArgs = []string{"-f", "markdown+smart", "--toc", "-N", "--template", "templates/default.latex", "-o"}
 
-func pandoc(outputFilename string, errOutputCh chan error) {
+func pandoc(outputFilename string, fileExtension string, errOutputCh chan error) {
 	if config.WhichPandoc() == config.UsePandoc {
-		err := pandocPandoc(outputFilename)
+		err := pandocPandoc(outputFilename, fileExtension)
 		if err != nil {
 			errOutputCh <- err
 		}
 	} else {
-		dockerPandoc(outputFilename, errOutputCh)
+		dockerPandoc(outputFilename, fileExtension, errOutputCh)
 	}
 }
 
-func dockerPandoc(outputFilename string, errOutputCh chan error) {
+func dockerPandoc(outputFilename string, fileExtension string, errOutputCh chan error) {
 	pandocCmd := append(pandocArgs, fmt.Sprintf("/source/output/%s", outputFilename), fmt.Sprintf("/source/output/%s.md", outputFilename))
 	ctx := context.Background()
 	cli, err := client.NewEnvClient()
@@ -93,8 +93,8 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 }
 
 // 🐼
-func pandocPandoc(outputFilename string) error {
-	cmd := exec.Command("pandoc", append(pandocArgs, fmt.Sprintf("output/%s", outputFilename), fmt.Sprintf("output/%s.md", outputFilename))...)
+func pandocPandoc(outputFilename string, fileExtension string) error {
+	cmd := exec.Command("pandoc", append(pandocArgs, fmt.Sprintf("output/%s%s", outputFilename, fileExtension), fmt.Sprintf("output/%s.md", outputFilename))...)
 	outputRaw, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(string(outputRaw))

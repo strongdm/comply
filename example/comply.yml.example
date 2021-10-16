@@ -29,3 +29,8 @@ tickets:
   #   domain: https://gitlab.example.com:443/ # or https://gitlab.com/
   #   token: token-here
   #   repo: full-slug/of-project
+
+# Common file types output by pandoc. Examples here: https://pandoc.org/MANUAL.html#general-options
+outputs:
+  - pdf
+  - docx
