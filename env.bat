@@ -1,0 +1,1 @@
+set COMPLY_USE_LOCAL_PANDOC=true

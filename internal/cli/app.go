@@ -165,8 +165,14 @@ func pandocMustExist(c *cli.Context) error {
 
 	// if we don't have pandoc, but we do have docker, execute a pull
 	if !pandocImageExists(context.Background()) && ((pandocBinaryExistErr != nil && dockerExistErr == nil) || config.WhichPandoc() == config.UseDocker) {
-		fmt.Println("Pulling docker image")
-		dockerPull(c)
+		canPullPandoc := os.Getenv("COMPLY_USE_LOCAL_PANDOC") != "true"
+		if canPullPandoc {
+			fmt.Println("Pulling docker image")
+			dockerPull(c)
+
+		} else {
+			return fmt.Errorf("Local Pandoc not found. Please set COMPLY_USE_LOCAL_PANDOC to false")
+		}
 	}
 
 	return nil
