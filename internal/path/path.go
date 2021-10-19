@@ -16,22 +16,22 @@ type File struct {
 }
 
 // Standards lists all standard files.
-func Standards() ([]File, error) {
+var Standards = func() ([]File, error) {
 	return filesFor("standards", "yml")
 }
 
 // Narratives lists all narrative files.
-func Narratives() ([]File, error) {
+var Narratives = func() ([]File, error) {
 	return filesFor("narratives", "md")
 }
 
 // Policies lists all policy files.
-func Policies() ([]File, error) {
+var Policies = func() ([]File, error) {
 	return filesFor("policies", "md")
 }
 
 // Procedures lists all procedure files.
-func Procedures() ([]File, error) {
+var Procedures = func() ([]File, error) {
 	return filesFor("procedures", "md")
 }
 

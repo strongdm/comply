@@ -64,7 +64,7 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 			errOutputCh <- errors.Wrap(err, "unable to remove container")
 			return
 		}
-		errOutputCh <-nil
+		errOutputCh <- nil
 	}()
 
 	err = cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{})
@@ -78,7 +78,7 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 
 	if resultValue.StatusCode != 0 {
 		err = <-chanErr
-		errOutputCh <-errors.Wrap(err, "error awaiting Docker container")
+		errOutputCh <- errors.Wrap(err, "error awaiting Docker container")
 		return
 	}
 

@@ -82,7 +82,7 @@ func Exists() bool {
 }
 
 // Config is the parsed contents of ProjectRoot()/config.yml.
-func Config() *Project {
+var Config = func() *Project {
 	p := Project{}
 	cfgBytes, err := ioutil.ReadFile(filepath.Join(ProjectRoot(), "comply.yml"))
 	if err != nil {

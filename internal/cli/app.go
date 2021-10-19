@@ -137,10 +137,10 @@ func notifyVersion(c *cli.Context) error {
 func pandocMustExist(c *cli.Context) error {
 	eitherMustExistErr := fmt.Errorf("\n\nPlease install either Docker or the pandoc package and re-run `%s`. Find OS-specific pandoc installation instructions at: https://pandoc.org/installing.html", c.Command.Name)
 
-	pandocExistErr, found, goodVersion, pdfLatex := pandocBinaryMustExist(c)
+	pandocBinaryExistErr, found, goodVersion, pdfLatex := pandocBinaryMustExist(c)
 	dockerExistErr, inPath, isRunning := dockerMustExist(c)
 
-	config.SetPandoc(pandocExistErr == nil, dockerExistErr == nil)
+	config.SetPandoc(pandocBinaryExistErr == nil, dockerExistErr == nil)
 	check := func(b bool) string {
 		if b {
 			return "✔"
@@ -150,7 +150,7 @@ func pandocMustExist(c *cli.Context) error {
 
 	}
 
-	if pandocExistErr != nil && dockerExistErr != nil {
+	if pandocBinaryExistErr != nil && dockerExistErr != nil {
 
 		fmt.Printf(`
 [%s] pandoc binary installed and in PATH
@@ -165,14 +165,20 @@ func pandocMustExist(c *cli.Context) error {
 	}
 
 	// if we don't have pandoc, but we do have docker, execute a pull
-	if (pandocExistErr != nil && dockerExistErr == nil) || config.WhichPandoc() == config.UseDocker {
-		dockerPull(c)
+	if !pandocImageExists(context.Background()) && ((pandocBinaryExistErr != nil && dockerExistErr == nil) || config.WhichPandoc() == config.UseDocker) {
+		canPullPandoc := strings.TrimSpace(strings.ToLower(os.Getenv("COMPLY_USE_LOCAL_PANDOC"))) != "true"
+		if canPullPandoc {
+			fmt.Println("Pulling docker image")
+			dockerPull(c)
+		} else {
+			return fmt.Errorf("Local Pandoc not found. Please set COMPLY_USE_LOCAL_PANDOC to false")
+		}
 	}
 
 	return nil
 }
 
-func pandocBinaryMustExist(c *cli.Context) (e error, found, goodVersion, pdfLatex bool) {
+var pandocBinaryMustExist = func(c *cli.Context) (e error, found, goodVersion, pdfLatex bool) {
 	cmd := exec.Command("pandoc", "-v")
 	outputRaw, err := cmd.Output()
 
@@ -230,7 +236,7 @@ func pandocBinaryMustExist(c *cli.Context) (e error, found, goodVersion, pdfLate
 	return e, found, goodVersion, pdfLatex
 }
 
-func dockerMustExist(c *cli.Context) (e error, inPath, isRunning bool) {
+var dockerMustExist = func(c *cli.Context) (e error, inPath, isRunning bool) {
 	dockerErr := fmt.Errorf("Docker must be available in order to run `%s`", c.Command.Name)
 
 	inPath = true
@@ -257,7 +263,26 @@ func dockerMustExist(c *cli.Context) (e error, inPath, isRunning bool) {
 	return nil, inPath, isRunning
 }
 
-func dockerPull(c *cli.Context) error {
+var pandocImageExists = func(ctx context.Context) bool {
+	cli, err := client.NewEnvClient()
+	if err != nil {
+		return false
+	}
+	options := types.ImageListOptions{All: true}
+	imageList, err := cli.ImageList(ctx, options)
+	if err != nil {
+		return false
+	}
+	for _, image := range imageList {
+		if strings.Contains(image.RepoTags[0], "strongdm/pandoc") {
+			return true
+		}
+	}
+
+	return false
+}
+
+var dockerPull = func(c *cli.Context) error {
 	dockerErr := fmt.Errorf("Docker must be available in order to run `%s`", c.Command.Name)
 
 	ctx := context.Background()
@@ -275,7 +300,7 @@ func dockerPull(c *cli.Context) error {
 
 		select {
 		case <-longishPull:
-			fmt.Print("Pulling strongdm/pandoc:latest Docker image (this will take some time) ")
+			fmt.Print("Pulling strongdm/pandoc:edge Docker image (this will take some time) ")
 
 			go func() {
 				for {
@@ -294,7 +319,7 @@ func dockerPull(c *cli.Context) error {
 		}
 	}()
 
-	r, err := cli.ImagePull(ctx, "strongdm/pandoc:latest", types.ImagePullOptions{})
+	r, err := cli.ImagePull(ctx, "strongdm/pandoc:edge", types.ImagePullOptions{})
 	if err != nil {
 		return dockerErr
 	}

@@ -135,9 +135,12 @@ func preprocessDoc(data *renderData, pol *model.Document, fullPath string) error
 %% %s
 
 ---
-header-includes: yes
-head-content: "%s"
-foot-content: "%s confidential %d"
+header-includes: |
+	\usepackage{fancyhdr}
+	\pagestyle{fancy}
+	\fancyhead{}
+	\fancyhead[RO,RE]{%s}
+	\fancyfoot[LO,LE]{%s confidential %d}
 ---
 
 %s
