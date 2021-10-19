@@ -53,4 +53,3 @@ a. *When an employee changes roles within the organization:*
 a. *Review of accounts and permissions:*
 
     i. Each month, IT and HR will review accounts and permission levels for accuracy. 
-

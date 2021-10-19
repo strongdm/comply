@@ -83,7 +83,6 @@ func ReadStandards() ([]*Standard, error) {
 			return nil, errors.Wrap(err, "unable to read "+f.FullPath)
 		}
 
-		yaml.Unmarshal(sBytes, &s)
 		err = yaml.Unmarshal(sBytes, &s)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to parse "+f.FullPath)
@@ -127,6 +126,7 @@ func ReadNarratives() ([]*Document, error) {
 func ReadProcedures() ([]*Procedure, error) {
 	var procedures []*Procedure
 	files, err := path.Procedures()
+
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to enumerate paths")
 	}
