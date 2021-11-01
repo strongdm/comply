@@ -18,10 +18,7 @@ var pandocArgs = []string{"-f", "markdown+smart", "--toc", "-N", "--template", "
 
 func pandoc(outputFilename string, errOutputCh chan error) {
 	if config.WhichPandoc() == config.UsePandoc {
-		err := pandocPandoc(outputFilename)
-		if err != nil {
-			errOutputCh <- err
-		}
+		pandocPandoc(outputFilename, errOutputCh)
 	} else {
 		dockerPandoc(outputFilename, errOutputCh)
 	}
@@ -47,7 +44,7 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 	}
 
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
-		Image: "strongdm/pandoc",
+		Image: "strongdm/pandoc:edge",
 		Cmd:   pandocCmd},
 		hc, nil, nil, "")
 
@@ -95,12 +92,14 @@ func dockerPandoc(outputFilename string, errOutputCh chan error) {
 }
 
 // 🐼
-func pandocPandoc(outputFilename string) error {
+func pandocPandoc(outputFilename string, errOutputCh chan error) error {
 	cmd := exec.Command("pandoc", append(pandocArgs, fmt.Sprintf("output/%s", outputFilename), fmt.Sprintf("output/%s.md", outputFilename))...)
 	outputRaw, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(string(outputRaw))
-		return errors.Wrap(err, "error calling pandoc")
+		errOutputCh <- errors.Wrap(err, "error calling pandoc")
+	} else {
+		errOutputCh <- nil
 	}
 	return nil
 }

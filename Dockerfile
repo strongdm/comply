@@ -1,4 +1,4 @@
-FROM strongdm/pandoc:latest
+FROM strongdm/pandoc:edge
 
 # based on implementation by James Gregory <james@jagregory.com>
 MAINTAINER Comply <comply@strongdm.com>

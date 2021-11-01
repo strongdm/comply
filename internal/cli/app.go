@@ -274,7 +274,7 @@ var pandocImageExists = func(ctx context.Context) bool {
 		return false
 	}
 	for _, image := range imageList {
-		if strings.Contains(image.RepoTags[0], "strongdm/pandoc") {
+		if strings.Contains(image.RepoTags[0], "strongdm/pandoc:edge") {
 			return true
 		}
 	}
@@ -352,7 +352,7 @@ func cleanContainers(c *cli.Context) error {
 
 	for _, c := range containers {
 		// assume this container was leftover from previous aborted run
-		if strings.HasPrefix(c.Image, "strongdm/pandoc") {
+		if strings.HasPrefix(c.Image, "strongdm/pandoc:edge") {
 			d := time.Second * 2
 			err = cli.ContainerStop(ctx, c.ID, &d)
 			if err != nil {
