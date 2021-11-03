@@ -274,7 +274,7 @@ var pandocImageExists = func(ctx context.Context) bool {
 		return false
 	}
 	for _, image := range imageList {
-		if strings.Contains(image.RepoTags[0], "strongdm/pandoc:edge") {
+		if len(image.RepoTags) > 0 && strings.Contains(image.RepoTags[0], "strongdm/pandoc:edge") {
 			return true
 		}
 	}
