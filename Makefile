@@ -52,8 +52,8 @@ else
 endif
 
 docker:
-	cd build && docker build -t strongdm/pandoc .
-	docker push strongdm/pandoc
+	cd build && docker build -t strongdm/pandoc:edge .
+	docker push strongdm/pandoc:edge
 
 cleanse:
 	git checkout --orphan newbranch

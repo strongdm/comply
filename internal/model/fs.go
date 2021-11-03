@@ -189,7 +189,6 @@ func loadMDMD(path string) (*metadataMarkdown, error) {
 	if err != nil {
 		panic(err)
 	}
-
 	content := string(bytes)
 	components := strings.Split(content, "---")
 	if components[0] == "" && (len(components) > 1) {

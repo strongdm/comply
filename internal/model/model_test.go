@@ -29,11 +29,8 @@ func TestMarshal(t *testing.T) {
 			},
 		},
 	}
-
 	m, _ := json.Marshal(d)
-
 	encoded := string(m)
-
 	if !strings.Contains(encoded, "t1") ||
 		!strings.Contains(encoded, "a1") ||
 		!strings.Contains(encoded, "pro1") ||
