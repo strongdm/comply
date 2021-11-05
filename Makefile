@@ -71,6 +71,9 @@ endif
 ifndef COMPLY_TAPDIR
 	$(error COMPLY_TAPDIR must be set to the path of the comply homebrew tap repo)
 endif
+ifndef COMPLY_RELEASE_WEBHOOK
+	$(error COMPLY_RELEASE_WEBHOOK must be set to a webhook for the release Slack channel)
+endif
 
 release: release-env dist release-deps
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
@@ -104,11 +107,11 @@ release: release-env dist release-deps
 
 patch-release: release-env patch release
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
-	curl -X POST --data-urlencode 'payload={"channel": "#release", "username": "release", "text": "comply $(VERSION) released", "icon_emoji": ":shipit:"}' https://hooks.slack.com/services/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
+	curl -X POST --data-urlencode 'payload={"channel": "#release", "username": "release", "text": "comply $(VERSION) released", "icon_emoji": ":shipit:"}' $$COMPLY_RELEASE_WEBHOOK
 
 minor-release: release-env minor release
 	$(eval VERSION := $(shell git describe --tags --always --dirty="-dev"))
-	curl -X POST --data-urlencode 'payload={"channel": "#release", "username": "release", "text": "comply $(VERSION) released", "icon_emoji": ":shipit:"}' https://hooks.slack.com/services/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
+	curl -X POST --data-urlencode 'payload={"channel": "#release", "username": "release", "text": "comply $(VERSION) released", "icon_emoji": ":shipit:"}' $$COMPLY_RELEASE_WEBHOOK
 
 docker-release:
 	docker build --build-arg COMPLY_VERSION=`cat VERSION` -t strongdm/comply .
