@@ -29,7 +29,8 @@ func SaveTo(themeName string, replace map[string]string, saveDir string) error {
 				rootMdFile := string(MustAsset(name))
 
 				var w bytes.Buffer
-				rootMdFileTemplate, err := template.New("rootMdFile").Parse(rootMdFile)
+				var rootMdFileTemplate *template.Template
+				rootMdFileTemplate, err = template.New("rootMdFile").Parse(rootMdFile)
 				if err != nil {
 					w.WriteString(fmt.Sprintf("# Error processing template:\n\n%s\n", err.Error()))
 				} else {
