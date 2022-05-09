@@ -104,13 +104,13 @@ For Windows users, replace $PWD with the full path to your project directory
 
 ### Running in macOS M1
 
-If you're running Comply inside Docker or using Comply installed by HomeBrew in a macOS M1, you should increase you Docker memory usage to at least 7 GB or more, but it'll run a bit laggy. So, we recommend to run Comply locally with pandoc binary installed via HomeBrew. For that, install the `pandoc` and `basictex` packages using the following command:
+If you're running Comply inside Docker, or using it installed by HomeBrew, in a macOS M1, you should increase the Docker allocatable memory space to ~7 GB, but it won't run smoothly. So, we recommend to run Comply locally with pandoc binary installed via HomeBrew. For that, install the `pandoc` and `basictex` packages using the following command:
 
 ```bash
 brew install pandoc basictex
 ```
 
-Then when running the Comply binary installed by HomeBrew will work as expected.
+Then when running the Comply binary -installed by HomeBrew- it will work as expected.
 
 ## Ticketing Integrations:
 
