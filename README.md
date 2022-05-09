@@ -1,4 +1,4 @@
-![Comply](https://github.com/strongdm/comply/blob/master/logo.png)
+![Comply](./logo.png)
 
 Comply is a SOC2-focused compliance automation tool:
 
@@ -41,17 +41,20 @@ Join us in [Comply Users](https://join.slack.com/t/comply-users/shared_invite/zt
 [Demo video](https://vimeo.com/270257486)
 
 ## Start a Project
+
 ![screencast 1](sc-1.gif)
 
 ## Build PDFs
+
 ![screencast 4](sc-4.gif)
 ![pdf example](pdf-example.png)
 
-
 ## Track Policy Coverage
+
 ![screencast 3](sc-2.gif)
 
 ## Dashboard
+
 ![screencast 2](sc-3.gif)
 
 ## Dependencies
@@ -99,8 +102,18 @@ Serving content of output/ at http://127.0.0.1:4000 (ctrl-c to quit)
 
 For Windows users, replace $PWD with the full path to your project directory
 
+### Running in macOS M1
+
+If you're running Comply inside Docker, or using it installed by HomeBrew, in a macOS M1, you should increase the Docker allocatable memory space to ~7 GB, but it won't run smoothly. So, we recommend to run Comply locally with pandoc binary installed via HomeBrew. For that, install the `pandoc` and `basictex` packages using the following command:
+
+```bash
+brew install pandoc basictex
+```
+
+Then when running the Comply binary -installed by HomeBrew- it will work as expected.
 
 ## Ticketing Integrations:
+
 - Jira
 - Github
 - Gitlab
@@ -133,12 +146,12 @@ When comply creates a ticket (through `proc`, for instance), it sets the followi
 - reporter
 - summary
 
-Please make sure that the default *Create Screen* has all of those fields enabled. Additionally, make sure that there are no other required fields for the issue type you choose.
+Please make sure that the default _Create Screen_ has all of those fields enabled. Additionally, make sure that there are no other required fields for the issue type you choose.
 
 About authentication, you need to create an [API Token](https://id.atlassian.com/manage-profile/security/api-tokens) to use as a password.
 
-
 ## Forking and local development
+
 > Assumes installation of golang and configuration of GOPATH in .bash_profile, .zshrc, etc
 > Inspiration: http://code.openark.org/blog/development/forking-golang-repositories-on-github-and-managing-the-import-path
 

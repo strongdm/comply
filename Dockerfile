@@ -7,7 +7,7 @@ RUN apt-get update -y \
   && apt-get install -y curl
 
 ARG COMPLY_VERSION
-ENV COMPLY_VERSION ${COMPLY_VERSION:-1.4.0}
+ENV COMPLY_VERSION ${COMPLY_VERSION:-1.6.0}
 
 EXPOSE 4000/tcp
 
