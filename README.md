@@ -127,10 +127,13 @@ Ticketing integration with GitHub can be configured with the following YAML in `
 ```yaml
 tickets:
   github:
-    repo: github.com/your-org/SOC2
+    repo: <repo-name>
     token: <token>
-    username: org-bot-user
+    username: org or personal username
 ```
+
+If you're setting up the repo in your personal account, set `username` to your username.
+If you're setting up the repo in an github organization, set `username` to your org's username instead.
 
 Also, `GITHUB_REPO`, `GITHUB_TOKEN`, and `GITHUB_USERNAME` can be used to override values from the YAML file.
 
