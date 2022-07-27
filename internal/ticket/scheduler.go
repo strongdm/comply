@@ -114,9 +114,6 @@ func trigger(procedure *model.Procedure) error {
 	}
 
 	tp := model.GetPlugin(model.TicketSystem(ts))
-	err = tp.Create(&model.Ticket{
-		Name: procedure.Name,
-		Body: fmt.Sprintf("%s\n\n\n---\nProcedure-ID: %s", procedure.Body, procedure.ID),
-	}, []string{"comply", "comply-procedure"})
+	err = tp.Create(procedure.NewTicket(), procedure.Labels())
 	return err
 }
